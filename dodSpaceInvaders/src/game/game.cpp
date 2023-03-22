@@ -69,6 +69,20 @@ void drawBullets(sf::RenderWindow& window, const std::span<const float> xPositio
     }
 }
 
+void drawEnemy(sf::RenderWindow& window, const sf::Vector2f& position)
+{
+    constexpr auto size{ 15.f };
+    Renderer::Instant::drawRectangle(window, position, sf::Vector2f(size, size), sf::Color::Blue, 1.f, sf::Color::Red);
+}
+
+void drawEnemies(sf::RenderWindow& window, const std::span<const float> xPositions, const std::span<const float> yPositions)
+{
+    for (const auto [x, y] : ranges::views::zip(xPositions.subspan(1), yPositions.subspan(1)))
+    {
+        drawEnemy(window, { x, y });
+    }
+}
+
 struct ControlState
 {
     float movementComponent{ 0.f };
@@ -179,6 +193,132 @@ std::vector<float> gPlayerBulletTimeLeft;
 size_t gNumOfRemovedBullets{ 0 };
 std::vector<size_t> gRemovedBulletIds;
 
+std::vector<float> gEnemiesXCorrds;
+std::vector<float> gEnemiesYCorrds;
+
+float gEnemiesBatchCoordX{};
+float gEnemiesBatchCoordY{};
+float gEnemiesDirection = 1;
+
+bool updateDirectionRule(float currentDirection, float currentXPosition)
+{
+
+    constexpr uint32_t xOnTheLeft{ 1 << 0 };
+    constexpr uint32_t xOnTheRight{ 1 << 1 };
+    constexpr uint32_t directionLeft{ 1 << 2 };
+    constexpr uint32_t directionRight{ 1 << 3 };
+    struct DirectionRule
+    {
+        std::array<uint32_t, 2> conditions{ {
+            xOnTheLeft | directionRight,
+            xOnTheRight | directionLeft,
+        }};
+        std::array<bool, 2> outputs{ {true, true} };
+
+        bool outputNeedChangeDirection{ false };
+    };
+
+    DirectionRule rule;
+
+    const auto generateInput = [](float currentDirection, float currentXPosition) -> uint32_t {
+        uint32_t bits{};
+        bits |= (xOnTheLeft) * (currentXPosition < 10.f);
+        bits |= (xOnTheRight) * (currentXPosition > 200.f);
+        bits |= (directionLeft) * (currentDirection <= -1.f);
+        bits |= (directionRight) * (currentDirection >= 1.f);
+        return bits;
+    };
+
+    const auto inputs{ generateInput(currentDirection, currentXPosition) };
+
+    auto needChangeDirection{ rule.outputNeedChangeDirection };
+    for (size_t idx{ 0 }; idx < rule.conditions.size(); ++idx)
+    {
+        if (rule.conditions[idx] == inputs)
+        {
+            needChangeDirection = rule.outputs[idx];
+        }
+    }
+
+    return needChangeDirection;
+
+}
+
+float enemiesUpdateBatchXCoord(float dt, float currentDirection, float batchCoordX)
+{
+
+    constexpr auto batchVelocityX{ 10.f };
+
+    batchCoordX += dt * batchCoordX * currentDirection;
+
+    return batchCoordX;
+
+}
+
+float enemiesUpdateBatchDirection(bool bNeedChangeBatchDirection, float currentDirection)
+{
+
+    const auto newDirection{ currentDirection + (-currentDirection) * 2.f * bNeedChangeBatchDirection };
+
+    return newDirection;
+
+}
+
+float enemiesUpdateBatchYCoord(bool bBatchDirectionUpdated, float batchYCoord)
+{
+
+    constexpr auto stride{ 50.f };
+    const auto newBatchYCoord{ batchYCoord + stride * bBatchDirectionUpdated };
+
+    return newBatchYCoord;
+
+}
+
+auto enemiesBatchUpdate(float dt, float currentDirection, float batchCoordX, float batchCoordY)
+{
+
+    const auto newBatchXCoord{ enemiesUpdateBatchXCoord(dt, currentDirection, batchCoordX) };
+
+    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) };
+
+    const auto newBatchDirection{ enemiesUpdateBatchDirection(bNeedChangeBatchDirection, currentDirection) };
+    const auto newBatchYCoord{ enemiesUpdateBatchYCoord(bNeedChangeBatchDirection, batchCoordY) };
+
+    struct Output 
+    {
+        float batchXCoord{};
+        float batchYCoord{};
+        float batchDirection{};
+    };
+    return Output(newBatchXCoord, newBatchYCoord, newBatchDirection);
+
+}
+
+auto enemiesUpdate(float dt, float currentDirection, float batchCoordX, float batchCoordY, const std::span<float> xCoords, const std::span<float> yCoords)
+{
+
+    const auto [newBatchCoordX, newBatchCoordY, newCurrentDirection] {enemiesBatchUpdate(dt, currentDirection, batchCoordX, batchCoordY)};
+
+    const auto moveXDelata{ newBatchCoordX - batchCoordX };
+    const auto moveYDelata{ newBatchCoordY - batchCoordY };
+
+    for (auto& xCoord : xCoords)
+        xCoord += moveXDelata;
+
+    for (auto& yCoord : yCoords)
+        yCoord += moveYDelata;
+
+    struct Output
+    {
+        float batchXCoord{};
+        float batchYCoord{};
+        float batchDirection{};
+    };
+
+    return Output(newBatchCoordX, newBatchCoordY, newCurrentDirection);
+
+}
+
 void bulletsUpdate(float dt)
 {
 
@@ -249,6 +389,11 @@ void msgLoop(sf::RenderWindow& window, float dt)
 
     playerUpdate(dt);
     bulletsUpdate(dt);
+
+    const auto enemiesResult {enemiesUpdate(dt, gEnemiesDirection, gEnemiesBatchCoordX, gEnemiesBatchCoordY, gEnemiesXCorrds, gEnemiesYCorrds) };
+    gEnemiesDirection = enemiesResult.batchDirection;
+    gEnemiesBatchCoordX = enemiesResult.batchXCoord;
+    gEnemiesBatchCoordY = enemiesResult.batchYCoord;
 
     drawField(window);
     drawPlayer(window, gPlayerPosition);
