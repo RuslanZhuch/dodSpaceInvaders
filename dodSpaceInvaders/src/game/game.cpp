@@ -6,6 +6,8 @@
 #include <array>
 #include <cassert>
 #include <chrono>
+#include <iostream>
+#include <bitset>
 #include <range/v3/view.hpp>
 #include <range/v3/span.hpp>
 #include <range/v3/view/zip.hpp>
@@ -71,14 +73,16 @@ void drawBullets(sf::RenderWindow& window, const std::span<const float> xPositio
 
 void drawEnemy(sf::RenderWindow& window, const sf::Vector2f& position)
 {
-    constexpr auto size{ 15.f };
-    Renderer::Instant::drawRectangle(window, position, sf::Vector2f(size, size), sf::Color::Blue, 1.f, sf::Color::Red);
+    constexpr auto sizeX{ 25.f };
+    constexpr auto sizeY{ 30.f };
+    Renderer::Instant::drawRectangle(window, position, sf::Vector2f(sizeX, sizeY), sf::Color::Blue, 1.f, sf::Color::Red);
 }
 
 void drawEnemies(sf::RenderWindow& window, const std::span<const float> xPositions, const std::span<const float> yPositions)
 {
     for (const auto [x, y] : ranges::views::zip(xPositions.subspan(1), yPositions.subspan(1)))
     {
+//        std::cout << std::format("Render enemy {}, {}\n", x, y);
         drawEnemy(window, { x, y });
     }
 }
@@ -210,8 +214,8 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
     struct DirectionRule
     {
         std::array<uint32_t, 2> conditions{ {
-            xOnTheLeft | directionRight,
-            xOnTheRight | directionLeft,
+            xOnTheLeft | directionLeft,
+            xOnTheRight | directionRight,
         }};
         std::array<bool, 2> outputs{ {true, true} };
 
@@ -222,14 +226,16 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
 
     const auto generateInput = [](float currentDirection, float currentXPosition) -> uint32_t {
         uint32_t bits{};
-        bits |= (xOnTheLeft) * (currentXPosition < 10.f);
-        bits |= (xOnTheRight) * (currentXPosition > 200.f);
+        bits |= (xOnTheLeft) * (currentXPosition < 50.f);
+        bits |= (xOnTheRight) * (currentXPosition > 300.f);
         bits |= (directionLeft) * (currentDirection <= -1.f);
         bits |= (directionRight) * (currentDirection >= 1.f);
         return bits;
     };
 
     const auto inputs{ generateInput(currentDirection, currentXPosition) };
+
+//    std::cout << std::format("Inputs bitmask {:b}\n", inputs);
 
     auto needChangeDirection{ rule.outputNeedChangeDirection };
     for (size_t idx{ 0 }; idx < rule.conditions.size(); ++idx)
@@ -247,9 +253,9 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
 float enemiesUpdateBatchXCoord(float dt, float currentDirection, float batchCoordX)
 {
 
-    constexpr auto batchVelocityX{ 10.f };
+    constexpr auto batchVelocityX{ 75.f };
 
-    batchCoordX += dt * batchCoordX * currentDirection;
+    batchCoordX += dt * batchVelocityX * currentDirection;
 
     return batchCoordX;
 
@@ -267,7 +273,7 @@ float enemiesUpdateBatchDirection(bool bNeedChangeBatchDirection, float currentD
 float enemiesUpdateBatchYCoord(bool bBatchDirectionUpdated, float batchYCoord)
 {
 
-    constexpr auto stride{ 50.f };
+    constexpr auto stride{ 25.f };
     const auto newBatchYCoord{ batchYCoord + stride * bBatchDirectionUpdated };
 
     return newBatchYCoord;
@@ -375,6 +381,43 @@ void playerUpdate(float dt)
 
 }
 
+auto generateEnemies(float rootX, float rootY, size_t enemiesInRow, size_t numOfCols)
+{
+
+    std::vector<float> enemiesXCoords{0.f};
+    std::vector<float> enemiesYCoords{0.f};
+
+    constexpr float yStride{ 50.f };
+    constexpr float xStride{ 50.f };
+
+    const auto totalEnemies{ enemiesInRow * numOfCols };
+    enemiesXCoords.reserve(totalEnemies + 1);
+    enemiesYCoords.reserve(totalEnemies + 1);
+
+    for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
+    {
+        const auto inRowId{ enemyId % enemiesInRow };
+        const auto xPosition{ rootX + inRowId * xStride };
+        enemiesXCoords.push_back(xPosition);
+    }
+
+    for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
+    {
+        const auto inColId{ enemyId / enemiesInRow };
+        const auto yPosition{ rootY + inColId * yStride };
+        enemiesYCoords.push_back(yPosition);
+    }
+
+    struct Output
+    {
+        std::vector<float> enemiesXCoords;
+        std::vector<float> enemiesYCoords;
+    };
+
+    return Output(enemiesXCoords, enemiesYCoords);
+
+}
+
 void msgLoop(sf::RenderWindow& window, float dt)
 {
 
@@ -395,6 +438,8 @@ void msgLoop(sf::RenderWindow& window, float dt)
     gEnemiesBatchCoordX = enemiesResult.batchXCoord;
     gEnemiesBatchCoordY = enemiesResult.batchYCoord;
 
+    drawEnemies(window, gEnemiesXCorrds, gEnemiesYCorrds);
+
     drawField(window);
     drawPlayer(window, gPlayerPosition);
 
@@ -410,12 +455,19 @@ void msgLoop(sf::RenderWindow& window, float dt)
 void Game::run()
 {
 
-    sf::RenderWindow window(sf::VideoMode(800, 900), "Starhammer");
+    sf::RenderWindow window(sf::VideoMode(800, 900), "dod Space Action");
     gPlayerPosition = sf::Vector2f(400.f, 850.f);
 
     gPlayerBulletXCoords.emplace_back();
     gPlayerBulletYCoords.emplace_back();
 
+    gEnemiesBatchCoordX = 100.f;
+    gEnemiesBatchCoordY = 200.f;
+
+    const auto enemies{ generateEnemies(gEnemiesBatchCoordX, gEnemiesBatchCoordY, 10, 4) };
+    gEnemiesXCorrds = enemies.enemiesXCoords;
+    gEnemiesYCorrds = enemies.enemiesYCoords;
+    
     float deltaTime{ 0.f };
 
     while (window.isOpen())
