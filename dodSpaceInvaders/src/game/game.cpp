@@ -8,6 +8,8 @@
 #include <chrono>
 #include <iostream>
 #include <bitset>
+#include <ranges>
+#include <format>
 #include <range/v3/view.hpp>
 #include <range/v3/span.hpp>
 #include <range/v3/view/zip.hpp>
@@ -60,7 +62,7 @@ void drawPlayer(sf::RenderWindow& window, const sf::Vector2f& position)
 void drawBullet(sf::RenderWindow& window, const sf::Vector2f& position)
 {
     constexpr auto length{ 15.f };
-    Renderer::Instant::drawRectangle(window, position - sf::Vector2f(0.f, length), sf::Vector2f(6.f, length), sf::Color::Yellow, 1.f, sf::Color::Green);
+    Renderer::Instant::drawRectangle(window, position, sf::Vector2f(6.f, length), sf::Color::Yellow, 1.f, sf::Color::Green);
 }
 
 void drawBullets(sf::RenderWindow& window, const std::span<const float> xPositions, const std::span<const float> yPositions)
@@ -325,6 +327,71 @@ auto enemiesUpdate(float dt, float currentDirection, float batchCoordX, float ba
 
 }
 
+auto getAxisCollisionsList(const std::span<const float> lefts, const std::span<const float> rights)
+{
+
+    const auto leftsValid{ lefts.subspan(1) };
+    const auto rightsValid{ rights.subspan(1) };
+
+    size_t numOfCollided{ 0 };
+    std::vector<uint64_t> collided(lefts.size() + rights.size() + 1);
+
+    constexpr float maxDistForCollision{ 15.f };
+    constexpr float maxDistForCollisionSqr{ maxDistForCollision * maxDistForCollision };
+
+    for (uint32_t leftIdx{ 0 }; leftIdx < leftsValid.size(); ++leftIdx)
+    {
+        for (uint32_t rightIdx{0}; rightIdx < rightsValid.size(); ++rightIdx)
+        {
+            const auto distanceSqr{ std::powf(rightsValid[rightIdx] - leftsValid[leftIdx], 2)};
+            const auto bInRange{ distanceSqr <= maxDistForCollisionSqr };
+            numOfCollided += size_t(1) * bInRange;
+            const auto currentInTableId{ numOfCollided * bInRange };
+//            std::cout << std::format("bullet pos {} id {}, en pos {} id {}, distance {}, in range {}\n",
+//                leftsValid[leftIdx],
+//                leftIdx,
+//                rightsValid[rightIdx],
+//                rightIdx,
+//                std::sqrtf(distanceSqr),
+//                bInRange
+//            );
+            collided[currentInTableId] = (static_cast<uint64_t>(leftIdx) << 32) | rightIdx;
+
+        }
+    }
+
+    collided.resize(numOfCollided + 1);
+
+    return std::vector<uint64_t>(collided.begin() + 1, collided.end());
+
+}
+
+void bulletsCollisionUpdate()
+{
+//    std::cout << "x\n";
+    const auto xAxisCollided{ getAxisCollisionsList(gPlayerBulletXCoords, gEnemiesXCorrds) };
+//    std::cout << "y\n";
+    const auto yAxisCollided{ getAxisCollisionsList(gPlayerBulletYCoords, gEnemiesYCorrds) };
+
+    const auto minSize{ std::min(xAxisCollided.size(), yAxisCollided.size())};
+    std::vector<uint64_t> collided;
+    collided.reserve(xAxisCollided.size() + yAxisCollided.size());
+    std::ranges::set_intersection(xAxisCollided, yAxisCollided, std::back_inserter(collided));
+    
+    std::vector<uint32_t> bulletsToDestroy;
+    std::vector<uint32_t> enemiesToDestroy;
+ 
+    for (const auto collidedPair : collided)
+        bulletsToDestroy.push_back(collidedPair >> 32);
+ 
+    for (const auto collidedPair : collided)
+        enemiesToDestroy.push_back(collidedPair);
+ 
+    for (const auto bulletIdToDestroy : bulletsToDestroy)
+        gPlayerBulletTimeLeft[bulletIdToDestroy + 1] = 0.f;
+
+}
+
 void bulletsUpdate(float dt)
 {
 
@@ -333,20 +400,31 @@ void bulletsUpdate(float dt)
         gPlayerBulletYCoords[idx] -= bulletSpeed * dt;
     }
 
-    size_t bulletToRemoveId{ 0 };
+    size_t bulletIdsToRemoveTableSize{ 0 };
+    std::array<size_t, 255> bulletIdsToRemove;
+
     for (size_t idx{ 1 }; idx < gPlayerBulletTimeLeft.size(); ++idx) {
         gPlayerBulletTimeLeft[idx] -= dt;
-        bulletToRemoveId += idx * (gPlayerBulletTimeLeft[idx] <= 0.f);
+        const auto bNeedRemoveBullet{ gPlayerBulletTimeLeft[idx] <= 0.f };
+        bulletIdsToRemoveTableSize += size_t(1) * bNeedRemoveBullet;
+        const auto currTableId{ bulletIdsToRemoveTableSize * bNeedRemoveBullet };
+        bulletIdsToRemove[currTableId] = idx;
     }
 
-    const auto swapLeftId{ bulletToRemoveId };
-    const auto swapRightId{ gNumOfPlayerBullets * (bulletToRemoveId > 0) };
+    const auto applyRemoval = [&](auto& bufferRemoveFrom) -> void {
+        size_t targetIdx{ bufferRemoveFrom.size() - 1 };
+        for (size_t idx{ 1 }; idx < bulletIdsToRemoveTableSize + 1; ++idx)
+        {
+            const auto bulletId{ bulletIdsToRemove[idx] };
+            std::swap(bufferRemoveFrom[bulletId], bufferRemoveFrom[targetIdx]);
+        }
+    };
 
-    std::swap(gPlayerBulletTimeLeft[swapLeftId], gPlayerBulletTimeLeft[swapRightId]);
-    std::swap(gPlayerBulletXCoords[swapLeftId], gPlayerBulletXCoords[swapRightId]);
-    std::swap(gPlayerBulletYCoords[swapLeftId], gPlayerBulletYCoords[swapRightId]);
+    applyRemoval(gPlayerBulletTimeLeft);
+    applyRemoval(gPlayerBulletXCoords);
+    applyRemoval(gPlayerBulletYCoords);
 
-     gNumOfPlayerBullets -= 1 * (bulletToRemoveId > 0);
+    gNumOfPlayerBullets -= bulletIdsToRemoveTableSize;
 
 }
 
@@ -432,6 +510,7 @@ void msgLoop(sf::RenderWindow& window, float dt)
 
     playerUpdate(dt);
     bulletsUpdate(dt);
+    bulletsCollisionUpdate();
 
     const auto enemiesResult {enemiesUpdate(dt, gEnemiesDirection, gEnemiesBatchCoordX, gEnemiesBatchCoordY, gEnemiesXCorrds, gEnemiesYCorrds) };
     gEnemiesDirection = enemiesResult.batchDirection;
