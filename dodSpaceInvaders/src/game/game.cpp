@@ -19,6 +19,8 @@ constexpr auto numOfCells{ 20 };
 constexpr auto filedSizeCoeff{ 0.95f };
 constexpr auto numOfEnemiesPerRow{ 10 };
 constexpr auto numOfEnemiesCols{ 4 };
+constexpr float enemiesXStride{ 50.f };
+constexpr float enemiesYStride{ 50.f };
 
 const auto getFieldSize(sf::RenderWindow& window)
 {
@@ -213,8 +215,10 @@ std::vector<float> gEnemiesXCorrds;
 std::vector<float> gEnemiesYCorrds;
 std::vector<uint32_t> gEnemyIdsToRemove;
 
+float gEnemiesBatchTargetX{};
 float gEnemiesBatchCoordX{};
 float gEnemiesBatchCoordY{};
+float gEnemiesBatchMoveTimeleft{};
 float gEnemiesDirection = 1;
 
 bool updateDirectionRule(float currentDirection, float currentXPosition)
@@ -239,8 +243,8 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
 
     const auto generateInput = [](float currentDirection, float currentXPosition) -> uint32_t {
         uint32_t bits{};
-        bits |= (xOnTheLeft) * (currentXPosition < 50.f);
-        bits |= (xOnTheRight) * (currentXPosition > 300.f);
+        bits |= (xOnTheLeft) * (currentXPosition < 75.f);
+        bits |= (xOnTheRight) * (currentXPosition > 275.f);
         bits |= (directionLeft) * (currentDirection <= -1.f);
         bits |= (directionRight) * (currentDirection >= 1.f);
         return bits;
@@ -263,12 +267,23 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
 
 }
 
-float enemiesUpdateBatchXCoord(float dt, float currentDirection, float batchCoordX)
+bool enemiesUpdateStrobe(float dt)
 {
 
-    constexpr auto batchVelocityX{ 75.f * 1.f };
+    gEnemiesBatchMoveTimeleft -= dt;
+    const auto bNeedMove{ gEnemiesBatchMoveTimeleft <= 0.f };
+    gEnemiesBatchMoveTimeleft += 1.f * bNeedMove;
 
-    batchCoordX += dt * batchVelocityX * currentDirection;
+    return bNeedMove;
+
+}
+
+float enemiesUpdateBatchXCoord(float dt, float currentDirection, float batchCoordX, bool bNeedMove)
+{
+
+    constexpr auto batchVelocityX{ 25.f };
+
+    batchCoordX += batchVelocityX * currentDirection * bNeedMove;
 
     return batchCoordX;
 
@@ -296,11 +311,13 @@ float enemiesUpdateBatchYCoord(bool bBatchDirectionUpdated, float batchYCoord)
 auto enemiesBatchUpdate(float dt, float currentDirection, float batchCoordX, float batchCoordY)
 {
 
-    const auto newBatchXCoord{ enemiesUpdateBatchXCoord(dt, currentDirection, batchCoordX) };
+    const auto bNeedMove{ enemiesUpdateStrobe(dt) };
 
-    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) };
+    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) * bNeedMove };
 
     const auto newBatchDirection{ enemiesUpdateBatchDirection(bNeedChangeBatchDirection, currentDirection) };
+    const auto newBatchXCoord{ enemiesUpdateBatchXCoord(dt, newBatchDirection, batchCoordX, bNeedMove) };
+
     const auto newBatchYCoord{ enemiesUpdateBatchYCoord(bNeedChangeBatchDirection, batchCoordY) };
 
     struct Output 
@@ -334,28 +351,31 @@ void enemiesLifetimeUpdate()
 
 }
 
-auto enemiesUpdate(float dt, float currentDirection, float batchCoordX, float batchCoordY, const std::span<float> xCoords, const std::span<float> yCoords)
+auto enemiesUpdate(float dt, float currentDirection, float batchTargetX, float batchCoordX, float batchCoordY, const std::span<float> xCoords, const std::span<float> yCoords)
 {
 
-    const auto [newBatchCoordX, newBatchCoordY, newCurrentDirection] {enemiesBatchUpdate(dt, currentDirection, batchCoordX, batchCoordY)};
+    const auto [newBatchTargetX, newBatchCoordY, newCurrentDirection] {enemiesBatchUpdate(dt, currentDirection, batchTargetX, batchCoordY)};
 
-    const auto moveXDelata{ newBatchCoordX - batchCoordX };
+    const auto moveXDelata{ newBatchTargetX - batchCoordX };
     const auto moveYDelata{ newBatchCoordY - batchCoordY };
 
+    const auto moveX{ moveXDelata * 10.f * dt };
+    const auto newBatchCoordX{ batchCoordX += moveX };
     for (auto& xCoord : xCoords)
-        xCoord += moveXDelata;
+        xCoord += moveX;
 
     for (auto& yCoord : yCoords)
         yCoord += moveYDelata;
 
     struct Output
     {
+        float batchTargetX{};
         float batchXCoord{};
         float batchYCoord{};
         float batchDirection{};
     };
 
-    return Output(newBatchCoordX, newBatchCoordY, newCurrentDirection);
+    return Output(newBatchTargetX, newBatchCoordX, newBatchCoordY, newCurrentDirection);
 
 }
 
@@ -364,7 +384,7 @@ auto generateEnemyBulletRule()
 
     std::uniform_int_distribution<> distrib(0, 1000);
     const auto randValue{ distrib(gRandomGen) };
-    const auto bNeedCreateBullet{ randValue > 900 };
+    const auto bNeedCreateBullet{ randValue > 990 };
 
     return bNeedCreateBullet;
 
@@ -543,9 +563,6 @@ auto generateEnemies(float rootX, float rootY, size_t enemiesInRow, size_t numOf
     std::vector<float> enemiesXCoords{0.f};
     std::vector<float> enemiesYCoords{0.f};
 
-    constexpr float yStride{ 50.f };
-    constexpr float xStride{ 50.f };
-
     const auto totalEnemies{ enemiesInRow * numOfCols };
     enemiesXCoords.reserve(totalEnemies + 1);
     enemiesYCoords.reserve(totalEnemies + 1);
@@ -553,14 +570,14 @@ auto generateEnemies(float rootX, float rootY, size_t enemiesInRow, size_t numOf
     for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
     {
         const auto inRowId{ enemyId % enemiesInRow };
-        const auto xPosition{ rootX + inRowId * xStride };
+        const auto xPosition{ rootX + inRowId * enemiesXStride };
         enemiesXCoords.push_back(xPosition);
     }
 
     for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
     {
         const auto inColId{ enemyId / enemiesInRow };
-        const auto yPosition{ rootY + inColId * yStride };
+        const auto yPosition{ rootY + inColId * enemiesYStride };
         enemiesYCoords.push_back(yPosition);
     }
 
@@ -594,8 +611,17 @@ void msgLoop(sf::RenderWindow& window, float dt)
     bulletsLifetimeUpdate(gPlayerBulletXCoords, gPlayerBulletYCoords, gPlayerBulletIdsToRemove);
 
     enemiesLifetimeUpdate();
-    const auto enemiesResult {enemiesUpdate(dt, gEnemiesDirection, gEnemiesBatchCoordX, gEnemiesBatchCoordY, gEnemiesXCorrds, gEnemiesYCorrds) };
+    const auto enemiesResult {enemiesUpdate(
+        dt, 
+        gEnemiesDirection, 
+        gEnemiesBatchTargetX, 
+        gEnemiesBatchCoordX, 
+        gEnemiesBatchCoordY, 
+        gEnemiesXCorrds, 
+        gEnemiesYCorrds
+    ) };
     gEnemiesDirection = enemiesResult.batchDirection;
+    gEnemiesBatchTargetX = enemiesResult.batchTargetX;
     gEnemiesBatchCoordX = enemiesResult.batchXCoord;
     gEnemiesBatchCoordY = enemiesResult.batchYCoord;
 
