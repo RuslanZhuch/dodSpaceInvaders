@@ -15,12 +15,21 @@
 #include <range/v3/span.hpp>
 #include <range/v3/view/zip.hpp>
 
+constexpr auto windowWidth{ 800 };
+constexpr auto windowHeight{ 900 };
+
 constexpr auto numOfCells{ 20 };
 constexpr auto filedSizeCoeff{ 0.95f };
 constexpr auto numOfEnemiesPerRow{ 10 };
 constexpr auto numOfEnemiesCols{ 4 };
-constexpr float enemiesXStride{ 50.f };
-constexpr float enemiesYStride{ 50.f };
+constexpr auto enemiesXStride{ 50.f };
+constexpr auto enemiesYStride{ 50.f };
+
+constexpr auto obstaclesStride{ 30.f };
+constexpr auto obstaclesPerRow{ 5 };
+constexpr auto obstaclesPerCol{ 2 };
+constexpr auto obstaclesClusters{ 3 };
+constexpr auto obstaclesClustersTotalAreaWidth{ 700 };
 
 const auto getFieldSize(sf::RenderWindow& window)
 {
@@ -49,19 +58,28 @@ void drawField(sf::RenderWindow& window)
 
 }
 
-void drawPlayer(sf::RenderWindow& window, const sf::Vector2f& position)
+void drawPlayer(sf::RenderWindow& window, const sf::Vector2f& position, const int32_t playerLifes)
 {
 
-    constexpr auto radius{ 25.f };
-    const auto leftPoint{ position - sf::Vector2f(-radius, 0.f) };
-    const auto rightPoint{ position - sf::Vector2f(radius, 0.f) };
-    const auto topPoint{ position - sf::Vector2f(0.f, radius) };
+    const auto radius{ 25.f * (playerLifes > 0) };
+    const auto leftPoint{ position - sf::Vector2f(-radius, -radius * 0.5f) };
+    const auto rightPoint{ position - sf::Vector2f(radius, -radius * 0.5f) };
+    const auto topPoint{ position - sf::Vector2f(0.f, radius * 0.5f) };
 
     const auto playerColor{ sf::Color(150.f, 200.f, 90.f) };
     Renderer::Instant::drawLine(window, leftPoint, rightPoint, playerColor);
     Renderer::Instant::drawLine(window, leftPoint, topPoint, playerColor);
     Renderer::Instant::drawLine(window, rightPoint, topPoint, playerColor);
 
+}
+
+void drawObstacles(sf::RenderWindow& window, const std::span<const float> obstaclesX, const std::span<const float> obstaclesY)
+{
+    for (const auto [x, y] : ranges::views::zip(obstaclesX.subspan(1), obstaclesY.subspan(1)))
+    {
+        constexpr auto length{ obstaclesStride };
+        Renderer::Instant::drawRectangle(window, {x, y}, sf::Vector2f(length, length), sf::Color::Green, 1.f, sf::Color::White);
+    }
 }
 
 void drawBullet(sf::RenderWindow& window, const sf::Vector2f& position)
@@ -88,10 +106,7 @@ void drawEnemy(sf::RenderWindow& window, const sf::Vector2f& position)
 void drawEnemies(sf::RenderWindow& window, const std::span<const float> xPositions, const std::span<const float> yPositions)
 {
     for (const auto [x, y] : ranges::views::zip(xPositions.subspan(1), yPositions.subspan(1)))
-    {
-//        std::cout << std::format("Render enemy {}, {}\n", x, y);
         drawEnemy(window, { x, y });
-    }
 }
 
 struct ControlState
@@ -173,7 +188,6 @@ ControlState inputsUpdate(ControlState currentControlState, const uint32_t newIn
 
             if (satisfy)
                 newState.movementComponent = controlRule.movement[idx] * satisfy + gCurrentControlState.movementComponent * !satisfy;
-            
         }
     }
 
@@ -221,6 +235,11 @@ float gEnemiesBatchCoordY{};
 float gEnemiesBatchMoveTimeleft{};
 float gEnemiesDirection = 1;
 
+std::vector<float> gObstaclesX;
+std::vector<float> gObstaclesY;
+std::vector<uint32_t> gObstacleLifes;
+std::vector<uint32_t> gObstacleIdsToHit;
+
 bool updateDirectionRule(float currentDirection, float currentXPosition)
 {
 
@@ -251,8 +270,6 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
     };
 
     const auto inputs{ generateInput(currentDirection, currentXPosition) };
-
-//    std::cout << std::format("Inputs bitmask {:b}\n", inputs);
 
     auto needChangeDirection{ rule.outputNeedChangeDirection };
     for (size_t idx{ 0 }; idx < rule.conditions.size(); ++idx)
@@ -384,7 +401,7 @@ auto generateEnemyBulletRule()
 
     std::uniform_int_distribution<> distrib(0, 1000);
     const auto randValue{ distrib(gRandomGen) };
-    const auto bNeedCreateBullet{ randValue > 990 };
+    const auto bNeedCreateBullet{ randValue > 995 };
 
     return bNeedCreateBullet;
 
@@ -443,14 +460,6 @@ auto getAxisCollisionsList(const std::span<const float> lefts, const std::span<c
             const auto bInRange{ distanceSqr <= maxDistForCollisionSqr };
             numOfCollided += size_t(1) * bInRange;
             const auto currentInTableId{ numOfCollided * bInRange };
-//            std::cout << std::format("bullet pos {} id {}, en pos {} id {}, distance {}, in range {}\n",
-//                leftsValid[leftIdx],
-//                leftIdx,
-//                rightsValid[rightIdx],
-//                rightIdx,
-//                std::sqrtf(distanceSqr),
-//                bInRange
-//            );
             collided[currentInTableId] = (static_cast<uint64_t>(leftIdx) << 32) | rightIdx;
 
         }
@@ -462,12 +471,10 @@ auto getAxisCollisionsList(const std::span<const float> lefts, const std::span<c
 
 void bulletsCollisionUpdate()
 {
-//    std::cout << "x\n";
+
     const auto xAxisCollided{ getAxisCollisionsList(gPlayerBulletXCoords, gEnemiesXCorrds) };
-//    std::cout << "y\n";
     const auto yAxisCollided{ getAxisCollisionsList(gPlayerBulletYCoords, gEnemiesYCorrds) };
 
-    const auto minSize{ std::min(xAxisCollided.size(), yAxisCollided.size())};
     std::vector<uint64_t> collided;
     collided.reserve(xAxisCollided.size() + yAxisCollided.size());
     std::ranges::set_intersection(xAxisCollided, yAxisCollided, std::back_inserter(collided));
@@ -528,7 +535,194 @@ void bulletsPlaneCollision(const std::span<const float> bulletsY, std::vector<ui
 
 }
 
+[[nodiscard]] auto pointsAreasIntersection(
+    const std::span<const float> pointsCenter,
+    const std::span<const float> areasCenter,
+    const float areasWidth
+)
+{
+
+    size_t numOfIntersections{ 0 };
+    std::array<uint64_t, 255> intersections;
+
+    for (uint32_t pointId{ 0 }; pointId < pointsCenter.size(); ++pointId)
+    {
+        const auto pointCenter{ pointsCenter[pointId] };
+        for (uint32_t areaId{ 0 }; areaId < areasCenter.size(); ++areaId)
+        {
+            const auto areaCenter{ areasCenter[areaId] };
+            const auto areaWidth{ areasWidth };
+            const auto areaHalfWidth{ areaWidth * 0.5f };
+            const auto areaLeft{ areaCenter - areaHalfWidth };
+            const auto areaRight{ areaCenter + areaHalfWidth };
+
+            const auto bInArea{ (pointCenter >= areaLeft) && (pointCenter <= areaRight) };
+
+            numOfIntersections += size_t(1) * bInArea;
+            intersections[numOfIntersections * bInArea] = (static_cast<uint64_t>(pointId) << 32) | areaId;
+        }
+    }
+
+    return std::vector<uint64_t>(intersections.begin() + 1, intersections.begin() + 1 + numOfIntersections);
+
+}
+
+[[nodiscard]] auto pointsSquaresIntersection(
+    const std::span<const float> pointsX, 
+    const std::span<const float> pointsY, 
+    const std::span<const float> areasX,
+    const std::span<const float> areasY,
+    const float areasWidth,
+    const float areasHeight
+)
+{
+
+    const auto intersectionsX{ pointsAreasIntersection(pointsX, areasX, areasWidth) };
+    const auto intersectionsY{ pointsAreasIntersection(pointsY, areasY, areasHeight) };
+
+    std::vector<uint64_t> intersections;
+    intersections.reserve(intersectionsX.size() + intersectionsY.size());
+    std::ranges::set_intersection(intersectionsX, intersectionsY, std::back_inserter(intersections));
+
+    return intersections;
+
+}
+
+void testBulletsWithObstacles(
+    const std::span<const float> bulletsX,
+    const std::span<const float> bulletsY,
+    std::vector<uint32_t>& bulletsToDelete,
+    const std::span<const float> areasX,
+    const std::span<const float> areasY,
+    const float areasWidth,
+    const float areasHeight,
+    std::vector<uint32_t>& obstaclesToHit
+)
+{
+
+    const auto intersections{ pointsSquaresIntersection(
+        bulletsX.subspan(1),
+        bulletsY.subspan(1),
+        areasX.subspan(1),
+        areasY.subspan(1),
+        areasWidth,
+        areasHeight
+    ) };
+
+    for (const auto intersection : intersections)
+        bulletsToDelete.push_back((intersection >> 32) + 1);
+
+    for (const auto intersection : intersections)
+        obstaclesToHit.push_back(intersection + 1);
+
+}
+
+[[nodiscard]] auto pointsAreaIntersection(
+    const std::span<const float> pointsCenter,
+    const float areaCenter,
+    const float areaWidth
+)
+{
+
+    size_t numOfIntersections{ 0 };
+    std::array<uint64_t, 255> intersections;
+
+    for (uint32_t pointId{ 0 }; pointId < pointsCenter.size(); ++pointId)
+    {
+        const auto pointCenter{ pointsCenter[pointId] };
+
+        const auto areaHalfWidth{ areaWidth * 0.5f };
+        const auto areaLeft{ areaCenter - areaHalfWidth };
+        const auto areaRight{ areaCenter + areaHalfWidth };
+
+        const auto bInArea{ (pointCenter >= areaLeft) && (pointCenter <= areaRight) };
+
+        numOfIntersections += size_t(1) * bInArea;
+        intersections[numOfIntersections * bInArea] = pointId;
+    }
+
+    return std::vector<uint32_t>(intersections.begin() + 1, intersections.begin() + 1 + numOfIntersections);
+
+}
+
+[[nodiscard]] auto pointsSquareIntersection(
+    const std::span<const float> pointsX,
+    const std::span<const float> pointsY,
+    const float areaX,
+    const float areaY,
+    const float areaWidth,
+    const float areaHeight
+)
+{
+
+    const auto intersectionsX{ pointsAreaIntersection(pointsX, areaX, areaWidth) };
+    const auto intersectionsY{ pointsAreaIntersection(pointsY, areaY, areaHeight) };
+
+    std::vector<uint64_t> intersections;
+    intersections.reserve(intersectionsX.size() + intersectionsY.size());
+    std::ranges::set_intersection(intersectionsX, intersectionsY, std::back_inserter(intersections));
+
+    return intersections;
+
+}
+
+[[nodiscard]] auto testBulletsWithPlayer(
+    const std::span<const float> bulletsX,
+    const std::span<const float> bulletsY,
+    std::vector<uint32_t>& bulletsToDelete,
+    const float playerX,
+    const float playerY,
+    const int32_t playerLifes
+)
+{
+
+    const auto intersections{ pointsSquareIntersection(
+        bulletsX.subspan(1),
+        bulletsY.subspan(1),
+        playerX,
+        playerY,
+        60,
+        30
+    ) };
+
+    for (const auto intersection : intersections)
+        bulletsToDelete.push_back(intersection + 1);
+
+    return playerLifes - int32_t(1) * !intersections.empty();
+
+}
+
+void testBulletsWithObstacles(
+    const std::span<const float> bulletsX,
+    const std::span<const float> bulletsY,
+    std::vector<uint32_t>& bulletsToDelete,
+    const std::span<const float> areasX,
+    const std::span<const float> areasY,
+    const float areasWidth,
+    const float areasHeight,
+    std::vector<size_t>& obstaclesToHit
+)
+{
+
+    const auto intersections{ pointsSquaresIntersection(
+        bulletsX.subspan(1),
+        bulletsY.subspan(1),
+        areasX.subspan(1),
+        areasY.subspan(1),
+        areasWidth,
+        areasHeight
+    ) };
+
+    for (const auto intersection : intersections)
+        bulletsToDelete.push_back((intersection >> 32) + 1);
+
+    for (const auto intersection : intersections)
+        obstaclesToHit.push_back(intersection + 1);
+
+}
+
 static sf::Vector2f gPlayerPosition;
+static int32_t gPlayerLives{ 1 };
 static int32_t prevInputBits;
 
 void playerUpdate(float dt)
@@ -544,7 +738,7 @@ void playerUpdate(float dt)
 
     gPlayerPosition.x += controlsState.movementComponent * 200.f * dt;
 
-    const auto bNeedCreateBullet{ controlsState.fireComponent > 0 };
+    const auto bNeedCreateBullet{ (controlsState.fireComponent > 0) && (gPlayerLives > 0)};
 
     const auto numOfPlayerBullets{ gPlayerBulletXCoords.size() - 1 };
     const auto newBulletIdx{ bNeedCreateBullet * (numOfPlayerBullets + 1) };
@@ -591,6 +785,102 @@ auto generateEnemies(float rootX, float rootY, size_t enemiesInRow, size_t numOf
 
 }
 
+void obstaclesLifetimeUpdate(
+    std::vector<float>& obstaclesX,
+    std::vector<float>& obstaclesY,
+    std::vector<uint32_t>& obstacleLifes,
+    std::vector<uint32_t>& obstaclesIdsToHit
+)
+{
+
+    size_t totalObstaclesToRemove{ 0 };
+    std::array<uint32_t, 256> obstaclesToRemove;
+
+    for (const auto obstacleIdToHit : obstaclesIdsToHit)
+    {
+        const auto lifesLeft{ --obstacleLifes[obstacleIdToHit] };
+        const auto bNeedToRemove{ lifesLeft == 0 };
+
+        totalObstaclesToRemove += size_t(1) * bNeedToRemove;
+        obstaclesToRemove[totalObstaclesToRemove * bNeedToRemove] = obstacleIdToHit;
+    }
+
+    const auto applyRemoval = [&](auto& bufferRemoveFrom) -> void {
+        size_t targetIdx{ bufferRemoveFrom.size() - 1 };
+        for (size_t idx{ 0 }; idx < totalObstaclesToRemove; ++idx)
+        {
+            const auto removeId{ obstaclesToRemove[idx + 1] };
+            std::swap(bufferRemoveFrom[removeId], bufferRemoveFrom[targetIdx]);
+            --targetIdx;
+        }
+        bufferRemoveFrom.resize(bufferRemoveFrom.size() - totalObstaclesToRemove);
+    };
+
+    applyRemoval(obstaclesX);
+    applyRemoval(obstaclesY);
+    applyRemoval(obstacleLifes);
+
+    obstaclesIdsToHit.clear();
+
+}
+
+[[nodiscard]] auto generateObstacles()
+{
+
+    std::vector<float> obstaclesX{ 0.f };
+    std::vector<float> obstaclesY{ 0.f };
+    std::vector<uint32_t> obstacleLifes{ 0 };
+
+    const auto totalObstaclesPerCluster{ obstaclesPerRow * obstaclesPerCol };
+    const auto totalObstacles{ totalObstaclesPerCluster * obstaclesClusters };
+
+    obstaclesX.reserve(size_t(1) + totalObstacles);
+    obstaclesY.reserve(size_t(1) + totalObstacles);
+    obstaclesY.reserve(size_t(1) + totalObstacles);
+    obstacleLifes.reserve(size_t(1) + totalObstacles);
+
+    const auto widthPerCluster{ obstaclesPerRow * obstaclesStride };
+    const auto totalObstaclesWidth{ widthPerCluster * obstaclesClusters };
+    const auto needObstaclesWidth{ obstaclesClustersTotalAreaWidth };
+    const auto totalGapWidth{ needObstaclesWidth - totalObstaclesWidth };
+    const auto numOfClusterGaps{ obstaclesClusters - 1 };
+    const auto gapWidth{ totalGapWidth / numOfClusterGaps };
+    const auto distanceBetweenClusters{ gapWidth + widthPerCluster };
+
+    const auto obstaclesStartPositionX{ windowWidth * 0.5f - totalObstaclesWidth };
+
+    const auto obstaclesClusterY{ 650.f };
+
+    const auto initialClusterX{ windowWidth * 0.5f - needObstaclesWidth * 0.5f };
+
+    for (size_t clusterId{ 0 }; clusterId < obstaclesClusters; ++clusterId)
+    {
+        const auto obstaclesClusterX{ initialClusterX + distanceBetweenClusters * clusterId };
+        for (size_t obstacleId{ 0 }; obstacleId < totalObstaclesPerCluster; ++obstacleId)
+        {
+            const auto colId{ obstacleId % obstaclesPerRow };
+            const auto rowId{ obstacleId / obstaclesPerRow };
+
+            const auto x{ obstaclesClusterX + colId * obstaclesStride };
+            const auto y{ obstaclesClusterY + rowId * obstaclesStride };
+
+            obstaclesX.push_back(x);
+            obstaclesY.push_back(y);
+            obstacleLifes.push_back(3);
+        }
+    }
+            
+    struct Output
+    {
+        std::vector<float> obstaclesXCoords;
+        std::vector<float> obstaclesYCoords;
+        std::vector<uint32_t> obstacleLifes;
+    };
+
+    return Output(obstaclesX, obstaclesY, obstacleLifes);
+
+}
+
 void msgLoop(sf::RenderWindow& window, float dt)
 {
 
@@ -608,6 +898,17 @@ void msgLoop(sf::RenderWindow& window, float dt)
     //bulletsUpdate(dt);
     bulletsCollisionUpdate();
     bulletsPlaneCollision(gPlayerBulletYCoords, gPlayerBulletIdsToRemove, 100.f, 1.f);
+    testBulletsWithObstacles(
+        gPlayerBulletXCoords,
+        gPlayerBulletYCoords,
+        gPlayerBulletIdsToRemove,
+        gObstaclesX,
+        gObstaclesY,
+        obstaclesStride,
+        obstaclesStride,
+        gObstacleIdsToHit
+    );
+
     bulletsLifetimeUpdate(gPlayerBulletXCoords, gPlayerBulletYCoords, gPlayerBulletIdsToRemove);
 
     enemiesLifetimeUpdate();
@@ -634,19 +935,31 @@ void msgLoop(sf::RenderWindow& window, float dt)
     );
     bulletsMovementUpdate(gEnemyBulletYCoords, dt, 120.f);
 
-    bulletsPlaneCollision(gEnemyBulletYCoords, gEnemyBulletIdsToRemove, 800.f, -1.f);
+    bulletsPlaneCollision(gEnemyBulletYCoords, gEnemyBulletIdsToRemove, 875.f, -1.f);
+    gPlayerLives = testBulletsWithPlayer(gEnemyBulletXCoords, gEnemyBulletYCoords, gEnemyBulletIdsToRemove, gPlayerPosition.x, gPlayerPosition.y, gPlayerLives);
+    testBulletsWithObstacles(
+        gEnemyBulletXCoords,
+        gEnemyBulletYCoords,
+        gEnemyBulletIdsToRemove,
+        gObstaclesX,
+        gObstaclesY,
+        obstaclesStride,
+        obstaclesStride,
+        gObstacleIdsToHit
+    );
     bulletsLifetimeUpdate(gEnemyBulletXCoords, gEnemyBulletYCoords, gEnemyBulletIdsToRemove);
+
+    obstaclesLifetimeUpdate(gObstaclesX, gObstaclesY, gObstacleLifes, gObstacleIdsToHit);
 
     drawEnemies(window, gEnemiesXCorrds, gEnemiesYCorrds);
 
+    drawObstacles(window, gObstaclesX, gObstaclesY);
+
     drawField(window);
-    drawPlayer(window, gPlayerPosition);
+    drawPlayer(window, gPlayerPosition, gPlayerLives);
 
     drawBullets(window, gPlayerBulletXCoords, gPlayerBulletYCoords);
     drawBullets(window, gEnemyBulletXCoords, gEnemyBulletYCoords);
-
-//    drawFood(window, food);
-//    drawSnake(window, snake);
 
     window.display();
 
@@ -655,7 +968,7 @@ void msgLoop(sf::RenderWindow& window, float dt)
 void Game::run()
 {
 
-    sf::RenderWindow window(sf::VideoMode(800, 900), "dod Space Action");
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "dod Space Action");
     gPlayerPosition = sf::Vector2f(400.f, 850.f);
 
     gPlayerBulletXCoords.emplace_back();
@@ -670,6 +983,11 @@ void Game::run()
 
     gEnemyBulletXCoords.emplace_back();
     gEnemyBulletYCoords.emplace_back();
+
+    const auto obstacles{ generateObstacles() };
+    gObstaclesX = obstacles.obstaclesXCoords;
+    gObstaclesY = obstacles.obstaclesYCoords;
+    gObstacleLifes = obstacles.obstacleLifes;
     
     float deltaTime{ 0.f };
 
