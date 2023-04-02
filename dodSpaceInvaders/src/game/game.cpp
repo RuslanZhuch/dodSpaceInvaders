@@ -209,36 +209,35 @@ ControlState inputsUpdate(ControlState currentControlState, const uint32_t newIn
 
 }
 
-//size_t gNumOfPlayerBullets{ 0 };
-
 static std::random_device gRandomDevice;
 static std::mt19937 gRandomGen(gRandomDevice());
 
-std::vector<float> gPlayerBulletXCoords;
-std::vector<float> gPlayerBulletYCoords;
-std::vector<uint32_t> gPlayerBulletIdsToRemove;
+static std::vector<float> gPlayerBulletXCoords;
+static std::vector<float> gPlayerBulletYCoords;
+static std::vector<uint32_t> gPlayerBulletIdsToRemove;
 
-std::vector<float> gEnemyBulletXCoords;
-std::vector<float> gEnemyBulletYCoords;
-std::vector<uint32_t> gEnemyBulletIdsToRemove;
+static std::vector<float> gEnemyBulletXCoords;
+static std::vector<float> gEnemyBulletYCoords;
+static std::vector<uint32_t> gEnemyBulletIdsToRemove;
+static float gEnemyBulletDelayTimeLeft;
 
-size_t gNumOfRemovedBullets{ 0 };
-std::vector<size_t> gRemovedBulletIds;
+static size_t gNumOfRemovedBullets{ 0 };
+static std::vector<size_t> gRemovedBulletIds;
 
-std::vector<float> gEnemiesXCorrds;
-std::vector<float> gEnemiesYCorrds;
-std::vector<uint32_t> gEnemyIdsToRemove;
+static std::vector<float> gEnemiesXCorrds;
+static std::vector<float> gEnemiesYCorrds;
+static std::vector<uint32_t> gEnemyIdsToRemove;
 
-float gEnemiesBatchTargetX{};
-float gEnemiesBatchCoordX{};
-float gEnemiesBatchCoordY{};
-float gEnemiesBatchMoveTimeleft{};
-float gEnemiesDirection = 1;
+static float gEnemiesBatchTargetX{};
+static float gEnemiesBatchCoordX{};
+static float gEnemiesBatchCoordY{};
+static float gEnemiesBatchMoveTimeleft{};
+static float gEnemiesDirection = 1;
 
-std::vector<float> gObstaclesX;
-std::vector<float> gObstaclesY;
-std::vector<uint32_t> gObstacleLifes;
-std::vector<uint32_t> gObstacleIdsToHit;
+static std::vector<float> gObstaclesX;
+static std::vector<float> gObstaclesY;
+static std::vector<uint32_t> gObstacleLifes;
+static std::vector<uint32_t> gObstacleIdsToHit;
 
 bool updateDirectionRule(float currentDirection, float currentXPosition)
 {
@@ -396,14 +395,18 @@ auto enemiesUpdate(float dt, float currentDirection, float batchTargetX, float b
 
 }
 
-auto generateEnemyBulletRule()
+auto generateEnemyBulletRule(float dt, float& delayTimeleft)
 {
 
     std::uniform_int_distribution<> distrib(0, 1000);
     const auto randValue{ distrib(gRandomGen) };
-    const auto bNeedCreateBullet{ randValue > 995 };
+    const auto bNeedCreateBullet{ randValue > 250 };
 
-    return bNeedCreateBullet;
+    delayTimeleft -= dt;
+    const auto bDelayCompleted{ delayTimeleft <= 0.f };
+    delayTimeleft = delayTimeleft * !bDelayCompleted + 0.5f * bDelayCompleted;
+
+    return bNeedCreateBullet * bDelayCompleted;
 
 }
 
@@ -781,7 +784,7 @@ auto generateEnemies(float rootX, float rootY, size_t enemiesInRow, size_t numOf
         std::vector<float> enemiesYCoords;
     };
 
-    return Output(enemiesXCoords, enemiesYCoords);
+    return Output(std::move(enemiesXCoords), std::move(enemiesYCoords));
 
 }
 
@@ -853,10 +856,10 @@ void obstaclesLifetimeUpdate(
 
     const auto initialClusterX{ windowWidth * 0.5f - needObstaclesWidth * 0.5f };
 
-    for (size_t clusterId{ 0 }; clusterId < obstaclesClusters; ++clusterId)
+    for (int32_t clusterId{ 0 }; clusterId < obstaclesClusters; ++clusterId)
     {
         const auto obstaclesClusterX{ initialClusterX + distanceBetweenClusters * clusterId };
-        for (size_t obstacleId{ 0 }; obstacleId < totalObstaclesPerCluster; ++obstacleId)
+        for (int32_t obstacleId{ 0 }; obstacleId < totalObstaclesPerCluster; ++obstacleId)
         {
             const auto colId{ obstacleId % obstaclesPerRow };
             const auto rowId{ obstacleId / obstaclesPerRow };
@@ -877,7 +880,7 @@ void obstaclesLifetimeUpdate(
         std::vector<uint32_t> obstacleLifes;
     };
 
-    return Output(obstaclesX, obstaclesY, obstacleLifes);
+    return Output(std::move(obstaclesX), std::move(obstaclesY), std::move(obstacleLifes));
 
 }
 
@@ -931,7 +934,7 @@ void msgLoop(sf::RenderWindow& window, float dt)
         gEnemiesYCorrds,
         gEnemyBulletXCoords,
         gEnemyBulletYCoords,
-        generateEnemyBulletRule()
+        generateEnemyBulletRule(dt, gEnemyBulletDelayTimeLeft)
     );
     bulletsMovementUpdate(gEnemyBulletYCoords, dt, 120.f);
 
