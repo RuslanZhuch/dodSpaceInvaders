@@ -139,11 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\dod\MemPool.cpp" />
+    <ClInclude Include="src\dod\DBUtils.h" />
+    <ClInclude Include="src\dod\MemUtils.h" />
+    <ClInclude Include="src\dod\MemTypes.h" />
     <ClCompile Include="src\game\game.cpp" />
     <ClCompile Include="src\game\main.cpp" />
     <ClCompile Include="src\renderer\instantRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\dod\DBBuffer.h" />
+    <ClInclude Include="src\dod\MemPool.h" />
     <ClInclude Include="src\game\game.h" />
     <ClInclude Include="src\renderer\instantRenderer.h" />
   </ItemGroup>

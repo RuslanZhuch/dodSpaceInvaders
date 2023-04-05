@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\game\game.cpp" />
+    <ClCompile Include="src\game\main.cpp" />
+    <ClCompile Include="src\renderer\instantRenderer.cpp" />
+    <ClCompile Include="src\dod\MemPool.cpp">
+      <Filter>dod</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\game\game.h" />
+    <ClInclude Include="src\renderer\instantRenderer.h" />
+    <ClInclude Include="src\dod\DBBuffer.h">
+      <Filter>dod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dod\MemPool.h">
+      <Filter>dod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dod\MemUtils.h">
+      <Filter>dod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dod\MemTypes.h">
+      <Filter>dod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dod\DBUtils.h">
+      <Filter>dod</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="dod">
+      <UniqueIdentifier>{cc6887e3-6e26-4cc0-a0bf-3b6654942d1c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
