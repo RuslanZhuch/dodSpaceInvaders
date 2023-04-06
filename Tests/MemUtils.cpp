@@ -41,6 +41,14 @@ TEST(MemUtils, Acquiring)
 	}
 
 	{
+		constexpr Dod::MemTypes::capacity_t beginIndex{ 0 };
+		constexpr Dod::MemTypes::capacity_t endIndex{ 32 };
+		const auto [acquiredBegin, acquiredEnd] { Dod::MemUtils::aquire(holder, beginIndex, endIndex) };
+		EXPECT_EQ(acquiredBegin, data.data());
+		EXPECT_EQ(acquiredEnd, data.data() + endIndex);
+	}
+
+	{
 		constexpr Dod::MemTypes::capacity_t beginIndex{ 10 };
 		constexpr Dod::MemTypes::capacity_t endIndex{ 15 };
 		const auto [acquiredBegin, acquiredEnd] { Dod::MemUtils::aquire(holder, beginIndex, endIndex) };

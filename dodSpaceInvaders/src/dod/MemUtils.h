@@ -17,7 +17,7 @@ namespace Dod::MemUtils
 			source.dataBegin != nullptr && 
 			source.dataEnd != nullptr &&
 			beginIndex < sourceCapacity && 
-			endIndex < sourceCapacity && 
+			endIndex <= sourceCapacity && 
 			endIndex > beginIndex
 		};
 		Output output(source.dataBegin + beginIndex * bCanAcquire, source.dataBegin + endIndex * bCanAcquire);

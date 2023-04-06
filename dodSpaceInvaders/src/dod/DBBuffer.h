@@ -9,9 +9,9 @@ namespace Dod
 	template <typename T>
 	struct DBBuffer
 	{
-		size_t size{ 0 };
-		MemTypes::dataPoint_t dataBegin{ nullptr };
-		MemTypes::dataPoint_t dataEnd{ nullptr };
+		size_t numOfFilledEls{ 0 };
+		T* dataBegin{ nullptr };
+		T* dataEnd{ nullptr };
 	};
 
 };
