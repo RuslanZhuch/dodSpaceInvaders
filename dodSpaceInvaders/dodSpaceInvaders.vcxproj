@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -125,7 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\dod\MemPool.cpp" />
-    <ClInclude Include="src\dod\DBUtils.h" />
+    <ClInclude Include="src\dod\BufferUtils.h" />
     <ClInclude Include="src\dod\MemUtils.h" />
     <ClInclude Include="src\dod\MemTypes.h" />
     <ClCompile Include="src\game\game.cpp" />
@@ -148,7 +148,7 @@
     <ClCompile Include="src\renderer\instantRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\dod\DBBuffer.h" />
+    <ClInclude Include="src\dod\Buffers.h" />
     <ClInclude Include="src\dod\MemPool.h" />
     <ClInclude Include="src\game\game.h" />
     <ClInclude Include="src\renderer\instantRenderer.h" />

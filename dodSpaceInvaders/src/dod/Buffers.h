@@ -14,4 +14,12 @@ namespace Dod
 		T* dataEnd{ nullptr };
 	};
 
+	template <typename T>
+	struct ImBuffer
+	{
+		size_t numOfFilledEls{ 0 };
+		const T* dataBegin{ nullptr };
+		const T* dataEnd{ nullptr };
+	};
+
 };

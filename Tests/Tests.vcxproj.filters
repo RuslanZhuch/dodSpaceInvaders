@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="engineTests\Buffers.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
+    <ClCompile Include="engineTests\BufferUtils.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
+    <ClCompile Include="engineTests\MemPool.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
+    <ClCompile Include="engineTests\MemUtils.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="engineTests">
+      <UniqueIdentifier>{d2b6f377-2fd9-4307-bc28-3d89b1f70b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameTests">
+      <UniqueIdentifier>{59a6c9e3-acac-4b6d-afd3-07a480e85adc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

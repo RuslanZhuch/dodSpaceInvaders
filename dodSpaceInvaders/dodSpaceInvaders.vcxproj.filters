@@ -11,7 +11,7 @@
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
     <ClInclude Include="src\renderer\instantRenderer.h" />
-    <ClInclude Include="src\dod\DBBuffer.h">
+    <ClInclude Include="src\dod\Buffers.h">
       <Filter>dod</Filter>
     </ClInclude>
     <ClInclude Include="src\dod\MemPool.h">
@@ -23,7 +23,7 @@
     <ClInclude Include="src\dod\MemTypes.h">
       <Filter>dod</Filter>
     </ClInclude>
-    <ClInclude Include="src\dod\DBUtils.h">
+    <ClInclude Include="src\dod\BufferUtils.h">
       <Filter>dod</Filter>
     </ClInclude>
   </ItemGroup>
