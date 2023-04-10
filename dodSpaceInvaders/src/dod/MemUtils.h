@@ -1,15 +1,17 @@
+#pragma once
+
 #include "MemTypes.h"
 
 namespace Dod::MemUtils
 {
 
-	[[nodiscard]] auto aquire(const auto& source, MemTypes::capacity_t beginIndex, MemTypes::capacity_t endIndex) noexcept
+	[[nodiscard]] static auto aquire(const auto& source, MemTypes::capacity_t beginIndex, MemTypes::capacity_t endIndex) noexcept
 	{
 
 		struct Output
 		{
-			MemTypes::dataPoint_t dataBegin{ nullptr };
-			MemTypes::dataPoint_t dataEnd{ nullptr };
+			decltype(source.dataBegin) dataBegin{ nullptr };
+			decltype(source.dataEnd) dataEnd{ nullptr };
 		};
 
 		const auto sourceCapacity{ source.dataEnd - source.dataBegin };
@@ -26,7 +28,7 @@ namespace Dod::MemUtils
 
 	}
 
-	[[nodiscard]] auto stackAquire(const auto& source, size_t numOfBytes, size_t& header) noexcept
+	[[nodiscard]] static auto stackAquire(const auto& source, size_t numOfBytes, size_t& header) noexcept
 	{
 
 		struct Output

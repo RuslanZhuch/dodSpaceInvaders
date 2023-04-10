@@ -35,9 +35,14 @@ namespace Dod::BufferUtils
 	}
 
 	template<typename T>
-	[[nodiscard]] T get(const DBBuffer<T>& buffer, int32_t elId) noexcept
+	[[nodiscard]] T& get(const DBBuffer<T>& buffer, int32_t elId) noexcept
 	{
 		return buffer.dataBegin[elId + 1];
+	}
+
+	[[nodiscard]] auto& get(const auto& buffer, int32_t elId) noexcept
+	{
+		return buffer.dataBegin[elId];
 	}
 
 	template<typename T>

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
     <ClInclude Include="src\dod\BufferUtils.h" />
     <ClInclude Include="src\dod\MemUtils.h" />

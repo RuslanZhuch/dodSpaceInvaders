@@ -3,6 +3,7 @@
 #include <dod/MemTypes.h>
 #include <dod/Buffers.h>
 #include <dod/BufferUtils.h>
+#include <dod/Algorithms.h>
 
 #include <array>
 #include <ranges>
@@ -241,6 +242,39 @@ TEST(DBBufferUtils, GetValue)
 	EXPECT_EQ(Dod::BufferUtils::get(buffer, 5), static_cast<type_t>(7));
 	EXPECT_EQ(Dod::BufferUtils::get(buffer, 6), static_cast<type_t>(8));
 
+	Dod::BufferUtils::get(buffer, 6) = 42;
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 6), static_cast<type_t>(42));
+
+}
+
+TEST(BufferUtils, GetValue)
+{
+
+	using type_t = int32_t;
+	constexpr size_t totalElements{ 8 };
+	constexpr size_t totalBytes{ totalElements * sizeof(type_t) };
+	std::array<type_t, totalElements> values{ {1, 2, 3, 4, 5, 6, 7, 8} };
+
+	std::array<Dod::MemTypes::data_t, totalBytes> memory;
+	std::memcpy(memory.data(), values.data(), memory.size());
+
+	MemorySpan memSpan(memory.data(), memory.data() + memory.size());
+
+	Dod::ImBuffer<int32_t> buffer;
+
+	constexpr Dod::MemTypes::capacity_t beginIndex{ 0 };
+	constexpr Dod::MemTypes::capacity_t endIndex{ totalBytes };
+	Dod::BufferUtils::initFromMemory(buffer, memSpan, beginIndex, endIndex);
+
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), static_cast<type_t>(1));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 1), static_cast<type_t>(2));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 2), static_cast<type_t>(3));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 3), static_cast<type_t>(4));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 4), static_cast<type_t>(5));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 5), static_cast<type_t>(6));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 6), static_cast<type_t>(7));
+	EXPECT_EQ(Dod::BufferUtils::get(buffer, 7), static_cast<type_t>(8));
+			
 }
 
 TEST(DBBufferUtils, PopulationPartialMemory)

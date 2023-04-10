@@ -14,6 +14,9 @@
     <ClCompile Include="engineTests\MemUtils.cpp">
       <Filter>engineTests</Filter>
     </ClCompile>
+    <ClCompile Include="engineTests\Algorithms.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
