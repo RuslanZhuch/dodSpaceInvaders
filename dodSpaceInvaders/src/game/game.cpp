@@ -260,11 +260,9 @@ static std::mt19937 gRandomGen(gRandomDevice());
 
 static std::vector<float> gPlayerBulletXCoords;
 static std::vector<float> gPlayerBulletYCoords;
-//static std::vector<uint32_t> gPlayerBulletIdsToRemove;
 
 static std::vector<float> gEnemyBulletXCoords;
 static std::vector<float> gEnemyBulletYCoords;
-//static std::vector<uint32_t> gEnemyBulletIdsToRemove;
 static float gEnemyBulletDelayTimeLeft;
 
 static size_t gNumOfRemovedBullets{ 0 };
@@ -873,17 +871,8 @@ void obstaclesLifetimeUpdate(Scene& scene)
 void generateObstacles(Scene& scene)
 {
 
-//    std::vector<float> obstaclesX{ 0.f };
-//    std::vector<float> obstaclesY{ 0.f };
-//    std::vector<uint32_t> obstacleLifes{ 0 };
-
     const auto totalObstaclesPerCluster{ Scene::obstaclesPerRow * Scene::obstaclesPerCol };
     const auto totalObstacles{ totalObstaclesPerCluster * Scene::obstaclesClusters };
-
-//    obstaclesX.reserve(size_t(1) + totalObstacles);
-//    obstaclesY.reserve(size_t(1) + totalObstacles);
-//    obstaclesY.reserve(size_t(1) + totalObstacles);
-//    obstacleLifes.reserve(size_t(1) + totalObstacles);
 
     const auto widthPerCluster{ Scene::obstaclesPerRow * Scene::obstaclesStride };
     const auto totalObstaclesWidth{ widthPerCluster * Scene::obstaclesClusters };
@@ -913,10 +902,6 @@ void generateObstacles(Scene& scene)
             Dod::BufferUtils::populate(scene.obstaclesX, x, true);
             Dod::BufferUtils::populate(scene.obstaclesY, y, true);
             Dod::BufferUtils::populate(scene.obstaclesLifes, 1, true);
-
-//            obstaclesX.push_back(x);
-//            obstaclesY.push_back(y);
-//            obstacleLifes.push_back(3);
         }
     }
      
@@ -1020,12 +1005,7 @@ void Game::run()
     Scene scene;
 
     generateObstacles(scene);
-//    gObstaclesX = obstacles.obstaclesXCoords;
-//    gObstaclesY = obstacles.obstaclesYCoords;
-//    gObstacleLifes = obstacles.obstacleLifes;
 
-
-    
     float deltaTime{ 0.f };
 
     while (window.isOpen())
