@@ -10,6 +10,18 @@
 namespace Dod::BufferUtils
 {
 
+	void initFromMemory(auto& dbBuffer, const auto& memSpan) noexcept
+	{
+
+		const auto actualData{ MemUtils::aquire(memSpan, 0, memSpan.dataEnd - memSpan.dataBegin) };
+
+		//TODO: Is it legal?
+		dbBuffer.dataBegin = reinterpret_cast<decltype(dbBuffer.dataBegin)>(actualData.dataBegin);
+		dbBuffer.dataEnd = reinterpret_cast<decltype(dbBuffer.dataEnd)>(actualData.dataEnd);
+		dbBuffer.numOfFilledEls = 0;
+
+	}
+
 	void initFromMemory(auto& dbBuffer, const auto& memSpan, MemTypes::capacity_t beginIndex, MemTypes::capacity_t endIndex) noexcept
 	{
 
@@ -61,11 +73,31 @@ namespace Dod::BufferUtils
 	}
 
 	template<typename T>
-	void initFromBuffer(ImBuffer<T>& dest, const DBBuffer<T>& src, int32_t elementBeginId, int32_t elementEndId) noexcept
+	void initFromBuffer(ImBuffer<T>& dest, const DBBuffer<T>& src) noexcept
 	{
 		dest.dataBegin = src.dataBegin + 1;
 		dest.dataEnd = src.dataEnd;
 		dest.numOfFilledEls = src.numOfFilledEls;
+	}
+
+	template<typename T>
+	void initFromBuffer(ImBuffer<T>& dest, const DBBuffer<T>& src, int32_t elementBeginId, int32_t elementEndId) noexcept
+	{
+		dest.dataBegin = src.dataBegin + 1 + elementBeginId;
+		dest.dataEnd = src.dataBegin + 1 + elementEndId;
+		dest.numOfFilledEls = elementEndId - elementBeginId;
+	}
+
+	[[nodiscard]] auto createImFromBuffer(const auto& srcBuffer) noexcept
+	{
+	
+		using type_t = std::remove_pointer_t<decltype(srcBuffer.dataBegin)>;
+
+		Dod::ImBuffer<type_t> imBuffer;
+		initFromBuffer(imBuffer, srcBuffer, 0, srcBuffer.numOfFilledEls);
+
+		return imBuffer;
+
 	}
 
 	template<typename BufferType>

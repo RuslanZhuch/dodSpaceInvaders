@@ -60,6 +60,30 @@ TEST(BufferUtils, Initialization)
 		EXPECT_EQ(buffer.numOfFilledEls, 0);
 		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataBegin), memSpan.dataBegin + beginIndex);
 		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataEnd), memSpan.dataBegin + endIndex);
+	} 
+	{
+		CommonBuffer<int32_t> buffer;
+
+		constexpr Dod::MemTypes::capacity_t beginIndex{ 0 };
+		constexpr Dod::MemTypes::capacity_t endIndex{ 32 };
+		Dod::BufferUtils::initFromMemory(buffer, memSpan);
+
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataBegin), memSpan.dataBegin + beginIndex);
+		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataEnd), memSpan.dataBegin + endIndex);
+	}
+	{
+		MemorySpan memSpan2(memory.data() + 2, memory.data() + 8);
+
+		CommonBuffer<int32_t> buffer;
+
+		constexpr Dod::MemTypes::capacity_t beginIndex{ 0 };
+		constexpr Dod::MemTypes::capacity_t endIndex{ 6 };
+		Dod::BufferUtils::initFromMemory(buffer, memSpan2);
+
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataBegin), memSpan2.dataBegin + beginIndex);
+		EXPECT_EQ(reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(buffer.dataEnd), memSpan2.dataBegin + endIndex);
 	}
 
 }
@@ -207,7 +231,58 @@ TEST(BufferUtils, InitializationFromDBBuffer)
 	{
 		Dod::ImBuffer<int32_t> imBuffer;
 
+		Dod::BufferUtils::initFromBuffer(imBuffer, srcBuffer);
+		EXPECT_EQ(imBuffer.dataBegin, srcBuffer.dataBegin + 1);
+		EXPECT_EQ(imBuffer.dataEnd, srcBuffer.dataEnd);
+		EXPECT_EQ(imBuffer.numOfFilledEls, srcBuffer.numOfFilledEls);
+	}
+	{
+		Dod::ImBuffer<int32_t> imBuffer;
+
 		Dod::BufferUtils::initFromBuffer(imBuffer, srcBuffer, 0, srcBuffer.numOfFilledEls);
+		EXPECT_EQ(imBuffer.dataBegin, srcBuffer.dataBegin + 1);
+		EXPECT_EQ(imBuffer.dataEnd, srcBuffer.dataEnd);
+		EXPECT_EQ(imBuffer.numOfFilledEls, srcBuffer.numOfFilledEls);
+	}
+	{
+		Dod::ImBuffer<int32_t> imBuffer;
+
+		Dod::BufferUtils::initFromBuffer(imBuffer, srcBuffer, 0, 4);
+		EXPECT_EQ(imBuffer.dataBegin, srcBuffer.dataBegin + 1);
+		EXPECT_EQ(imBuffer.dataEnd, srcBuffer.dataBegin + 5);
+		EXPECT_EQ(imBuffer.numOfFilledEls, 4);
+	}
+	{
+		Dod::ImBuffer<int32_t> imBuffer;
+
+		Dod::BufferUtils::initFromBuffer(imBuffer, srcBuffer, 2, 5);
+		EXPECT_EQ(imBuffer.dataBegin, srcBuffer.dataBegin + 3);
+		EXPECT_EQ(imBuffer.dataEnd, srcBuffer.dataBegin + 6);
+		EXPECT_EQ(imBuffer.numOfFilledEls, 3);
+	}
+
+}
+
+TEST(BufferUtils, CreateImFromBuffer)
+{
+
+	using type_t = int32_t;
+	constexpr size_t totalElements{ 8 };
+	constexpr size_t totalBytes{ totalElements * sizeof(type_t) };
+
+	std::array<Dod::MemTypes::data_t, totalBytes> memory;
+
+	constexpr Dod::MemTypes::capacity_t beginIndex{ 0 };
+	constexpr Dod::MemTypes::capacity_t endIndex{ 32 };
+	MemorySpan memSpan(memory.data(), memory.data() + memory.size());
+	Dod::DBBuffer<int32_t> srcBuffer;
+	Dod::BufferUtils::initFromMemory(srcBuffer, memSpan, beginIndex, endIndex);
+
+	for (const auto value : std::to_array<int32_t>({ 1, 2, 3, 4, 5, 6, 7, 8 }))
+		Dod::BufferUtils::populate(srcBuffer, value, true);
+
+	const auto imBuffer{ Dod::BufferUtils::createImFromBuffer(srcBuffer) };
+	{
 		EXPECT_EQ(imBuffer.dataBegin, srcBuffer.dataBegin + 1);
 		EXPECT_EQ(imBuffer.dataEnd, srcBuffer.dataEnd);
 		EXPECT_EQ(imBuffer.numOfFilledEls, srcBuffer.numOfFilledEls);
