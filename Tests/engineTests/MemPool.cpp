@@ -2,7 +2,11 @@
 #include <dod/MemPool.h>
 #include <dod/MemPool.cpp>
 
+#pragma warning(push)
+#pragma warning(disable : 4365)
+
 #include <array>
+#pragma warning(pop)
 
 TEST(MemPool, generation)
 {

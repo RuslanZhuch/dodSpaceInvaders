@@ -13,7 +13,7 @@ namespace Dod::BufferUtils
 	void initFromMemory(auto& dbBuffer, const auto& memSpan) noexcept
 	{
 
-		const auto actualData{ MemUtils::aquire(memSpan, 0, memSpan.dataEnd - memSpan.dataBegin) };
+		const auto actualData{ MemUtils::aquire(memSpan, 0, static_cast<int32_t>(memSpan.dataEnd - memSpan.dataBegin)) };
 
 		//TODO: Is it legal?
 		dbBuffer.dataBegin = reinterpret_cast<decltype(dbBuffer.dataBegin)>(actualData.dataBegin);
@@ -97,8 +97,8 @@ namespace Dod::BufferUtils
 	void remove(DBBuffer<T>& buffer, const ImBuffer<int32_t> indicesToRemove) noexcept
 	{
 
-		size_t targetIdx{ buffer.numOfFilledEls };
-		for (size_t idx{ 0 }; idx < indicesToRemove.numOfFilledEls; ++idx)
+		auto targetIdx{ buffer.numOfFilledEls };
+		for (int32_t idx{ 0 }; idx < indicesToRemove.numOfFilledEls; ++idx)
 		{
 			const auto removeId{ indicesToRemove.dataBegin[idx] };
 			std::swap(buffer.dataBegin[removeId + 1], buffer.dataBegin[targetIdx]);

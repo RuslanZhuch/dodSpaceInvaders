@@ -4,14 +4,19 @@
 #include <dod/BufferUtils.h>
 #include <dod/Algorithms.h>
 
+
+#pragma warning(push)
+#pragma warning(disable : 4365)
+
 #include <array>
+#pragma warning(pop)
 
 template <typename T>
 static void initDBuffer(Dod::DBBuffer<T>& dest, auto& src)
 {
 
 	const size_t totalElements{ src.size() };
-	const size_t totalBytes{ totalElements * sizeof(T) };
+	const auto totalBytes{ static_cast<int32_t>(totalElements * sizeof(T)) };
 
 	std::memcpy(src.data(), src.data(), src.size());
 
@@ -25,7 +30,7 @@ static void initDBuffer(Dod::DBBuffer<T>& dest, auto& src)
 	};
 	MemorySpan memSpan(reinterpret_cast<Dod::MemTypes::dataPoint_t>(src.data()), Dod::MemTypes::dataPoint_t(src.data() + src.size()));
 	Dod::BufferUtils::initFromMemory(dest, memSpan, beginIndex, endIndex);
-	dest.numOfFilledEls = totalElements - 1;
+	dest.numOfFilledEls = static_cast<int32_t>(totalElements) - 1;
 
 }
 

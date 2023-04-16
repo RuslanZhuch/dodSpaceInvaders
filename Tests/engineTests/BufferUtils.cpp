@@ -5,7 +5,12 @@
 #include <dod/BufferUtils.h>
 #include <dod/Algorithms.h>
 
+
+#pragma warning(push)
+#pragma warning(disable : 4365)
+
 #include <array>
+#pragma warning(pop)
 #include <ranges>
 
 struct MemorySpan
@@ -17,9 +22,10 @@ struct MemorySpan
 template <typename T>
 struct CommonBuffer
 {
-	size_t numOfFilledEls{ 0 };
 	const T* dataBegin{ nullptr };
 	const T* dataEnd{ nullptr };
+	int32_t pad[3];
+	int32_t numOfFilledEls{ 0 };
 };
 
 TEST(BufferUtils, Initialization)
@@ -505,7 +511,7 @@ TEST(DBBufferUtils, RemoveElements)
 		Dod::ImBuffer<int32_t> bufferIndicesToRemove;
 		bufferIndicesToRemove.dataBegin = reinterpret_cast<const int32_t*>(memory.data() + totalBytesForEls);
 		bufferIndicesToRemove.dataEnd = reinterpret_cast<const int32_t*>(memory.data() + totalBytes);
-		bufferIndicesToRemove.numOfFilledEls = indicesToRemove.size();
+		bufferIndicesToRemove.numOfFilledEls = static_cast<int32_t>(indicesToRemove.size());
 
 		Dod::BufferUtils::remove(buffer, bufferIndicesToRemove);
 
@@ -525,7 +531,7 @@ TEST(DBBufferUtils, RemoveElements)
 		Dod::ImBuffer<int32_t> bufferIndicesToRemove;
 		bufferIndicesToRemove.dataBegin = reinterpret_cast<const int32_t*>(memory.data() + totalBytesForEls);
 		bufferIndicesToRemove.dataEnd = reinterpret_cast<const int32_t*>(memory.data() + totalBytes);
-		bufferIndicesToRemove.numOfFilledEls = indicesToRemove.size();
+		bufferIndicesToRemove.numOfFilledEls = static_cast<int32_t>(indicesToRemove.size());
 
 		Dod::BufferUtils::remove(buffer, bufferIndicesToRemove);
 

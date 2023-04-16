@@ -9,17 +9,19 @@ namespace Dod
 	template <typename T>
 	struct DBBuffer
 	{
-		size_t numOfFilledEls{ 0 };
 		T* dataBegin{ nullptr };
 		T* dataEnd{ nullptr };
+		int32_t pad[3];
+		int32_t numOfFilledEls{ 0 };
 	};
 
 	template <typename T>
 	struct ImBuffer
 	{
-		size_t numOfFilledEls{ 0 };
 		const T* dataBegin{ nullptr };
 		const T* dataEnd{ nullptr };
+		int32_t pad[3];
+		int32_t numOfFilledEls{ 0 };
 	};
 
 };

@@ -1,19 +1,12 @@
 
 #include "game.h"
-#include "../renderer/instantRenderer.h"
-#include <SFML/Graphics.hpp>
-#include <span>
+#include <renderer/instantRenderer.h>
 #include <array>
 #include <cassert>
 #include <chrono>
 #include <iostream>
-#include <bitset>
-#include <ranges>
 #include <format>
 #include <random>
-#include <range/v3/view.hpp>
-#include <range/v3/span.hpp>
-#include <range/v3/view/zip.hpp>
 
 #include <dod/MemTypes.h>
 #include <dod/MemPool.h>
@@ -24,9 +17,7 @@
 constexpr auto windowWidth{ 800 };
 constexpr auto windowHeight{ 900 };
 
-constexpr auto numOfCells{ 20 };
 constexpr auto filedSizeCoeff{ 0.95f };
-
 
 struct Scene
 {
@@ -55,7 +46,7 @@ struct Scene
         constexpr auto totalObstacles{ obstaclesPerRow * obstaclesPerCol * obstaclesClusters + 1 };
         constexpr auto bytesToAquire{ totalObstacles * 4 };
 
-        size_t header{ 0 };
+        int32_t header{ 0 };
 
         Dod::BufferUtils::initFromMemory(this->obstaclesX, Dod::MemUtils::stackAquire(this->memory, bytesToAquire, header));
         Dod::BufferUtils::initFromMemory(this->obstaclesY, Dod::MemUtils::stackAquire(this->memory, bytesToAquire, header));
@@ -102,21 +93,6 @@ struct Scene
 
 };
 
-const auto getFieldSize(sf::RenderWindow& window)
-{
-
-    const auto windowSize{ window.getSize() };
-    return sf::Vector2f(windowSize.x * filedSizeCoeff, windowSize.y * filedSizeCoeff);
-
-}
-const auto getCornerPoint(sf::RenderWindow& window)
-{
-
-    const auto windowSize{ window.getSize() };
-    return sf::Vector2f(windowSize.x, windowSize.x) * (1.f - filedSizeCoeff) * 0.5f;
-
-}
-
 void drawField(sf::RenderWindow& window)
 {
 
@@ -137,7 +113,7 @@ void drawPlayer(sf::RenderWindow& window, const sf::Vector2f& position, const in
     const auto rightPoint{ position - sf::Vector2f(radius, -radius * 0.5f) };
     const auto topPoint{ position - sf::Vector2f(0.f, radius * 0.5f) };
 
-    const auto playerColor{ sf::Color(150.f, 200.f, 90.f) };
+    const auto playerColor{ sf::Color(150, 200, 90) };
     Renderer::Instant::drawLine(window, leftPoint, rightPoint, playerColor);
     Renderer::Instant::drawLine(window, leftPoint, topPoint, playerColor);
     Renderer::Instant::drawLine(window, rightPoint, topPoint, playerColor);
@@ -186,9 +162,9 @@ struct ControlState
     int32_t fireComponent{ 0 };
 };
 
-constexpr int32_t moveLeftControlBit{ int32_t(1) << 0 };
-constexpr int32_t moveRightControlBit{ int32_t(1) << 1 };
-constexpr int32_t fireControlBit{ int32_t(1) << 2 };
+constexpr uint32_t moveLeftControlBit{ uint32_t(1) << 0 };
+constexpr uint32_t moveRightControlBit{ uint32_t(1) << 1 };
+constexpr uint32_t fireControlBit{ uint32_t(1) << 2 };
 
 uint32_t gatherInputs()
 {
@@ -206,7 +182,7 @@ uint32_t gatherInputs()
 static ControlState gCurrentControlState;
 
 
-ControlState inputsUpdate(ControlState currentControlState, const uint32_t newInputBits, const uint32_t prevInputBits)
+ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputBits)
 {
 
     struct PlayerControlMoveRule
@@ -218,8 +194,8 @@ ControlState inputsUpdate(ControlState currentControlState, const uint32_t newIn
             uint32_t mask{};
         };
         std::array<Conditions, 4> conditions{ {
-            Conditions(0, moveLeftControlBit, ~(moveLeftControlBit | moveRightControlBit)),
-            Conditions(0, moveRightControlBit, ~(moveLeftControlBit | moveRightControlBit)),
+            Conditions(0u, moveLeftControlBit, ~(moveLeftControlBit | moveRightControlBit)),
+            Conditions(0u, moveRightControlBit, ~(moveLeftControlBit | moveRightControlBit)),
             Conditions(moveLeftControlBit, ~moveLeftControlBit, ~moveLeftControlBit),
             Conditions(moveRightControlBit, ~moveRightControlBit, ~moveRightControlBit),
         } };
@@ -307,6 +283,7 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
         std::array<bool, 2> outputs{ {true, true} };
 
         bool outputNeedChangeDirection{ false };
+        bool pad[1];
     };
 
     DirectionRule rule;
@@ -346,7 +323,7 @@ bool enemiesUpdateStrobe(float dt)
 
 }
 
-float enemiesUpdateBatchXCoord(float dt, float currentDirection, float batchCoordX, bool bNeedMove)
+float enemiesUpdateBatchXCoord([[maybe_unused]] float dt, float currentDirection, float batchCoordX, bool bNeedMove)
 {
 
     constexpr auto batchVelocityX{ 25.f };
@@ -381,7 +358,7 @@ auto enemiesBatchUpdate(float dt, float currentDirection, float batchCoordX, flo
 
     const auto bNeedMove{ enemiesUpdateStrobe(dt) };
 
-    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) * bNeedMove };
+    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) && bNeedMove };
 
     const auto newBatchDirection{ enemiesUpdateBatchDirection(bNeedChangeBatchDirection, currentDirection) };
     const auto newBatchXCoord{ enemiesUpdateBatchXCoord(dt, newBatchDirection, batchCoordX, bNeedMove) };
@@ -449,11 +426,11 @@ auto generateEnemyBulletRule(float dt, float& delayTimeleft)
     const auto bDelayCompleted{ delayTimeleft <= 0.f };
     delayTimeleft = delayTimeleft * !bDelayCompleted + 0.5f * bDelayCompleted;
 
-    return bNeedCreateBullet * bDelayCompleted;
+    return bNeedCreateBullet && bDelayCompleted;
 
 }
 
-auto generateEnemyBulletSourceIdRule(size_t numOfSources)
+auto generateEnemyBulletSourceIdRule(int32_t numOfSources)
 {
 
     std::uniform_int_distribution<> distrib(1 * (numOfSources > 0), numOfSources);
@@ -475,15 +452,12 @@ void generateEnemyBullets(
     const auto bulletYId{ generateEnemyBulletSourceIdRule(scene.enemiesXCoords.numOfFilledEls) };
 
     Dod::BufferUtils::populate(scene.enemyBulletXCoords, scene.enemiesXCoords.dataBegin[bulletXId], bNeedCreateBullet);
-    Dod::BufferUtils::populate(scene.enemyBulletYCoords, scene.enemiesYCoords.dataBegin[bulletXId], bNeedCreateBullet);
+    Dod::BufferUtils::populate(scene.enemyBulletYCoords, scene.enemiesYCoords.dataBegin[bulletYId], bNeedCreateBullet);
 
 }
 
 void getAxisCollisionsList(Dod::DBBuffer<uint64_t>& collisions, const Dod::ImBuffer<float>& lefts, const Dod::ImBuffer<float>& rights)
 {
-
-//    size_t numOfCollided{ 0 };
-//    std::array<uint64_t, 256> collided;
 
     constexpr float maxDistForCollision{ 15.f };
     constexpr float maxDistForCollisionSqr{ maxDistForCollision * maxDistForCollision };
@@ -530,7 +504,7 @@ void bulletsCollisionUpdate(Scene& scene)
 
 void bulletsMovementUpdate(Dod::DBBuffer<float> bulletsY, float dt, float bulletVelocity)
 {
-    for (size_t idx{ 0 }; idx < bulletsY.numOfFilledEls; ++idx) {
+    for (int32_t idx{ 0 }; idx < bulletsY.numOfFilledEls; ++idx) {
         Dod::BufferUtils::get(bulletsY, idx) += bulletVelocity * dt;
     }
 }
@@ -555,14 +529,14 @@ void bulletsPlaneCollision(const Dod::DBBuffer<float>& bulletsY, Dod::DBBuffer<i
 
     size_t removeListSize{ 0 };
     std::array<int32_t, 255> removeList;
-    for (uint32_t bulletId{ 0 }; bulletId < bulletsY.numOfFilledEls; ++bulletId)
+    for (int32_t bulletId{ 0 }; bulletId < bulletsY.numOfFilledEls; ++bulletId)
     {
         const auto bIsColliding{ Dod::BufferUtils::get(bulletsY, bulletId) * dir < planeY * dir };
         removeListSize += size_t(1) * bIsColliding;
         removeList[removeListSize * bIsColliding] = bulletId;
     }
 
-    for (uint32_t bulletId{ 1 }; bulletId < removeListSize + 1; ++bulletId)
+    for (size_t bulletId{ 1 }; bulletId < removeListSize + 1; ++bulletId)
         Dod::BufferUtils::populate(bulletsToRemove, removeList[bulletId], true);
 
 }
@@ -574,9 +548,6 @@ void pointsAreasIntersection(
     const float areasWidth
 )
 {
-
-//    size_t numOfIntersections{ 0 };
-//    std::array<uint64_t, 255> intersections;
 
     for (int32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
     {
@@ -733,7 +704,7 @@ void pointsSquareIntersection(
 
 static sf::Vector2f gPlayerPosition;
 static int32_t gPlayerLives{ 1 };
-static int32_t prevInputBits;
+static uint32_t gPrevInputBits;
 
 void playerUpdate(float dt, Scene& scene)
 {
@@ -741,8 +712,8 @@ void playerUpdate(float dt, Scene& scene)
     const auto inputBits{ gatherInputs() };
 //    const auto fakeInputBits{ prevInputBits | inputBits };
     
-    const auto controlsState{ inputsUpdate(gCurrentControlState, inputBits, prevInputBits) };
-    prevInputBits = inputBits;
+    const auto controlsState{ inputsUpdate(inputBits, gPrevInputBits) };
+    gPrevInputBits = inputBits;
 
     gCurrentControlState = controlsState;
 
@@ -760,17 +731,17 @@ void generateEnemies(float rootX, float rootY, Scene& scene)
 
     const auto totalEnemies{ Scene::EnemiesParamets::numOfEnemiesPerRow * Scene::EnemiesParamets::numOfEnemiesCols };
 
-    for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
+    for (int32_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
     {
         const auto inRowId{ enemyId % Scene::EnemiesParamets::numOfEnemiesPerRow };
-        const auto xPosition{ rootX + inRowId * Scene::EnemiesParamets::enemiesXStride };
+        const auto xPosition{ rootX + static_cast<float>(inRowId) * Scene::EnemiesParamets::enemiesXStride };
         Dod::BufferUtils::populate(scene.enemiesXCoords, xPosition, true);
     }
 
-    for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
+    for (int32_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
     {
         const auto inColId{ enemyId / Scene::EnemiesParamets::numOfEnemiesPerRow };
-        const auto yPosition{ rootY + inColId * Scene::EnemiesParamets::enemiesYStride };
+        const auto yPosition{ rootY + static_cast<float>(inColId) * Scene::EnemiesParamets::enemiesYStride };
         Dod::BufferUtils::populate(scene.enemiesYCoords, yPosition, true);
     }
 
@@ -806,7 +777,6 @@ void generateObstacles(Scene& scene)
 {
 
     const auto totalObstaclesPerCluster{ Scene::obstaclesPerRow * Scene::obstaclesPerCol };
-    const auto totalObstacles{ totalObstaclesPerCluster * Scene::obstaclesClusters };
 
     const auto widthPerCluster{ Scene::obstaclesPerRow * Scene::obstaclesStride };
     const auto totalObstaclesWidth{ widthPerCluster * Scene::obstaclesClusters };
@@ -816,22 +786,20 @@ void generateObstacles(Scene& scene)
     const auto gapWidth{ totalGapWidth / numOfClusterGaps };
     const auto distanceBetweenClusters{ gapWidth + widthPerCluster };
 
-    const auto obstaclesStartPositionX{ windowWidth * 0.5f - totalObstaclesWidth };
-
     const auto obstaclesClusterY{ 650.f };
 
     const auto initialClusterX{ windowWidth * 0.5f - needObstaclesWidth * 0.5f };
 
     for (int32_t clusterId{ 0 }; clusterId < Scene::obstaclesClusters; ++clusterId)
     {
-        const auto obstaclesClusterX{ initialClusterX + distanceBetweenClusters * clusterId };
+        const auto obstaclesClusterX{ initialClusterX + distanceBetweenClusters * static_cast<float>(clusterId) };
         for (int32_t obstacleId{ 0 }; obstacleId < totalObstaclesPerCluster; ++obstacleId)
         {
             const auto colId{ obstacleId % Scene::obstaclesPerRow };
             const auto rowId{ obstacleId / Scene::obstaclesPerRow };
 
-            const auto x{ obstaclesClusterX + colId * Scene::obstaclesStride };
-            const auto y{ obstaclesClusterY + rowId * Scene::obstaclesStride };
+            const auto x{ obstaclesClusterX + static_cast<float>(colId) * Scene::obstaclesStride };
+            const auto y{ obstaclesClusterY + static_cast<float>(rowId) * Scene::obstaclesStride };
 
             Dod::BufferUtils::populate(scene.obstaclesX, x, true);
             Dod::BufferUtils::populate(scene.obstaclesY, y, true);
@@ -939,7 +907,7 @@ void Game::run()
         const auto start{ std::chrono::high_resolution_clock::now() };
         msgLoop(window, deltaTime, scene);
         const auto end{ std::chrono::high_resolution_clock::now() };
-        deltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count() / 1'000'000'000.f;
+        deltaTime = static_cast<float>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()) / 1'000'000'000.f;
     }
 
 }

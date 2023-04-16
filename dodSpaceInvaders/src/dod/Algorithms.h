@@ -40,7 +40,6 @@ namespace Dod::Algorithms
 		int32_t srcLeftId{ 0 };
 		int32_t srcRightId{ 0 };
 
-		int32_t completed{ 0 };
 		while (srcLeftId < srcLeft.numOfFilledEls && srcRightId < srcRight.numOfFilledEls)
 		{
 

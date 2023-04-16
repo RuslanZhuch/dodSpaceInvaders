@@ -3,7 +3,12 @@
 #include <dod/MemTypes.h>
 #include <dod/MemUtils.h>
 
+
+#pragma warning(push)
+#pragma warning(disable : 4365)
+
 #include <array>
+#pragma warning(pop)
 
 struct DataHolder
 {
@@ -83,18 +88,18 @@ TEST(MemUtils, StackAcquiring)
 {
 
 	{
-		size_t header{ 0 };
+		int32_t header{ 0 };
 		DataHolder holder;
 
 		constexpr auto bytesToAcquire{ 10 };
 		const auto [acquiredBegin, acquiredEnd] { Dod::MemUtils::stackAquire(holder, bytesToAcquire, header) };
 		EXPECT_EQ(acquiredBegin, nullptr);
 		EXPECT_EQ(acquiredEnd, nullptr);
-		EXPECT_EQ(header, static_cast<size_t>(0));
+		EXPECT_EQ(header, 0);
 	}
 
 	{
-		size_t header{ 0 };
+		int32_t header{ 0 };
 		std::array<Dod::MemTypes::data_t, 32> data;
 		DataHolder holder;
 
@@ -109,7 +114,7 @@ TEST(MemUtils, StackAcquiring)
 	}
 
 	{
-		size_t header{ 0 };
+		int32_t header{ 0 };
 		std::array<Dod::MemTypes::data_t, 32> data;
 		DataHolder holder;
 
@@ -124,7 +129,7 @@ TEST(MemUtils, StackAcquiring)
 	}
 
 	{
-		size_t header{ 0 };
+		int32_t header{ 0 };
 		std::array<Dod::MemTypes::data_t, 32> data;
 		DataHolder holder;
 
@@ -138,7 +143,7 @@ TEST(MemUtils, StackAcquiring)
 		EXPECT_EQ(header, 0);
 	}
 
-	size_t header{ 0 };
+	int32_t header{ 0 };
 	std::array<Dod::MemTypes::data_t, 32> data;
 	DataHolder holder;
 	holder.dataBegin = data.data();

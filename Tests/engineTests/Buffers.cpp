@@ -3,7 +3,12 @@
 #include <dod/MemTypes.h>
 #include <dod/Buffers.h>
 #include <ranges>
+
+#pragma warning(push)
+#pragma warning(disable : 4365)
+
 #include <array>
+#pragma warning(pop)
 
 TEST(Buffers, DBBuffer) 
 {

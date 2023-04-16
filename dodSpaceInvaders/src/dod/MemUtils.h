@@ -28,7 +28,7 @@ namespace Dod::MemUtils
 
 	}
 
-	[[nodiscard]] static auto stackAquire(const auto& source, size_t numOfBytes, size_t& header) noexcept
+	[[nodiscard]] static auto stackAquire(const auto& source, int32_t numOfBytes, int32_t& header) noexcept
 	{
 
 		struct Output
