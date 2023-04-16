@@ -285,9 +285,6 @@ static std::mt19937 gRandomGen(gRandomDevice());
 
 static float gEnemyBulletDelayTimeLeft;
 
-static size_t gNumOfRemovedBullets{ 0 };
-static std::vector<size_t> gRemovedBulletIds;
-
 static float gEnemiesBatchTargetX{};
 static float gEnemiesBatchCoordX{};
 static float gEnemiesBatchCoordY{};
@@ -482,52 +479,52 @@ void generateEnemyBullets(
 
 }
 
-auto getAxisCollisionsList(Dod::ImBuffer<float> lefts, Dod::ImBuffer<float> rights)
+void getAxisCollisionsList(Dod::DBBuffer<uint64_t>& collisions, const Dod::ImBuffer<float>& lefts, const Dod::ImBuffer<float>& rights)
 {
 
-    size_t numOfCollided{ 0 };
-    std::array<uint64_t, 256> collided;
+//    size_t numOfCollided{ 0 };
+//    std::array<uint64_t, 256> collided;
 
     constexpr float maxDistForCollision{ 15.f };
     constexpr float maxDistForCollisionSqr{ maxDistForCollision * maxDistForCollision };
 
-    for (uint32_t leftIdx{ 0 }; leftIdx < lefts.numOfFilledEls; ++leftIdx)
+    for (int32_t leftIdx{ 0 }; leftIdx < lefts.numOfFilledEls; ++leftIdx)
     {
-        for (uint32_t rightIdx{0}; rightIdx < rights.numOfFilledEls; ++rightIdx)
+        for (int32_t rightIdx{ 0 }; rightIdx < rights.numOfFilledEls; ++rightIdx)
         {
             const auto distanceSqr{ std::powf(Dod::BufferUtils::get(rights, rightIdx) - Dod::BufferUtils::get(lefts, leftIdx), 2)};
             const auto bInRange{ distanceSqr <= maxDistForCollisionSqr };
-            numOfCollided += size_t(1) * bInRange;
-            const auto currentInTableId{ numOfCollided * bInRange };
-            collided[currentInTableId] = (static_cast<uint64_t>(leftIdx) << 32) | rightIdx;
-
+            Dod::BufferUtils::populate(collisions, (static_cast<uint64_t>(leftIdx) << 32) | rightIdx, bInRange);
         }
     }
-
-    return std::vector<uint64_t>(collided.begin() + 1, collided.begin() + numOfCollided + 1);
 
 }
 
 void bulletsCollisionUpdate(Scene& scene)
 {
 
-    const auto xAxisCollided{ getAxisCollisionsList(Dod::BufferUtils::createImFromBuffer(scene.playerBulletXCoords), Dod::BufferUtils::createImFromBuffer(scene.enemiesXCoords)) };
-    const auto yAxisCollided{ getAxisCollisionsList(Dod::BufferUtils::createImFromBuffer(scene.playerBulletYCoords), Dod::BufferUtils::createImFromBuffer(scene.enemiesYCoords)) };
+    std::array<uint64_t, 128> xAxisCollidedMem;
+    Dod::DBBuffer<uint64_t> xAxisCollided;
+    Dod::BufferUtils::initFromArray(xAxisCollided, xAxisCollidedMem);
 
-    std::vector<uint64_t> collided;
-    collided.reserve(xAxisCollided.size() + yAxisCollided.size());
-    std::ranges::set_intersection(xAxisCollided, yAxisCollided, std::back_inserter(collided));
-    
-    std::vector<int32_t> bulletsToDestroy;
+    std::array<uint64_t, 128> yAxisCollidedMem;
+    Dod::DBBuffer<uint64_t> yAxisCollided;
+    Dod::BufferUtils::initFromArray(yAxisCollided, yAxisCollidedMem);
+
+    getAxisCollisionsList(xAxisCollided, Dod::BufferUtils::createImFromBuffer(scene.playerBulletXCoords), Dod::BufferUtils::createImFromBuffer(scene.enemiesXCoords));
+    getAxisCollisionsList(yAxisCollided, Dod::BufferUtils::createImFromBuffer(scene.playerBulletYCoords), Dod::BufferUtils::createImFromBuffer(scene.enemiesYCoords));
+
+    std::array<uint64_t, 512> collidedMem;
+    Dod::DBBuffer<uint64_t> collided;
+    Dod::BufferUtils::initFromArray(collided, collidedMem);
+
+    Dod::Algorithms::getIntersections(collided, xAxisCollided, yAxisCollided);
+
+    for (int32_t elId{}; elId < collided.numOfFilledEls; ++elId)
+        Dod::BufferUtils::populate(scene.enemiesToRemove, static_cast<int32_t>(Dod::BufferUtils::get(collided, elId)), true);
  
-    for (const auto collidedPair : collided)
-        bulletsToDestroy.push_back(static_cast<int32_t>(collidedPair >> 32));
- 
-    for (const auto collidedPair : collided)
-        Dod::BufferUtils::populate(scene.enemiesToRemove, static_cast<int32_t>(collidedPair), true);
- 
-    for (const auto bulletIdToDestroy : bulletsToDestroy)
-        Dod::BufferUtils::populate(scene.playerBulletIdsToRemove, bulletIdToDestroy, true);
+    for (int32_t elId{}; elId < collided.numOfFilledEls; ++elId)
+        Dod::BufferUtils::populate(scene.playerBulletIdsToRemove, static_cast<int32_t>(Dod::BufferUtils::get(collided, elId) >> 32), true);
 
 }
 
@@ -570,20 +567,21 @@ void bulletsPlaneCollision(const Dod::DBBuffer<float>& bulletsY, Dod::DBBuffer<i
 
 }
 
-[[nodiscard]] auto pointsAreasIntersection(
+void pointsAreasIntersection(
+    Dod::DBBuffer<uint64_t>& intersections,
     const Dod::ImBuffer<float>& pointsCenter,
     const Dod::ImBuffer<float>& areasCenter,
     const float areasWidth
 )
 {
 
-    size_t numOfIntersections{ 0 };
-    std::array<uint64_t, 255> intersections;
+//    size_t numOfIntersections{ 0 };
+//    std::array<uint64_t, 255> intersections;
 
-    for (uint32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
+    for (int32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
     {
         const auto pointCenter{ Dod::BufferUtils::get(pointsCenter, pointId) };
-        for (uint32_t areaId{ 0 }; areaId < areasCenter.numOfFilledEls; ++areaId)
+        for (int32_t areaId{ 0 }; areaId < areasCenter.numOfFilledEls; ++areaId)
         {
             const auto areaCenter{ Dod::BufferUtils::get(areasCenter, areaId) };
             const auto areaWidth{ areasWidth };
@@ -593,16 +591,14 @@ void bulletsPlaneCollision(const Dod::DBBuffer<float>& bulletsY, Dod::DBBuffer<i
 
             const auto bInArea{ (pointCenter >= areaLeft) && (pointCenter <= areaRight) };
 
-            numOfIntersections += size_t(1) * bInArea;
-            intersections[numOfIntersections * bInArea] = (static_cast<uint64_t>(pointId) << 32) | areaId;
+            Dod::BufferUtils::populate(intersections, (static_cast<uint64_t>(pointId) << 32) | areaId, bInArea);
         }
     }
-
-    return std::vector<uint64_t>(intersections.begin() + 1, intersections.begin() + 1 + numOfIntersections);
 
 }
 
 [[nodiscard]] auto pointsSquaresIntersection(
+    Dod::DBBuffer<uint64_t>& intersections,
     const Dod::ImBuffer<float>& pointsX,
     const Dod::ImBuffer<float>& pointsY,
     const Dod::ImBuffer<float>& areasX,
@@ -612,14 +608,18 @@ void bulletsPlaneCollision(const Dod::DBBuffer<float>& bulletsY, Dod::DBBuffer<i
 )
 {
 
-    const auto intersectionsX{ pointsAreasIntersection(pointsX, areasX, areasWidth) };
-    const auto intersectionsY{ pointsAreasIntersection(pointsY, areasY, areasHeight) };
+    std::array<uint64_t, 128> intersectionsXMem;
+    Dod::DBBuffer<uint64_t> intersectionsX;
+    Dod::BufferUtils::initFromArray(intersectionsX, intersectionsXMem);
 
-    std::vector<uint64_t> intersections;
-    intersections.reserve(intersectionsX.size() + intersectionsY.size());
-    std::ranges::set_intersection(intersectionsX, intersectionsY, std::back_inserter(intersections));
+    std::array<uint64_t, 128> intersectionsYMem;
+    Dod::DBBuffer<uint64_t> intersectionsY;
+    Dod::BufferUtils::initFromArray(intersectionsY, intersectionsYMem);
 
-    return intersections;
+    pointsAreasIntersection(intersectionsX, pointsX, areasX, areasWidth);
+    pointsAreasIntersection(intersectionsY, pointsY, areasY, areasHeight);
+
+    Dod::Algorithms::getIntersections(intersections, intersectionsX, intersectionsY);
 
 }
 
@@ -631,34 +631,38 @@ void testBulletsWithObstacles(
 )
 {
 
-    const auto intersections{ pointsSquaresIntersection(
+    std::array<uint64_t, 128> intersectionsMem;
+    Dod::DBBuffer<uint64_t> intersections;
+    Dod::BufferUtils::initFromArray(intersections, intersectionsMem);
+
+    pointsSquaresIntersection(
+        intersections,
         Dod::BufferUtils::createImFromBuffer(bulletsX),
         Dod::BufferUtils::createImFromBuffer(bulletsY),
         Dod::BufferUtils::createImFromBuffer(scene.obstaclesX),
         Dod::BufferUtils::createImFromBuffer(scene.obstaclesY),
         Scene::obstaclesStride,
         Scene::obstaclesStride
-    ) };
+    );
 
-    for (const auto intersection : intersections)
-        Dod::BufferUtils::populate(bulletsToDelete, static_cast<int32_t>(intersection >> 32), true);
 
-    for (const auto intersection : intersections)
-        Dod::BufferUtils::populate(scene.obstaclesToHit, static_cast<int32_t>(intersection), true);
+    for (int32_t elId{}; elId < intersections.numOfFilledEls; ++elId)
+        Dod::BufferUtils::populate(scene.obstaclesToHit, static_cast<int32_t>(Dod::BufferUtils::get(intersections, elId)), true);
+
+    for (int32_t elId{}; elId < intersections.numOfFilledEls; ++elId)
+        Dod::BufferUtils::populate(bulletsToDelete, static_cast<int32_t>(Dod::BufferUtils::get(intersections, elId) >> 32), true);
 
 }
 
-[[nodiscard]] auto pointsAreaIntersection(
+void pointsAreaIntersection(
+    Dod::DBBuffer<int32_t>& intersections,
     const Dod::ImBuffer<float>& pointsCenter,
     const float areaCenter,
     const float areaWidth
 )
 {
 
-    size_t numOfIntersections{ 0 };
-    std::array<uint64_t, 255> intersections;
-
-    for (uint32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
+    for (int32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
     {
         const auto pointCenter{ Dod::BufferUtils::get(pointsCenter, pointId) };
 
@@ -668,15 +672,13 @@ void testBulletsWithObstacles(
 
         const auto bInArea{ (pointCenter >= areaLeft) && (pointCenter <= areaRight) };
 
-        numOfIntersections += size_t(1) * bInArea;
-        intersections[numOfIntersections * bInArea] = pointId;
+        Dod::BufferUtils::populate(intersections, pointId, bInArea);
     }
-
-    return std::vector<uint32_t>(intersections.begin() + 1, intersections.begin() + 1 + numOfIntersections);
 
 }
 
-[[nodiscard]] auto pointsSquareIntersection(
+void pointsSquareIntersection(
+    Dod::DBBuffer<int32_t>& intersections,
     const Dod::ImBuffer<float>& pointsX,
     const Dod::ImBuffer<float>& pointsY,
     const float areaX,
@@ -686,14 +688,18 @@ void testBulletsWithObstacles(
 )
 {
 
-    const auto intersectionsX{ pointsAreaIntersection(pointsX, areaX, areaWidth) };
-    const auto intersectionsY{ pointsAreaIntersection(pointsY, areaY, areaHeight) };
+    std::array<int32_t, 128> intersectionsXMem;
+    Dod::DBBuffer<int32_t> intersectionsX;
+    Dod::BufferUtils::initFromArray(intersectionsX, intersectionsXMem);
 
-    std::vector<uint64_t> intersections;
-    intersections.reserve(intersectionsX.size() + intersectionsY.size());
-    std::ranges::set_intersection(intersectionsX, intersectionsY, std::back_inserter(intersections));
+    std::array<int32_t, 128> intersectionsYMem;
+    Dod::DBBuffer<int32_t> intersectionsY;
+    Dod::BufferUtils::initFromArray(intersectionsY, intersectionsYMem);
 
-    return intersections;
+    pointsAreaIntersection(intersectionsX, pointsX, areaX, areaWidth);
+    pointsAreaIntersection(intersectionsY, pointsY, areaY, areaHeight);
+
+    Dod::Algorithms::getIntersections(intersections, intersectionsX, intersectionsY);
 
 }
 
@@ -707,48 +713,21 @@ void testBulletsWithObstacles(
 )
 {
 
-    const auto intersections{ pointsSquareIntersection(
+    const auto prevNumBulletsToDelete{ bulletsToDelete.numOfFilledEls };
+
+    pointsSquareIntersection(
+        bulletsToDelete,
         bulletsX,
         bulletsY,
         playerX,
         playerY,
         60,
         30
-    ) };
+    );
 
-    for (const auto intersection : intersections)
-        Dod::BufferUtils::populate(bulletsToDelete, static_cast<int32_t>(intersection), true);
+    const auto currNumBulletsToDelete{ bulletsToDelete.numOfFilledEls };
 
-    return playerLifes - int32_t(1) * !intersections.empty();
-
-}
-
-void testBulletsWithObstacles(
-    const Dod::ImBuffer<float>& bulletsX,
-    const Dod::ImBuffer<float>& bulletsY,
-    std::vector<uint32_t>& bulletsToDelete,
-    const Dod::ImBuffer<float>& areasX,
-    const Dod::ImBuffer<float>& areasY,
-    const float areasWidth,
-    const float areasHeight,
-    std::vector<size_t>& obstaclesToHit
-)
-{
-
-    const auto intersections{ pointsSquaresIntersection(
-        bulletsX,
-        bulletsY,
-        areasX,
-        areasY,
-        areasWidth,
-        areasHeight
-    ) };
-
-    for (const auto intersection : intersections)
-        bulletsToDelete.push_back((intersection >> 32) + 1);
-
-    for (const auto intersection : intersections)
-        obstaclesToHit.push_back(intersection + 1);
+    return playerLifes - int32_t(1) * (currNumBulletsToDelete - prevNumBulletsToDelete > 0);
 
 }
 
@@ -779,12 +758,7 @@ void playerUpdate(float dt, Scene& scene)
 void generateEnemies(float rootX, float rootY, Scene& scene)
 {
 
-    std::vector<float> enemiesXCoords{0.f};
-    std::vector<float> enemiesYCoords{0.f};
-
     const auto totalEnemies{ Scene::EnemiesParamets::numOfEnemiesPerRow * Scene::EnemiesParamets::numOfEnemiesCols };
-    enemiesXCoords.reserve(totalEnemies + 1);
-    enemiesYCoords.reserve(totalEnemies + 1);
 
     for (size_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
     {
@@ -807,16 +781,7 @@ void obstaclesLifetimeUpdate(Scene& scene)
 
     std::array<int32_t, 256> obstaclesToRemoveMemory;
     Dod::DBBuffer<int32_t> obstaclesToRemove;
-    struct MemSpan
-    {
-        Dod::MemTypes::dataPoint_t dataBegin{};
-        Dod::MemTypes::dataPoint_t dataEnd{};
-    };
-    const MemSpan memSpan(
-        reinterpret_cast<Dod::MemTypes::dataPoint_t>(obstaclesToRemoveMemory.data()),
-        reinterpret_cast<Dod::MemTypes::dataPoint_t>(obstaclesToRemoveMemory.data() + obstaclesToRemoveMemory.size())
-    );
-    Dod::BufferUtils::initFromMemory(obstaclesToRemove, memSpan);
+    Dod::BufferUtils::initFromArray(obstaclesToRemove, obstaclesToRemoveMemory);
 
     for (int32_t elId{ 0 }; elId < scene.obstaclesToHit.numOfFilledEls; ++elId)
     {
@@ -890,7 +855,6 @@ void msgLoop(sf::RenderWindow& window, float dt, Scene& scene)
 
     playerUpdate(dt, scene);
     bulletsMovementUpdate(scene.playerBulletYCoords, dt, -220.f);
-    //bulletsUpdate(dt);
     bulletsCollisionUpdate(scene);
     bulletsPlaneCollision(scene.playerBulletYCoords, scene.playerBulletIdsToRemove, 100.f, 1.f);
     testBulletsWithObstacles(

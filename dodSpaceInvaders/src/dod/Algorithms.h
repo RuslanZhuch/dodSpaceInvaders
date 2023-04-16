@@ -33,4 +33,32 @@ namespace Dod::Algorithms
 
 	}
 
+	template <typename T>
+	static void getIntersections(DBBuffer<T>& resultBuffer, const auto& srcLeft, const auto& srcRight) noexcept
+	{
+
+		int32_t srcLeftId{ 0 };
+		int32_t srcRightId{ 0 };
+
+		int32_t completed{ 0 };
+		while (srcLeftId < srcLeft.numOfFilledEls && srcRightId < srcRight.numOfFilledEls)
+		{
+
+			const auto leftValue{ BufferUtils::get(srcLeft, srcLeftId) };
+			const auto rightValue{ BufferUtils::get(srcRight, srcRightId) };
+			if (leftValue == rightValue)
+			{
+				BufferUtils::populate(resultBuffer, leftValue, true);
+				++srcLeftId;
+				++srcRightId;
+			}
+			else if (leftValue < rightValue)
+				++srcLeftId;
+			else 
+				++srcRightId;
+			
+		}
+
+	}
+
 };

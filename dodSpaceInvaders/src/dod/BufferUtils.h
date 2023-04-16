@@ -34,6 +34,42 @@ namespace Dod::BufferUtils
 
 	}
 
+	template <typename T>
+	[[nodiscard]] static auto initFromArray(DBBuffer<T>& dbBuffer, auto& src) noexcept
+	{
+
+		struct MemSpan
+		{
+			MemTypes::dataPoint_t dataBegin{};
+			MemTypes::dataPoint_t dataEnd{};
+		};
+		const MemSpan memSpan(
+			reinterpret_cast<Dod::MemTypes::dataPoint_t>(src.data()),
+			reinterpret_cast<Dod::MemTypes::dataPoint_t>(src.data() + src.size())
+		);
+
+		initFromMemory(dbBuffer, memSpan);
+
+	}
+
+	template <typename T>
+	[[nodiscard]] static auto initFromArray(ImBuffer<T>& imBuffer, const auto& src) noexcept
+	{
+
+		struct MemSpan
+		{
+			MemTypes::dataConstPoint_t dataBegin{};
+			MemTypes::dataConstPoint_t dataEnd{};
+		};
+		const MemSpan memSpan(
+			reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(src.data()),
+			reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(src.data() + src.size())
+		);
+
+		initFromMemory(imBuffer, memSpan);
+
+	}
+
 	template<typename T>
 	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept
 	{

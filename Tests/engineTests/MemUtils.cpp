@@ -143,7 +143,7 @@ TEST(MemUtils, StackAcquiring)
 	DataHolder holder;
 	holder.dataBegin = data.data();
 	holder.dataEnd = data.data() + data.size();
-	
+
 	auto totalAcquired{ 0 };
 
 	{

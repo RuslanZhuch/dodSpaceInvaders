@@ -126,6 +126,49 @@ TEST(DBBufferUtils, InitializationFailed)
 
 }
 
+TEST(BufferUtils, InitFromArray)
+{
+
+	{
+		std::array<Dod::MemTypes::data_t, 1024> memory;
+		Dod::DBBuffer<Dod::MemTypes::data_t> buffer;
+		Dod::BufferUtils::initFromArray(buffer, memory);
+
+		EXPECT_EQ(buffer.dataBegin, memory.data());
+		EXPECT_EQ(buffer.dataEnd, memory.data() + memory.size());
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+	}
+	{
+		std::array<Dod::MemTypes::data_t, 1024> memory;
+		Dod::ImBuffer<Dod::MemTypes::data_t> buffer;
+		Dod::BufferUtils::initFromArray(buffer, memory);
+
+		EXPECT_EQ(buffer.dataBegin, memory.data());
+		EXPECT_EQ(buffer.dataEnd, memory.data() + memory.size());
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+	}
+
+	{
+		std::array<int32_t, 128> memory;
+		Dod::DBBuffer<Dod::MemTypes::data_t> buffer;
+		Dod::BufferUtils::initFromArray(buffer, memory);
+
+		EXPECT_EQ(buffer.dataBegin, reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(memory.data()));
+		EXPECT_EQ(buffer.dataEnd, reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(memory.data() + memory.size()));
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+	}
+	{
+		std::array<int32_t, 128> memory;
+		Dod::ImBuffer<Dod::MemTypes::data_t> buffer;
+		Dod::BufferUtils::initFromArray(buffer, memory);
+
+		EXPECT_EQ(buffer.dataBegin, reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(memory.data()));
+		EXPECT_EQ(buffer.dataEnd, reinterpret_cast<Dod::MemTypes::dataConstPoint_t>(memory.data() + memory.size()));
+		EXPECT_EQ(buffer.numOfFilledEls, 0);
+	}
+
+}
+
 TEST(DBBufferUtils, Population)
 {
 

@@ -125,3 +125,189 @@ TEST(Algorithms, LeftUniques)
 	}
 
 }
+
+TEST(Algorithms, GetIntersections)
+{
+
+	using type_t = int32_t;
+	struct Buffer
+	{
+		const type_t* dataBegin{};
+		const type_t* dataEnd{};
+	};
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 3);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 2), 3);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1, 2 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 1, 2 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 1, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 4);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 2), 2);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 3), 3);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1, 1, 2, 3 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 4, 5, 6, 7 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 4, 5, 6, 7 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 4, 5, 6, 7 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+	}
+
+	{
+		auto valuesLeft{ std::to_array<type_t>({ 0, 1 }) };
+		Dod::DBBuffer<type_t> bufferLeft;
+		initDBuffer(bufferLeft, valuesLeft);
+
+		auto valuesRight{ std::to_array<type_t>({ 0, 1 }) };
+		Dod::DBBuffer<type_t> bufferRight;
+		initDBuffer(bufferRight, valuesRight);
+
+		std::array<type_t, std::max(valuesLeft.size(), valuesRight.size())> resultMemory;
+		Dod::DBBuffer<type_t> resultBuffer;
+		Dod::BufferUtils::initFromArray(resultBuffer, resultMemory);
+
+		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
+
+		EXPECT_EQ(resultBuffer.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
+	}
+
+}
