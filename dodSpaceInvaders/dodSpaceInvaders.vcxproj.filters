@@ -29,6 +29,9 @@
     <ClInclude Include="src\dod\Algorithms.h">
       <Filter>dod</Filter>
     </ClInclude>
+    <ClInclude Include="src\dod\ConditionTable.h">
+      <Filter>dod</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">

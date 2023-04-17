@@ -144,6 +144,7 @@
     <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
     <ClInclude Include="src\dod\BufferUtils.h" />
+    <ClInclude Include="src\dod\ConditionTable.h" />
     <ClInclude Include="src\dod\MemUtils.h" />
     <ClInclude Include="src\dod\MemTypes.h" />
     <ClCompile Include="src\game\game.cpp" />

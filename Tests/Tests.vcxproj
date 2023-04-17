@@ -42,6 +42,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConditionsTable.cpp" />
     <ClCompile Include="engineTests\Algorithms.cpp" />
     <ClCompile Include="engineTests\Buffers.cpp" />
     <ClCompile Include="engineTests\BufferUtils.cpp" />

@@ -2,6 +2,7 @@
 #include "game.h"
 #include <renderer/instantRenderer.h>
 #include <array>
+#include <span>
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -13,6 +14,7 @@
 #include <dod/MemUtils.h>
 #include <dod/BufferUtils.h>
 #include <dod/Algorithms.h>
+#include <dod/ConditionTable.h>
 
 constexpr auto windowWidth{ 800 };
 constexpr auto windowHeight{ 900 };
@@ -181,75 +183,128 @@ uint32_t gatherInputs()
 
 static ControlState gCurrentControlState;
 
+template <typename TInput, typename TOutput>
+void applyTransform(const Dod::ImBuffer<TInput>& query, const std::span<const TOutput> outputs, TOutput& target) {
+    for (int32_t id{ 0 }; id < query.numOfFilledEls; ++id)
+    {
+        const auto outputId{ Dod::BufferUtils::get(query, id) };
+        target = outputs[outputId];
+    }
+};
+
+template <size_t numOfCols>
+using condInput_t = std::array<Dod::CondTable::TriState, numOfCols>;
+template <size_t numOfRows, size_t numOfCols>
+using condTableSrc_t = std::array<condInput_t<numOfCols>, numOfRows>;
+
+void generateTable(const auto& table, std::vector<uint32_t>& xOrMasks, std::vector<uint32_t>& ignoreMasks)
+{
+    for (const auto& row : table)
+    {
+        auto& xOr{ xOrMasks.emplace_back() };
+        auto& ignore{ ignoreMasks.emplace_back() };
+        for (int32_t id{}; id < row.size(); ++id)
+        {
+            if (row[id] == Dod::CondTable::TriState::FALSE)
+                xOr |= (1 << id);
+            if (row[id] == Dod::CondTable::TriState::SKIP)
+                ignore |= (1 << id);
+        }
+        for (size_t id{ row.size() }; id < 32; ++id)
+            ignore |= (1 << id);
+    }
+}
+
+void populatereQuery(Dod::DBBuffer<int32_t>& query, const uint32_t inputs, const Dod::CondTable::Table& table)
+{
+    for (int32_t rowId{}; rowId < table.xOrMasks.numOfFilledEls; ++rowId)
+    {
+        const auto xOr{ Dod::BufferUtils::get(table.xOrMasks, rowId) };
+        const auto ignore{ Dod::BufferUtils::get(table.ignoreMasks, rowId) };
+        const uint32_t conditionMet{ (inputs ^ xOr) | ignore };
+        const uint32_t czero{ conditionMet + 1 };
+        const int32_t cmask{ static_cast<int32_t>(~(czero | static_cast<uint32_t>(-static_cast<int32_t>(czero)))) >> 31 };
+        Dod::BufferUtils::populate(query, rowId, static_cast<bool>(cmask));
+    }
+}
 
 ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputBits)
 {
 
-    struct PlayerControlMoveRule
-    {
-        struct Conditions
-        {
-            uint32_t inputKey{};
-            uint32_t prevInputKey{};
-            uint32_t mask{};
-        };
-        std::array<Conditions, 4> conditions{ {
-            Conditions(0u, moveLeftControlBit, ~(moveLeftControlBit | moveRightControlBit)),
-            Conditions(0u, moveRightControlBit, ~(moveLeftControlBit | moveRightControlBit)),
-            Conditions(moveLeftControlBit, ~moveLeftControlBit, ~moveLeftControlBit),
-            Conditions(moveRightControlBit, ~moveRightControlBit, ~moveRightControlBit),
-        } };
-        std::array<float, 4> movement{ {
-            0.f,
-            0.f,
-            -1.f,
-            1.f,
-        } };
-    };
-    struct PlayerControlFireRule
-    {
-        struct Conditions
-        {
-            uint32_t inputKey{};
-            uint32_t prevInputKey{};
-            uint32_t mask{};
-        };
-        std::array<Conditions, 3> conditions{ {
-            Conditions(0, fireControlBit, ~fireControlBit),
-            Conditions(fireControlBit, fireControlBit, ~fireControlBit),
-            Conditions(fireControlBit, ~fireControlBit, ~fireControlBit),
-            } };
-        std::array<int32_t, 3> fire{ {0, 0, 1} };
-    };
-
     ControlState newState{ gCurrentControlState };
 
     {
-        PlayerControlMoveRule controlRule;
 
-        for (size_t idx{ 0 }; idx < controlRule.conditions.size(); ++idx)
-        {
-            const auto cr1{ !((controlRule.conditions[idx].inputKey ^ newInputBits) & ~controlRule.conditions[idx].mask)};
-            const auto cr2{ !((controlRule.conditions[idx].prevInputKey ^ prevInputBits) & ~controlRule.conditions[idx].mask) };
-            const auto satisfy{ cr1 && cr2 };
+        // currLeft, prevLeft, currRight, prevRight
+        const condTableSrc_t<4, 4> tableSrc{ {
+            { Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::SKIP },
+            { Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::FALSE },
+            { Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::SKIP },
+            { Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::TRUE },
+        } };
 
-            if (satisfy)
-                newState.movementComponent = controlRule.movement[idx] * satisfy + gCurrentControlState.movementComponent * !satisfy;
-        }
+        std::array<uint32_t, tableSrc.size() + 1> xOrMasksMem;
+        std::array<uint32_t, tableSrc.size() + 1> ignoreMem;
+
+        const auto table{ Dod::CondTable::generate(tableSrc, xOrMasksMem, ignoreMem) };
+
+        const uint32_t inputs{ 
+            (uint32_t((newInputBits & 1) != 0) << 0) |  
+            (uint32_t((prevInputBits & 1) != 0) << 1) |  
+            (uint32_t((newInputBits & 2) != 0) << 2) |  
+            (uint32_t((prevInputBits & 2) != 0) << 3)
+        };
+
+        std::array<int32_t, 16> qValuesMem;
+        Dod::DBBuffer<int32_t> qValues;
+        Dod::BufferUtils::initFromArray(qValues, qValuesMem);
+
+        populatereQuery(qValues, inputs, table);
+
+        const auto transformOutputs{ std::to_array<float>({
+            -1.f,
+            1.f,
+            0.f,
+            0.f,
+        }) };
+
+        applyTransform<int32_t, float>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, newState.movementComponent);
+
     }
 
     {
-        PlayerControlFireRule controlRule;
 
-        for (size_t idx{ 0 }; idx < controlRule.conditions.size(); ++idx)
-        {
-            const auto satisfy{
-                !((controlRule.conditions[idx].inputKey ^ newInputBits) & ~controlRule.conditions[idx].mask) &&
-                !((controlRule.conditions[idx].prevInputKey ^ prevInputBits) & ~controlRule.conditions[idx].mask)
-            };
-            if (satisfy)
-                newState.fireComponent = controlRule.fire[idx] * satisfy;
-        }
+        // currPress, prevPress
+        const condTableSrc_t<3, 2> tableSrc{ {
+            { Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::FALSE },
+            { Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::TRUE },
+            { Dod::CondTable::TriState::FALSE, Dod::CondTable::TriState::TRUE },
+        } };
+
+        std::array<uint32_t, tableSrc.size() + 1> xOrMasksMem;
+        std::array<uint32_t, tableSrc.size() + 1> ignoreMem;
+
+        const auto table{ Dod::CondTable::generate(tableSrc, xOrMasksMem, ignoreMem) };
+
+        const uint32_t inputs{
+            (uint32_t((newInputBits & 4) != 0) << 0) |
+            (uint32_t((prevInputBits & 4) != 0) << 1)
+        };
+
+        std::array<int32_t, 16> qValuesMem;
+        Dod::DBBuffer<int32_t> qValues;
+        Dod::BufferUtils::initFromArray(qValues, qValuesMem);
+
+        populatereQuery(qValues, inputs, table);
+
+        const auto transformOutputs{ std::to_array<int32_t>({
+            1,
+            0,
+            0,
+        }) };
+
+        applyTransform<int32_t, int32_t>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, newState.fireComponent);
+
     }
 
     return newState;
@@ -270,24 +325,22 @@ static float gEnemiesDirection = 1;
 bool updateDirectionRule(float currentDirection, float currentXPosition)
 {
 
+    // xOnLeftSide, xOnRightSide, directionLeft, directionRight
+    const condTableSrc_t<2, 4> tableSrc{ {
+        { Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP },
+        { Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE },
+    } };
+
+    std::array<uint32_t, tableSrc.size() + 1> xOrMasksMem;
+    std::array<uint32_t, tableSrc.size() + 1> ignoreMem;
+
+    const auto table{ Dod::CondTable::generate(tableSrc, xOrMasksMem, ignoreMem) };
+
+
     constexpr uint32_t xOnTheLeft{ 1 << 0 };
     constexpr uint32_t xOnTheRight{ 1 << 1 };
     constexpr uint32_t directionLeft{ 1 << 2 };
     constexpr uint32_t directionRight{ 1 << 3 };
-    struct DirectionRule
-    {
-        std::array<uint32_t, 2> conditions{ {
-            xOnTheLeft | directionLeft,
-            xOnTheRight | directionRight,
-        }};
-        std::array<bool, 2> outputs{ {true, true} };
-
-        bool outputNeedChangeDirection{ false };
-        bool pad[1];
-    };
-
-    DirectionRule rule;
-
     const auto generateInput = [](float currentDirection, float currentXPosition) -> uint32_t {
         uint32_t bits{};
         bits |= (xOnTheLeft) * (currentXPosition < 75.f);
@@ -296,19 +349,22 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
         bits |= (directionRight) * (currentDirection >= 1.f);
         return bits;
     };
-
     const auto inputs{ generateInput(currentDirection, currentXPosition) };
 
-    auto needChangeDirection{ rule.outputNeedChangeDirection };
-    for (size_t idx{ 0 }; idx < rule.conditions.size(); ++idx)
-    {
-        if (rule.conditions[idx] == inputs)
-        {
-            needChangeDirection = rule.outputs[idx];
-        }
-    }
+    std::array<int32_t, 16> qValuesMem;
+    Dod::DBBuffer<int32_t> qValues;
+    Dod::BufferUtils::initFromArray(qValues, qValuesMem);
+    populatereQuery(qValues, inputs, table);
 
-    return needChangeDirection;
+    const auto transformOutputs{ std::to_array<bool>({
+        true,
+        true,
+    }) };
+
+    bool bNeedChangeDirection{ false };
+    applyTransform<int32_t, bool>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, bNeedChangeDirection);
+
+    return bNeedChangeDirection;
 
 }
 
