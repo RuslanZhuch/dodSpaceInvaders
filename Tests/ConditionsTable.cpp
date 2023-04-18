@@ -94,3 +94,275 @@ TEST(ConditionTable, GenerationNonUniform)
 	EXPECT_EQ(Dod::BufferUtils::get(table.ignoreMasks, 3), 0xFFFF'FFF4);
 
 }
+
+TEST(ConditionTable, QueryPopulation)
+{
+
+	using type_t = int32_t;
+
+	auto xOrMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0x0000'0002,
+		0x0000'0000,
+		0x0000'0001,
+		0x0000'0003,
+	}) };
+
+	auto ignoreMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0xFFFF'FFFC,
+		0xFFFF'FFFC,
+		0xFFFF'FFFC,
+		0xFFFF'FFFC,
+	}) };
+
+	Dod::DBBuffer<uint32_t> xOr;
+	Dod::BufferUtils::initFromArray(xOr, xOrMem);
+	xOr.numOfFilledEls = xOrMem.size() - 1;
+
+	Dod::DBBuffer<uint32_t> ignore;
+	Dod::BufferUtils::initFromArray(ignore, ignoreMem);
+	ignore.numOfFilledEls = ignoreMem.size() - 1;
+
+	const Dod::CondTable::Table table{
+		Dod::BufferUtils::createImFromBuffer(xOr),
+		Dod::BufferUtils::createImFromBuffer(ignore)
+	};
+
+	std::array<type_t, xOrMem.size()> quaryMem;
+	Dod::DBBuffer<type_t> quary;
+	Dod::BufferUtils::initFromArray(quary, quaryMem);
+
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0001 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0003 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0002 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 2);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0000 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 3);
+	}
+
+}
+
+TEST(ConditionTable, QueryPopulationNoHit)
+{
+
+	using type_t = int32_t;
+
+	auto xOrMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0x0000'0002,
+		0x0000'0000,
+	}) };
+
+	auto ignoreMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0xFFFF'FFFC,
+		0xFFFF'FFFC,
+	}) };
+
+	Dod::DBBuffer<uint32_t> xOr;
+	Dod::BufferUtils::initFromArray(xOr, xOrMem);
+	xOr.numOfFilledEls = xOrMem.size() - 1;
+
+	Dod::DBBuffer<uint32_t> ignore;
+	Dod::BufferUtils::initFromArray(ignore, ignoreMem);
+	ignore.numOfFilledEls = ignoreMem.size() - 1;
+
+	const Dod::CondTable::Table table{
+		Dod::BufferUtils::createImFromBuffer(xOr),
+		Dod::BufferUtils::createImFromBuffer(ignore)
+	};
+
+	std::array<type_t, xOrMem.size()> quaryMem;
+	Dod::DBBuffer<type_t> quary;
+	Dod::BufferUtils::initFromArray(quary, quaryMem);
+
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0001 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0003 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0002 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 0);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0000 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 0);
+	}
+
+}
+
+TEST(ConditionTable, QueryPopulationWithSkips)
+{
+
+	using type_t = int32_t;
+
+	auto xOrMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0x0000'0000,
+		0x0000'0000,
+	}) };
+
+	auto ignoreMem{ std::to_array<uint32_t>({
+		0x0000'0000,
+		0xFFFF'FFFD,
+		0xFFFF'FFFF,
+	}) };
+
+	Dod::DBBuffer<uint32_t> xOr;
+	Dod::BufferUtils::initFromArray(xOr, xOrMem);
+	xOr.numOfFilledEls = xOrMem.size() - 1;
+
+	Dod::DBBuffer<uint32_t> ignore;
+	Dod::BufferUtils::initFromArray(ignore, ignoreMem);
+	ignore.numOfFilledEls = ignoreMem.size() - 1;
+
+	const Dod::CondTable::Table table{
+		Dod::BufferUtils::createImFromBuffer(xOr),
+		Dod::BufferUtils::createImFromBuffer(ignore)
+	};
+
+	std::array<type_t, xOrMem.size()> quaryMem;
+	Dod::DBBuffer<type_t> quary;
+	Dod::BufferUtils::initFromArray(quary, quaryMem);
+
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0002 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 1), 1);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0000 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0003 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 1), 1);
+	}
+	{
+		quary.numOfFilledEls = 0;
+		type_t inputs{ 0x0000'0001 };
+		Dod::CondTable::populateQuery(quary, inputs, table);
+		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
+	}
+
+}
+
+TEST(ConditionTable, SimpleTransform)
+{
+
+	using type_t = float;
+
+	type_t target{};
+	const auto outputs{ std::to_array<type_t>({
+		-2.f, -1.f, 1.f, 2.f
+	}) };
+
+	{
+		target = 0.f;
+		auto queryMem{ std::to_array<int32_t>({
+			0, 0
+		}) };
+		Dod::DBBuffer<int32_t> query;
+		Dod::BufferUtils::initFromArray(query, queryMem);
+		query.numOfFilledEls = queryMem.size() - 1;
+
+		Dod::CondTable::applyTransform<int32_t, type_t>(target, outputs, Dod::BufferUtils::createImFromBuffer(query));
+		EXPECT_EQ(target, -2.f);
+	}
+	{
+		target = 0.f;
+		auto queryMem{ std::to_array<int32_t>({
+			0, 1
+		}) };
+		Dod::DBBuffer<int32_t> query;
+		Dod::BufferUtils::initFromArray(query, queryMem);
+		query.numOfFilledEls = queryMem.size() - 1;
+
+		Dod::CondTable::applyTransform<int32_t, type_t>(target, outputs, Dod::BufferUtils::createImFromBuffer(query));
+		EXPECT_EQ(target, -1.f);
+	}
+	{
+		target = 0.f;
+		auto queryMem{ std::to_array<int32_t>({
+			0, 3
+		}) };
+		Dod::DBBuffer<int32_t> query;
+		Dod::BufferUtils::initFromArray(query, queryMem);
+		query.numOfFilledEls = queryMem.size() - 1;
+
+		Dod::CondTable::applyTransform<int32_t, type_t>(target, outputs, Dod::BufferUtils::createImFromBuffer(query));
+		EXPECT_EQ(target, 2.f);
+	}
+	{
+		target = 0.f;
+		auto queryMem{ std::to_array<int32_t>({
+			0
+		}) };
+		Dod::DBBuffer<int32_t> query;
+		Dod::BufferUtils::initFromArray(query, queryMem);
+		query.numOfFilledEls = queryMem.size() - 1;
+
+		Dod::CondTable::applyTransform<int32_t, type_t>(target, outputs, Dod::BufferUtils::createImFromBuffer(query));
+		EXPECT_EQ(target, 0.f);
+	}
+	{
+		target = 0.f;
+		auto queryMem{ std::to_array<int32_t>({
+			0, 1, 3
+		}) };
+		Dod::DBBuffer<int32_t> query;
+		Dod::BufferUtils::initFromArray(query, queryMem);
+		query.numOfFilledEls = queryMem.size() - 1;
+
+		Dod::CondTable::applyTransform<int32_t, type_t>(target, outputs, Dod::BufferUtils::createImFromBuffer(query));
+		EXPECT_EQ(target, 2.f);
+	}
+
+}

@@ -50,4 +50,32 @@ namespace Dod::CondTable
 
 	}
 
+	template <typename T>
+	void populateQuery(DBBuffer<T>& query, const uint32_t inputs, const Table& table) noexcept
+	{
+
+		for (int32_t rowId{}; rowId < table.xOrMasks.numOfFilledEls; ++rowId)
+		{
+			const auto xOr{ Dod::BufferUtils::get(table.xOrMasks, rowId) };
+			const auto ignore{ Dod::BufferUtils::get(table.ignoreMasks, rowId) };
+			const uint32_t conditionMet{ (inputs ^ xOr) | ignore };
+			const uint32_t czero{ conditionMet + 1 };
+			const int32_t cmask{ static_cast<int32_t>(~(czero | static_cast<uint32_t>(-static_cast<int32_t>(czero)))) >> 31 };
+			Dod::BufferUtils::populate(query, rowId, static_cast<bool>(cmask));
+		}
+
+	}
+	
+	template <typename TInput, typename TOutput>
+	void applyTransform(TOutput& target, const std::span<const TOutput> outputs, const Dod::ImBuffer<TInput>& query) noexcept
+	{
+
+		for (int32_t id{ 0 }; id < query.numOfFilledEls; ++id)
+		{
+			const auto outputId{ Dod::BufferUtils::get(query, id) };
+			target = outputs[outputId];
+		}
+
+	}
+
 };

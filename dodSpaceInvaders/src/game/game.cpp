@@ -183,50 +183,10 @@ uint32_t gatherInputs()
 
 static ControlState gCurrentControlState;
 
-template <typename TInput, typename TOutput>
-void applyTransform(const Dod::ImBuffer<TInput>& query, const std::span<const TOutput> outputs, TOutput& target) {
-    for (int32_t id{ 0 }; id < query.numOfFilledEls; ++id)
-    {
-        const auto outputId{ Dod::BufferUtils::get(query, id) };
-        target = outputs[outputId];
-    }
-};
-
 template <size_t numOfCols>
 using condInput_t = std::array<Dod::CondTable::TriState, numOfCols>;
 template <size_t numOfRows, size_t numOfCols>
 using condTableSrc_t = std::array<condInput_t<numOfCols>, numOfRows>;
-
-void generateTable(const auto& table, std::vector<uint32_t>& xOrMasks, std::vector<uint32_t>& ignoreMasks)
-{
-    for (const auto& row : table)
-    {
-        auto& xOr{ xOrMasks.emplace_back() };
-        auto& ignore{ ignoreMasks.emplace_back() };
-        for (int32_t id{}; id < row.size(); ++id)
-        {
-            if (row[id] == Dod::CondTable::TriState::FALSE)
-                xOr |= (1 << id);
-            if (row[id] == Dod::CondTable::TriState::SKIP)
-                ignore |= (1 << id);
-        }
-        for (size_t id{ row.size() }; id < 32; ++id)
-            ignore |= (1 << id);
-    }
-}
-
-void populatereQuery(Dod::DBBuffer<int32_t>& query, const uint32_t inputs, const Dod::CondTable::Table& table)
-{
-    for (int32_t rowId{}; rowId < table.xOrMasks.numOfFilledEls; ++rowId)
-    {
-        const auto xOr{ Dod::BufferUtils::get(table.xOrMasks, rowId) };
-        const auto ignore{ Dod::BufferUtils::get(table.ignoreMasks, rowId) };
-        const uint32_t conditionMet{ (inputs ^ xOr) | ignore };
-        const uint32_t czero{ conditionMet + 1 };
-        const int32_t cmask{ static_cast<int32_t>(~(czero | static_cast<uint32_t>(-static_cast<int32_t>(czero)))) >> 31 };
-        Dod::BufferUtils::populate(query, rowId, static_cast<bool>(cmask));
-    }
-}
 
 ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputBits)
 {
@@ -259,7 +219,7 @@ ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputB
         Dod::DBBuffer<int32_t> qValues;
         Dod::BufferUtils::initFromArray(qValues, qValuesMem);
 
-        populatereQuery(qValues, inputs, table);
+        Dod::CondTable::populateQuery(qValues, inputs, table);
 
         const auto transformOutputs{ std::to_array<float>({
             -1.f,
@@ -268,7 +228,7 @@ ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputB
             0.f,
         }) };
 
-        applyTransform<int32_t, float>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, newState.movementComponent);
+        Dod::CondTable::applyTransform<int32_t, float>(newState.movementComponent, transformOutputs, Dod::BufferUtils::createImFromBuffer(qValues));
 
     }
 
@@ -295,7 +255,7 @@ ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputB
         Dod::DBBuffer<int32_t> qValues;
         Dod::BufferUtils::initFromArray(qValues, qValuesMem);
 
-        populatereQuery(qValues, inputs, table);
+        Dod::CondTable::populateQuery(qValues, inputs, table);
 
         const auto transformOutputs{ std::to_array<int32_t>({
             1,
@@ -303,7 +263,7 @@ ControlState inputsUpdate(const uint32_t newInputBits, const uint32_t prevInputB
             0,
         }) };
 
-        applyTransform<int32_t, int32_t>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, newState.fireComponent);
+        Dod::CondTable::applyTransform<int32_t, int32_t>(newState.fireComponent, transformOutputs, Dod::BufferUtils::createImFromBuffer(qValues));
 
     }
 
@@ -354,7 +314,7 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
     std::array<int32_t, 16> qValuesMem;
     Dod::DBBuffer<int32_t> qValues;
     Dod::BufferUtils::initFromArray(qValues, qValuesMem);
-    populatereQuery(qValues, inputs, table);
+    Dod::CondTable::populateQuery(qValues, inputs, table);
 
     const auto transformOutputs{ std::to_array<bool>({
         true,
@@ -362,7 +322,7 @@ bool updateDirectionRule(float currentDirection, float currentXPosition)
     }) };
 
     bool bNeedChangeDirection{ false };
-    applyTransform<int32_t, bool>(Dod::BufferUtils::createImFromBuffer(qValues), transformOutputs, bNeedChangeDirection);
+    Dod::CondTable::applyTransform<int32_t, bool>(bNeedChangeDirection, transformOutputs, Dod::BufferUtils::createImFromBuffer(qValues));
 
     return bNeedChangeDirection;
 
