@@ -1,6 +1,6 @@
 
 #include "game.h"
-#include <renderer/instantRenderer.h>
+#include <game/renderer/instantRenderer.h>
 #include <array>
 #include <span>
 #include <cassert>

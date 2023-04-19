@@ -60,7 +60,7 @@ void Renderer::Instant::drawLine(
 
 }
 
-void Renderer::Instant::drawLineThikHor(
+void Renderer::Instant::drawLineThickHor(
 	sf::RenderWindow& window, 
 	float x1,
 	float x2,
@@ -76,7 +76,7 @@ void Renderer::Instant::drawLineThikHor(
 	drawRectangle(window, centerPosition, { len, width }, sf::Color::Black, 0.f, color);
 }
 
-void Renderer::Instant::drawLineThikVert(
+void Renderer::Instant::drawLineThickVert(
 	sf::RenderWindow& window,
 	float x,
 	float y1,

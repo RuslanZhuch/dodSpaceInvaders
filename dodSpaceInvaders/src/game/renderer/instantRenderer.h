@@ -41,7 +41,7 @@ namespace Renderer::Instant
 		const sf::Color& color
 	);
 
-	void drawLineThikHor(
+	void drawLineThickHor(
 		sf::RenderWindow& window,
 		float x1,
 		float x2,
@@ -50,7 +50,7 @@ namespace Renderer::Instant
 		float width
 	);
 
-	void drawLineThikVert(
+	void drawLineThickVert(
 		sf::RenderWindow& window,
 		float x,
 		float y1,

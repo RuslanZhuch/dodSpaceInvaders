@@ -20,9 +20,24 @@
     <ClCompile Include="ConditionsTable.cpp">
       <Filter>engineTests</Filter>
     </ClCompile>
+    <ClCompile Include="gameTests\GameRenderer.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
+    <ClCompile Include="gameTests\Mocks\MockInstantRenderer.cpp">
+      <Filter>gameTests\Mocks</Filter>
+    </ClCompile>
+    <ClCompile Include="gameTests\SceneRender.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="gameTests\Mocks\MockInstantRenderer.h">
+      <Filter>gameTests\Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="gameTests\GameTestsContext.h">
+      <Filter>gameTests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -33,6 +48,9 @@
     </Filter>
     <Filter Include="gameTests">
       <UniqueIdentifier>{59a6c9e3-acac-4b6d-afd3-07a480e85adc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameTests\Mocks">
+      <UniqueIdentifier>{1e435a83-a38a-4839-b089-1ca7f689db79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

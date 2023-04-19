@@ -3,14 +3,21 @@
   <ItemGroup>
     <ClCompile Include="src\game\game.cpp" />
     <ClCompile Include="src\game\main.cpp" />
-    <ClCompile Include="src\renderer\instantRenderer.cpp" />
     <ClCompile Include="src\dod\MemPool.cpp">
       <Filter>dod</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\renderer\instantRenderer.cpp">
+      <Filter>game\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Renderer.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Scene.cpp">
+      <Filter>game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
-    <ClInclude Include="src\renderer\instantRenderer.h" />
     <ClInclude Include="src\dod\Buffers.h">
       <Filter>dod</Filter>
     </ClInclude>
@@ -32,10 +39,25 @@
     <ClInclude Include="src\dod\ConditionTable.h">
       <Filter>dod</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\Renderer.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\renderer\instantRenderer.h">
+      <Filter>game\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Scene.h">
+      <Filter>game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
       <UniqueIdentifier>{cc6887e3-6e26-4cc0-a0bf-3b6654942d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{36db5263-f7fc-4bb9-8f1d-c224164488b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Renderer">
+      <UniqueIdentifier>{411182a0-7133-47fe-b702-6146fa75473e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

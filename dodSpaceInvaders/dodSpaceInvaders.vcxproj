@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -104,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>5045; 4711; 4710</DisableSpecificWarnings>
@@ -126,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <DisableSpecificWarnings>5045; 4711; 4710</DisableSpecificWarnings>
@@ -141,6 +147,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\Renderer.cpp" />
+    <ClCompile Include="src\game\renderer\instantRenderer.cpp" />
+    <ClCompile Include="src\game\Scene.cpp" />
     <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
     <ClInclude Include="src\dod\BufferUtils.h" />
@@ -149,13 +158,14 @@
     <ClInclude Include="src\dod\MemTypes.h" />
     <ClCompile Include="src\game\game.cpp" />
     <ClCompile Include="src\game\main.cpp" />
-    <ClCompile Include="src\renderer\instantRenderer.cpp" />
+    <ClInclude Include="src\game\Renderer.h" />
+    <ClInclude Include="src\game\renderer\instantRenderer.h" />
+    <ClInclude Include="src\game\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\dod\Buffers.h" />
     <ClInclude Include="src\dod\MemPool.h" />
     <ClInclude Include="src\game\game.h" />
-    <ClInclude Include="src\renderer\instantRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
