@@ -12,7 +12,7 @@ namespace Game
 			window(sf::VideoMode(width, height), windowName.data())
 		{}
 		
-		[[nodiscard]] const auto& getWindow() const { return this->window; }
+		[[nodiscard]] auto& getWindow() { return this->window; }
 
 		void drawRectangle(
 			const sf::Vector2f& position,

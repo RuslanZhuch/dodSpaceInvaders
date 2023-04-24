@@ -15,6 +15,9 @@
     <ClCompile Include="src\game\Scene.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\Inputs.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -46,6 +49,9 @@
       <Filter>game\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\game\Scene.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Inputs.h">
       <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>

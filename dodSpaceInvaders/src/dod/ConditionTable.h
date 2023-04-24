@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dod/Buffers.h>
+#include <dod/BufferUtils.h>
 #include <cinttypes>
 #include <span>
 
