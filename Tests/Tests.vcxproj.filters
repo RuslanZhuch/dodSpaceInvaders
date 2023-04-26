@@ -32,6 +32,9 @@
     <ClCompile Include="gameTests\InputsSystem.cpp">
       <Filter>gameTests</Filter>
     </ClCompile>
+    <ClCompile Include="gameTests\Enemies.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

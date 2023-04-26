@@ -18,6 +18,7 @@
 
 #include <game/Scene.h>
 #include <game/Inputs.h>
+#include <game/Enemies.h>
 
 constexpr auto windowWidth{ 800 };
 constexpr auto windowHeight{ 900 };
@@ -128,12 +129,6 @@ void drawEnemies(Game::GameRenderer& renderer, const SceneContext& scene)
         Game::Scene::drawEnemy(renderer, Dod::BufferUtils::get(scene.enemiesXCoords, elId), Dod::BufferUtils::get(scene.enemiesYCoords, elId));
 }
 
-struct ControlState
-{
-    float movementComponent{ 0.f };
-    int32_t fireComponent{ 0 };
-};
-
 constexpr uint32_t moveLeftControlBit{ uint32_t(1) << 0 };
 constexpr uint32_t moveRightControlBit{ uint32_t(1) << 1 };
 constexpr uint32_t fireControlBit{ uint32_t(1) << 2 };
@@ -151,11 +146,6 @@ uint32_t gatherInputs()
 
 }
 
-template <size_t numOfCols>
-using condInput_t = std::array<Dod::CondTable::TriState, numOfCols>;
-template <size_t numOfRows, size_t numOfCols>
-using condTableSrc_t = std::array<condInput_t<numOfCols>, numOfRows>;
-
 static std::random_device gRandomDevice;
 static std::mt19937 gRandomGen(gRandomDevice());
 
@@ -165,106 +155,21 @@ static float gEnemiesBatchTargetX{};
 static float gEnemiesBatchCoordX{};
 static float gEnemiesBatchCoordY{};
 static float gEnemiesBatchMoveTimeleft{};
-static float gEnemiesDirection = 1;
-
-bool updateDirectionRule(float currentDirection, float currentXPosition)
-{
-
-    // xOnLeftSide, xOnRightSide, directionLeft, directionRight
-    const condTableSrc_t<2, 4> tableSrc{ {
-        { Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP },
-        { Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE, Dod::CondTable::TriState::SKIP, Dod::CondTable::TriState::TRUE },
-    } };
-
-    std::array<uint32_t, tableSrc.size() + 1> xOrMasksMem;
-    std::array<uint32_t, tableSrc.size() + 1> ignoreMem;
-
-    const auto table{ Dod::CondTable::generate(tableSrc, xOrMasksMem, ignoreMem) };
-
-
-    constexpr uint32_t xOnTheLeft{ 1 << 0 };
-    constexpr uint32_t xOnTheRight{ 1 << 1 };
-    constexpr uint32_t directionLeft{ 1 << 2 };
-    constexpr uint32_t directionRight{ 1 << 3 };
-    const auto generateInput = [](float currentDirection, float currentXPosition) -> uint32_t {
-        uint32_t bits{};
-        bits |= (xOnTheLeft) * (currentXPosition < 75.f);
-        bits |= (xOnTheRight) * (currentXPosition > 275.f);
-        bits |= (directionLeft) * (currentDirection <= -1.f);
-        bits |= (directionRight) * (currentDirection >= 1.f);
-        return bits;
-    };
-    const auto inputs{ generateInput(currentDirection, currentXPosition) };
-
-    std::array<int32_t, 16> qValuesMem;
-    Dod::DBBuffer<int32_t> qValues;
-    Dod::BufferUtils::initFromArray(qValues, qValuesMem);
-    Dod::CondTable::populateQuery(qValues, inputs, table);
-
-    const auto transformOutputs{ std::to_array<bool>({
-        true,
-        true,
-    }) };
-
-    bool bNeedChangeDirection{ false };
-    Dod::CondTable::applyTransform<int32_t, bool>(bNeedChangeDirection, transformOutputs, Dod::BufferUtils::createImFromBuffer(qValues));
-
-    return bNeedChangeDirection;
-
-}
-
-bool enemiesUpdateStrobe(float dt)
-{
-
-    gEnemiesBatchMoveTimeleft -= dt;
-    const auto bNeedMove{ gEnemiesBatchMoveTimeleft <= 0.f };
-    gEnemiesBatchMoveTimeleft += 1.f * bNeedMove;
-
-    return bNeedMove;
-
-}
-
-float enemiesUpdateBatchXCoord([[maybe_unused]] float dt, float currentDirection, float batchCoordX, bool bNeedMove)
-{
-
-    constexpr auto batchVelocityX{ 25.f };
-
-    batchCoordX += batchVelocityX * currentDirection * bNeedMove;
-
-    return batchCoordX;
-
-}
-
-float enemiesUpdateBatchDirection(bool bNeedChangeBatchDirection, float currentDirection)
-{
-
-    const auto newDirection{ currentDirection + (-currentDirection) * 2.f * bNeedChangeBatchDirection };
-
-    return newDirection;
-
-}
-
-float enemiesUpdateBatchYCoord(bool bBatchDirectionUpdated, float batchYCoord)
-{
-
-    constexpr auto stride{ 25.f };
-    const auto newBatchYCoord{ batchYCoord + stride * bBatchDirectionUpdated };
-
-    return newBatchYCoord;
-
-}
+static float gEnemiesDirection = 1.f;
 
 auto enemiesBatchUpdate(float dt, float currentDirection, float batchCoordX, float batchCoordY)
 {
 
-    const auto bNeedMove{ enemiesUpdateStrobe(dt) };
+    const auto currentBatchMoveTimeLeft{ Game::Enemies::updateStrobeCountdown(dt, gEnemiesBatchMoveTimeleft, 1.f) };
+    const auto bNeedMove{ Game::Enemies::updateStrobe(gEnemiesBatchMoveTimeleft, currentBatchMoveTimeLeft) };
+    gEnemiesBatchMoveTimeleft = currentBatchMoveTimeLeft;
 
-    const auto bNeedChangeBatchDirection{ updateDirectionRule(currentDirection, batchCoordX) && bNeedMove };
+    const auto bNeedChangeBatchDirection{ Game::Enemies::computeNeedChangeDirection(currentDirection, batchCoordX, 75.f, 275.f) && bNeedMove };
 
-    const auto newBatchDirection{ enemiesUpdateBatchDirection(bNeedChangeBatchDirection, currentDirection) };
-    const auto newBatchXCoord{ enemiesUpdateBatchXCoord(dt, newBatchDirection, batchCoordX, bNeedMove) };
+    const auto newBatchDirection{ Game::Enemies::computeNewDirection(currentDirection, bNeedChangeBatchDirection) };
+    const auto newBatchXCoord{ Game::Enemies::computeNewXPosition(newBatchDirection, batchCoordX, 25.f, bNeedMove) };
 
-    const auto newBatchYCoord{ enemiesUpdateBatchYCoord(bNeedChangeBatchDirection, batchCoordY) };
+    const auto newBatchYCoord{ Game::Enemies::computeNewYPosition(batchCoordY, 25.f, bNeedChangeBatchDirection) };
 
     struct Output 
     {
@@ -628,27 +533,6 @@ void playerUpdate(float dt, SceneContext& scene)
 
 }
 
-void generateEnemies(float rootX, float rootY, SceneContext& scene)
-{
-
-    const auto totalEnemies{ SceneContext::EnemiesParamets::numOfEnemiesPerRow * SceneContext::EnemiesParamets::numOfEnemiesCols };
-
-    for (int32_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
-    {
-        const auto inRowId{ enemyId % SceneContext::EnemiesParamets::numOfEnemiesPerRow };
-        const auto xPosition{ rootX + static_cast<float>(inRowId) * SceneContext::EnemiesParamets::enemiesXStride };
-        Dod::BufferUtils::populate(scene.enemiesXCoords, xPosition, true);
-    }
-
-    for (int32_t enemyId{ 0 }; enemyId < totalEnemies; ++enemyId)
-    {
-        const auto inColId{ enemyId / SceneContext::EnemiesParamets::numOfEnemiesPerRow };
-        const auto yPosition{ rootY + static_cast<float>(inColId) * SceneContext::EnemiesParamets::enemiesYStride };
-        Dod::BufferUtils::populate(scene.enemiesYCoords, yPosition, true);
-    }
-
-}
-
 void obstaclesLifetimeUpdate(SceneContext& scene)
 {
 
@@ -798,7 +682,16 @@ void Game::run()
     gEnemiesBatchCoordX = 100.f;
     gEnemiesBatchCoordY = 200.f;
 
-    generateEnemies(gEnemiesBatchCoordX, gEnemiesBatchCoordY, scene);
+    Game::Enemies::generateX(
+        scene.enemiesXCoords,
+        SceneContext::EnemiesParamets::numOfEnemiesPerRow, SceneContext::EnemiesParamets::numOfEnemiesCols,
+        gEnemiesBatchCoordX, SceneContext::EnemiesParamets::enemiesXStride
+    );
+    Game::Enemies::generateY(
+        scene.enemiesYCoords,
+        SceneContext::EnemiesParamets::numOfEnemiesPerRow, SceneContext::EnemiesParamets::numOfEnemiesCols,
+        gEnemiesBatchCoordY, SceneContext::EnemiesParamets::enemiesYStride
+    );
 
     generateObstacles(scene);
 
