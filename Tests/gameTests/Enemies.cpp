@@ -334,3 +334,181 @@ TEST(Enemies, Generation)
 	EXPECT_EQ(Dod::BufferUtils::get(yCoords, 14), offsetY + strideY * 2);
 
 }
+
+TEST(Enemies, BulletsGeneration)
+{
+
+	constexpr auto totalSources{ 5 };
+	struct RandomGen1
+	{
+		std::array<int32_t, totalSources> values{ 1, 2, 3, 4, 5 };
+		size_t currentValue{};
+		[[nodiscrad]] const auto generate(int32_t minimum, int32_t maximum) noexcept
+		{
+			return values[this->currentValue++];
+		}
+	};
+
+	std::array<float, totalSources + 1> spawnPositionsMemP{ 0.f, 10.f, 20.f, 30.f, 40.f, 50.f };
+	Dod::DBBuffer<float> spawnPositions;
+	Dod::BufferUtils::initFromArray(spawnPositions, spawnPositionsMemP);
+	spawnPositions.numOfFilledEls = totalSources;
+
+	{
+		const auto strobe{ true };
+		RandomGen1 gen;
+		std::array<float, totalSources + 1> positionsMem;
+		Dod::DBBuffer<float> positions;
+		Dod::BufferUtils::initFromArray(positions, positionsMem);
+
+		{
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 1);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+		}
+		{
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 2);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
+		}
+		{
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 3);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
+		}
+		{
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 4);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 3), 40.f);
+		}
+		{
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 5);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 3), 40.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 4), 50.f);
+		}
+	}
+
+	{
+		RandomGen1 gen;
+		std::array<float, totalSources + 1> positionsMem;
+		Dod::DBBuffer<float> positions;
+		Dod::BufferUtils::initFromArray(positions, positionsMem);
+
+		{
+			const auto strobe{ true };
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 1);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+		}
+		{
+			const auto strobe{ false };
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 1);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+		}
+		{
+			const auto strobe{ true };
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 2);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
+		}
+		{
+			const auto strobe{ true };
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 3);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 40.f);
+		}
+		{
+			const auto strobe{ false };
+			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			ASSERT_EQ(positions.numOfFilledEls, 3);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
+			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 40.f);
+		}
+	}
+
+}
+
+TEST(Enemies, FireRule)
+{
+
+	constexpr auto totalTries{ 5 };
+	struct RandomGen1
+	{
+		std::array<int32_t, totalTries> values{ 100, 300, 240, 900, 500 };
+		size_t currentValue{};
+		[[nodiscrad]] const auto generate(int32_t minimum, int32_t maximum) noexcept
+		{
+			return values[this->currentValue++];
+		}
+	};
+
+	{
+		RandomGen1 gen;
+		{
+			const auto strobe{ true };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ true };
+			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ true };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ true };
+			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ true };
+			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+		}
+	}
+	{
+		struct RandomGen2
+		{
+			[[nodiscrad]] const auto generate(int32_t minimum, int32_t maximum) noexcept
+			{
+				return 300;
+			}
+		};
+		RandomGen2 gen;
+		{
+			const auto strobe{ false };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ false };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ false };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ false };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+		{
+			const auto strobe{ false };
+			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+		}
+	}
+	
+}

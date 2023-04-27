@@ -1,6 +1,6 @@
 #pragma once
 
-#include <dod/Buffers.h>
+#include <dod/BufferUtils.h>
 
 namespace Game::Enemies
 {
@@ -56,5 +56,29 @@ namespace Game::Enemies
 		float offset,
 		float stride
 	) noexcept;
+
+	void generateBullet(
+		Dod::DBBuffer<float>& bulletPosition,
+		const Dod::DBBuffer<float>& spawnPositions,
+		auto& generator,
+		bool strobe
+	) noexcept
+	{
+		const auto numOfSources{ spawnPositions.numOfFilledEls };
+		const auto spawnerId{ generator.generate(1 * (numOfSources > 0), numOfSources) };
+
+		Dod::BufferUtils::populate(bulletPosition, spawnPositions.dataBegin[spawnerId], strobe & (numOfSources > 0));
+	}
+
+	[[nodiscard]] bool fireRule(
+		auto& generator,
+		bool strobe
+	) noexcept
+	{
+		const auto randValue{ generator.generate(0, 1000) };
+		const auto bNeedCreateBullet{ randValue > 250 };
+
+		return bNeedCreateBullet && strobe;
+	}
 
 };

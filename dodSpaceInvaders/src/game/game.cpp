@@ -41,6 +41,18 @@ struct SceneContext
         float prevMoveComponent{};
     };
 
+    class RandomGenerator
+    {
+    public:
+        [[nodiscard]] int32_t generate(int32_t minimun, int32_t maximum) noexcept
+        {
+            std::uniform_int_distribution<> distrib(minimun, maximum);
+            return distrib(this->generator);
+        }
+    private:
+        std::mt19937 generator;
+    };
+
     static constexpr auto obstaclesStride{ 30.f };
     static constexpr auto obstaclesPerRow{ 5 };
     static constexpr auto obstaclesPerCol{ 2 };
@@ -104,6 +116,10 @@ struct SceneContext
 
     Player player;
 
+    RandomGenerator rand;
+
+    float enemyWeaponCooldownTimeLeft{};
+
 };
 
 void drawObstacles(Game::GameRenderer& renderer, const SceneContext& scene)
@@ -146,8 +162,8 @@ uint32_t gatherInputs()
 
 }
 
-static std::random_device gRandomDevice;
-static std::mt19937 gRandomGen(gRandomDevice());
+//static std::random_device gRandomDevice;
+//static std::mt19937 gRandomGen(gRandomDevice());
 
 static float gEnemyBulletDelayTimeLeft;
 
@@ -221,45 +237,19 @@ auto enemiesUpdate(float dt, float currentDirection, float batchTargetX, float b
 
 }
 
-auto generateEnemyBulletRule(float dt, float& delayTimeleft)
-{
-
-    std::uniform_int_distribution<> distrib(0, 1000);
-    const auto randValue{ distrib(gRandomGen) };
-    const auto bNeedCreateBullet{ randValue > 250 };
-
-    delayTimeleft -= dt;
-    const auto bDelayCompleted{ delayTimeleft <= 0.f };
-    delayTimeleft = delayTimeleft * !bDelayCompleted + 0.5f * bDelayCompleted;
-
-    return bNeedCreateBullet && bDelayCompleted;
-
-}
-
-auto generateEnemyBulletSourceIdRule(int32_t numOfSources)
-{
-
-    std::uniform_int_distribution<> distrib(1 * (numOfSources > 0), numOfSources);
-    const auto sourceId{ distrib(gRandomGen) };
-
-    return sourceId;
-
-}
-
 void generateEnemyBullets(
-    SceneContext& scene,
-    bool bNeedCreateBullet
+    float dt,
+    SceneContext& scene
 )
 {
 
-    bNeedCreateBullet &= scene.enemiesXCoords.numOfFilledEls > 0;
+    const auto newCooldownTimeLeft{ Game::Enemies::updateStrobeCountdown(dt, scene.enemyWeaponCooldownTimeLeft, 0.5f) };
+    const auto bNeedCreateBullet{ Game::Enemies::updateStrobe(scene.enemyWeaponCooldownTimeLeft, newCooldownTimeLeft) };
+    scene.enemyWeaponCooldownTimeLeft = newCooldownTimeLeft;
 
-    const auto bulletXId{ generateEnemyBulletSourceIdRule(scene.enemiesXCoords.numOfFilledEls) };
-    const auto bulletYId{ generateEnemyBulletSourceIdRule(scene.enemiesXCoords.numOfFilledEls) };
-
-    Dod::BufferUtils::populate(scene.enemyBulletXCoords, scene.enemiesXCoords.dataBegin[bulletXId], bNeedCreateBullet);
-    Dod::BufferUtils::populate(scene.enemyBulletYCoords, scene.enemiesYCoords.dataBegin[bulletYId], bNeedCreateBullet);
-
+    Game::Enemies::generateBullet(scene.enemyBulletXCoords, scene.enemiesXCoords, scene.rand, bNeedCreateBullet);
+    Game::Enemies::generateBullet(scene.enemyBulletYCoords, scene.enemiesYCoords, scene.rand, bNeedCreateBullet);
+       
 }
 
 void getAxisCollisionsList(Dod::DBBuffer<uint64_t>& collisions, const Dod::ImBuffer<float>& lefts, const Dod::ImBuffer<float>& rights)
@@ -634,7 +624,7 @@ void msgLoop(Game::GameRenderer& renderer, float dt, SceneContext& scene)
     gEnemiesBatchCoordX = enemiesResult.batchXCoord;
     gEnemiesBatchCoordY = enemiesResult.batchYCoord;
 
-    generateEnemyBullets(scene, generateEnemyBulletRule(dt, gEnemyBulletDelayTimeLeft));
+    generateEnemyBullets(dt, scene);
     bulletsMovementUpdate(scene.enemyBulletYCoords, dt, 120.f);
 
     bulletsPlaneCollision(scene.enemyBulletYCoords, scene.enemyBulletIdsToRemove, 875.f, -1.f);
