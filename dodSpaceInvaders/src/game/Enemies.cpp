@@ -23,7 +23,6 @@ bool Game::Enemies::computeNeedChangeDirection(float currentDirection, float cur
 
     const auto table{ Dod::CondTable::generate(tableSrc, xOrMasksMem, ignoreMem) };
 
-
     constexpr uint32_t xOnTheLeft{ 1 << 0 };
     constexpr uint32_t xOnTheRight{ 1 << 1 };
     constexpr uint32_t directionLeft{ 1 << 2 };
