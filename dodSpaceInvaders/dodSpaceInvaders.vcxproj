@@ -147,11 +147,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\game\Enemies.cpp" />
+    <ClCompile Include="src\game\BulletsCore.cpp" />
+    <ClCompile Include="src\game\BulletsGameplay.cpp" />
+    <ClCompile Include="src\game\CollisionCore.cpp" />
+    <ClCompile Include="src\game\EnemiesCore.cpp" />
+    <ClCompile Include="src\game\EnemiesGameplay.cpp" />
+    <ClCompile Include="src\game\GameRender.cpp" />
     <ClCompile Include="src\game\Inputs.cpp" />
+    <ClCompile Include="src\game\MainExecution.cpp" />
+    <ClCompile Include="src\game\ObstaclesCore.cpp" />
+    <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
+    <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
     <ClCompile Include="src\game\renderer\instantRenderer.cpp" />
-    <ClCompile Include="src\game\Scene.cpp" />
+    <ClCompile Include="src\game\SceneRenderer.cpp" />
+    <ClCompile Include="src\utils\randomGenerator.cpp" />
     <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
     <ClInclude Include="src\dod\BufferUtils.h" />
@@ -160,11 +170,26 @@
     <ClInclude Include="src\dod\MemTypes.h" />
     <ClCompile Include="src\game\game.cpp" />
     <ClCompile Include="src\game\main.cpp" />
-    <ClInclude Include="src\game\Enemies.h" />
+    <ClInclude Include="src\game\BulletsContext.h" />
+    <ClInclude Include="src\game\BulletsCore.h" />
+    <ClInclude Include="src\game\BulletsGameplay.h" />
+    <ClInclude Include="src\game\CollisionCore.h" />
+    <ClInclude Include="src\game\CommonContext.h" />
+    <ClInclude Include="src\game\EnemiesContext.h" />
+    <ClInclude Include="src\game\EnemiesCore.h" />
+    <ClInclude Include="src\game\EnemiesGameplay.h" />
+    <ClInclude Include="src\game\GameRender.h" />
     <ClInclude Include="src\game\Inputs.h" />
+    <ClInclude Include="src\game\MainExecution.h" />
+    <ClInclude Include="src\game\ObstaclesContext.h" />
+    <ClInclude Include="src\game\ObstaclesCore.h" />
+    <ClInclude Include="src\game\ObstaclesGameplay.h" />
+    <ClInclude Include="src\game\PlayerContext.h" />
+    <ClInclude Include="src\game\PlayerGameplay.h" />
     <ClInclude Include="src\game\Renderer.h" />
     <ClInclude Include="src\game\renderer\instantRenderer.h" />
-    <ClInclude Include="src\game\Scene.h" />
+    <ClInclude Include="src\game\SceneRenderer.h" />
+    <ClInclude Include="src\utils\randomGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\dod\Buffers.h" />

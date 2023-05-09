@@ -1,6 +1,7 @@
 #include "pch.h"
 
-#include <game/Enemies.cpp>
+#include <game/EnemiesCore.h>
+#include <game/EnemiesCore.cpp>
 #include <dod/BufferUtils.h>
 
 #include <array>
@@ -72,7 +73,7 @@ TEST(Enemies, NeedUpdateDirection)
 
 	for (size_t elId{}; elId < inputs.size(); ++elId)
 	{
-		const auto bNeedChangeDirection{ Game::Enemies::computeNeedChangeDirection(
+		const auto bNeedChangeDirection{ Game::Core::Enemies::computeNeedChangeDirection(
 			inputs[elId].currentDirection, 
 			inputs[elId].currentXPosition, 
 			inputs[elId].mostLeft, 
@@ -88,22 +89,22 @@ TEST(Enemies, NewDirection)
 	{
 		const auto bNeedUpdateDirection{ true };
 		const auto currentDirection{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), -1.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), -1.f);
 	}
 	{
 		const auto bNeedUpdateDirection{ true };
 		const auto currentDirection{ -1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), 1.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), 1.f);
 	}
 	{
 		const auto bNeedUpdateDirection{ false };
 		const auto currentDirection{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), 1.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), 1.f);
 	}
 	{
 		const auto bNeedUpdateDirection{ false };
 		const auto currentDirection{ -1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), -1.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewDirection(currentDirection, bNeedUpdateDirection), -1.f);
 	}
 
 }
@@ -115,37 +116,37 @@ TEST(Enemies, NewPositionY)
 		const auto bNeedUpdatePosition{ true };
 		const auto currentYPosition{ 100.f };
 		const auto stride{ 25.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 125.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 125.f);
 	}
 	{
 		const auto bNeedUpdatePosition{ true };
 		const auto currentYPosition{ 100.f };
 		const auto stride{ 75.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 175.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 175.f);
 	}
 	{
 		const auto bNeedUpdatePosition{ true };
 		const auto currentYPosition{ 200.f };
 		const auto stride{ 25.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 225.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 225.f);
 	}
 	{
 		const auto bNeedUpdatePosition{ false };
 		const auto currentYPosition{ 100.f };
 		const auto stride{ 25.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 100.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 100.f);
 	}
 	{
 		const auto bNeedUpdatePosition{ false };
 		const auto currentYPosition{ 100.f };
 		const auto stride{ 75.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 100.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 100.f);
 	}
 	{
 		const auto bNeedUpdatePosition{ false };
 		const auto currentYPosition{ 200.f };
 		const auto stride{ 25.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 200.f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::computeNewYPosition(currentYPosition, stride, bNeedUpdatePosition), 200.f);
 	}
 
 }
@@ -187,7 +188,7 @@ TEST(Enemies, NewPositionX)
 
 	for (size_t elId{}; elId < inputs.size(); ++elId)
 	{
-		const auto newPositionX{ Game::Enemies::computeNewXPosition(
+		const auto newPositionX{ Game::Core::Enemies::computeNewXPosition(
 			inputs[elId].currentDirection,
 			inputs[elId].currentXPosition,
 			inputs[elId].stride,
@@ -204,43 +205,43 @@ TEST(Enemies, UpdateStrobeCountdown)
 		const auto prevTime{ 0.5f };
 		const auto deltaTime{ 0.1f };
 		const auto initialTime{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.4f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.4f);
 	}
 	{
 		const auto prevTime{ 0.2f };
 		const auto deltaTime{ 0.1f };
 		const auto initialTime{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.1f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.1f);
 	}
 	{
 		const auto prevTime{ 0.6f };
 		const auto deltaTime{ 0.1f };
 		const auto initialTime{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.5f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 0.5f);
 	}
 	{
 		const auto prevTime{ 0.1f };
 		const auto deltaTime{ 0.1f };
 		const auto initialTime{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 1.0f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 1.0f);
 	}
 	{
 		const auto prevTime{ 0.1f };
 		const auto deltaTime{ 0.2f };
 		const auto initialTime{ 1.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 1.0f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 1.0f);
 	}
 	{
 		const auto prevTime{ 0.1f };
 		const auto deltaTime{ 0.1f };
 		const auto initialTime{ 2.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 2.0f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 2.0f);
 	}
 	{
 		const auto prevTime{ 0.1f };
 		const auto deltaTime{ 0.2f };
 		const auto initialTime{ 2.f };
-		EXPECT_FLOAT_EQ(Game::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 2.0f);
+		EXPECT_FLOAT_EQ(Game::Core::Enemies::updateStrobeCountdown(deltaTime, prevTime, initialTime), 2.0f);
 	}
 
 }
@@ -250,22 +251,22 @@ TEST(Enemies, UpdateStrobe)
 	{
 		const auto prevTime{ 0.1f };
 		const auto currentTime{ 1.f };
-		EXPECT_TRUE(Game::Enemies::updateStrobe(prevTime, currentTime));
+		EXPECT_TRUE(Game::Core::Enemies::updateStrobe(prevTime, currentTime));
 	}
 	{
 		const auto prevTime{ 0.5f };
 		const auto currentTime{ 0.2f };
-		EXPECT_FALSE(Game::Enemies::updateStrobe(prevTime, currentTime));
+		EXPECT_FALSE(Game::Core::Enemies::updateStrobe(prevTime, currentTime));
 	}
 	{
 		const auto prevTime{ 0.5f };
 		const auto currentTime{ -0.1f };
-		EXPECT_FALSE(Game::Enemies::updateStrobe(prevTime, currentTime));
+		EXPECT_FALSE(Game::Core::Enemies::updateStrobe(prevTime, currentTime));
 	}
 	{
 		const auto prevTime{ 1.f };
 		const auto currentTime{ 1.f };
-		EXPECT_FALSE(Game::Enemies::updateStrobe(prevTime, currentTime));
+		EXPECT_FALSE(Game::Core::Enemies::updateStrobe(prevTime, currentTime));
 	}
 }
 
@@ -290,8 +291,8 @@ TEST(Enemies, Generation)
 	const auto offsetX{ 10.f };
 	const auto offsetY{ 20.f };
 
-	Game::Enemies::generateX(xCoords, enemiesPerRow, enemiesPerCol, offsetX, strideX);
-	Game::Enemies::generateY(yCoords, enemiesPerRow, enemiesPerCol, offsetY, strideY);
+	Game::Core::Enemies::generateX(xCoords, enemiesPerRow, enemiesPerCol, offsetX, strideX);
+	Game::Core::Enemies::generateY(yCoords, enemiesPerRow, enemiesPerCol, offsetY, strideY);
 
 	ASSERT_EQ(xCoords.numOfFilledEls, totalEnemies);
 	ASSERT_EQ(yCoords.numOfFilledEls, totalEnemies);
@@ -341,7 +342,7 @@ TEST(Enemies, BulletsGeneration)
 	constexpr auto totalSources{ 5 };
 	struct RandomGen1
 	{
-		std::array<int32_t, totalSources> values{ 1, 2, 3, 4, 5 };
+		std::array<int32_t, totalSources> values{ 0, 1, 2, 3, 4 };
 		size_t currentValue{};
 		[[nodiscrad]] const auto generate(int32_t minimum, int32_t maximum) noexcept
 		{
@@ -362,25 +363,25 @@ TEST(Enemies, BulletsGeneration)
 		Dod::BufferUtils::initFromArray(positions, positionsMem);
 
 		{
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 2);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 		}
 		{
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
 		}
 		{
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 4);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
@@ -388,7 +389,7 @@ TEST(Enemies, BulletsGeneration)
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 3), 40.f);
 		}
 		{
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 5);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
@@ -406,26 +407,26 @@ TEST(Enemies, BulletsGeneration)
 
 		{
 			const auto strobe{ true };
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
 			const auto strobe{ false };
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
 			const auto strobe{ true };
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 2);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
 		}
 		{
 			const auto strobe{ true };
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
@@ -433,7 +434,7 @@ TEST(Enemies, BulletsGeneration)
 		}
 		{
 			const auto strobe{ false };
-			Game::Enemies::generateBullet(positions, spawnPositions, gen, strobe);
+			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
 			ASSERT_EQ(positions.numOfFilledEls, 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
@@ -461,23 +462,23 @@ TEST(Enemies, FireRule)
 		RandomGen1 gen;
 		{
 			const auto strobe{ true };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ true };
-			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_TRUE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ true };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ true };
-			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_TRUE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ true };
-			EXPECT_TRUE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_TRUE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 	}
 	{
@@ -491,23 +492,23 @@ TEST(Enemies, FireRule)
 		RandomGen2 gen;
 		{
 			const auto strobe{ false };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ false };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ false };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ false };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 		{
 			const auto strobe{ false };
-			EXPECT_FALSE(Game::Enemies::fireRule(gen, strobe));
+			EXPECT_FALSE(Game::Core::Enemies::fireRule(gen, strobe));
 		}
 	}
 	

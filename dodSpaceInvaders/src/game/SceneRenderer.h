@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-namespace Game::Scene
+namespace Game::SceneRenderer
 {
 
 	void drawField(GameRenderer& renderer) noexcept;

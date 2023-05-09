@@ -35,6 +35,15 @@
     <ClCompile Include="gameTests\Enemies.cpp">
       <Filter>gameTests</Filter>
     </ClCompile>
+    <ClCompile Include="gameTests\Bullets.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
+    <ClCompile Include="gameTests\Collision.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
+    <ClCompile Include="gameTests\Obstacles.cpp">
+      <Filter>gameTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

@@ -1,6 +1,6 @@
-#include "Scene.h"
+#include "SceneRenderer.h"
 
-void Game::Scene::drawField(GameRenderer& renderer) noexcept
+void Game::SceneRenderer::drawField(GameRenderer& renderer) noexcept
 {
 
     const auto windowSize{ renderer.getWindow().getSize() };
@@ -14,7 +14,7 @@ void Game::Scene::drawField(GameRenderer& renderer) noexcept
 
 }
 
-void Game::Scene::drawPlayer(GameRenderer& renderer, const sf::Vector2f& position, bool strobe) noexcept
+void Game::SceneRenderer::drawPlayer(GameRenderer& renderer, const sf::Vector2f& position, bool strobe) noexcept
 {
 
     const auto radius{ 25.f * strobe };
@@ -29,7 +29,7 @@ void Game::Scene::drawPlayer(GameRenderer& renderer, const sf::Vector2f& positio
 
 }
 
-void Game::Scene::drawObstacle(GameRenderer& renderer, float x, float y) noexcept
+void Game::SceneRenderer::drawObstacle(GameRenderer& renderer, float x, float y) noexcept
 {
 
     constexpr auto length{ 30.f };
@@ -37,7 +37,7 @@ void Game::Scene::drawObstacle(GameRenderer& renderer, float x, float y) noexcep
 
 }
 
-void Game::Scene::drawBullet(GameRenderer& renderer, float x, float y) noexcept
+void Game::SceneRenderer::drawBullet(GameRenderer& renderer, float x, float y) noexcept
 {
 
     constexpr auto length{ 15.f };
@@ -45,7 +45,7 @@ void Game::Scene::drawBullet(GameRenderer& renderer, float x, float y) noexcept
 
 }
 
-void Game::Scene::drawEnemy(GameRenderer& renderer, float x, float y) noexcept
+void Game::SceneRenderer::drawEnemy(GameRenderer& renderer, float x, float y) noexcept
 {
 
     constexpr auto sizeX{ 25.f };

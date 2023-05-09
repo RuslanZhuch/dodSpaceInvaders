@@ -2,7 +2,7 @@
 
 #include <dod/BufferUtils.h>
 
-namespace Game::Enemies
+namespace Game::Core::Enemies
 {
 
 	[[nodiscard]] bool computeNeedChangeDirection(
@@ -59,13 +59,13 @@ namespace Game::Enemies
 
 	void generateBullet(
 		Dod::DBBuffer<float>& bulletPosition,
-		const Dod::DBBuffer<float>& spawnPositions,
+		const Dod::ImBuffer<float>& spawnPositions,
 		auto& generator,
 		bool strobe
 	) noexcept
 	{
 		const auto numOfSources{ spawnPositions.numOfFilledEls };
-		const auto spawnerId{ generator.generate(1 * (numOfSources > 0), numOfSources) };
+		const auto spawnerId{ generator.generate(0, (numOfSources - 1) * (numOfSources > 0)) };
 
 		Dod::BufferUtils::populate(bulletPosition, spawnPositions.dataBegin[spawnerId], strobe & (numOfSources > 0));
 	}

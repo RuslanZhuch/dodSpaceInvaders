@@ -1,4 +1,4 @@
-#include "Enemies.h"
+#include "EnemiesCore.h"
 
 #include <dod/ConditionTable.h>
 
@@ -9,7 +9,7 @@ using condInput_t = std::array<Dod::CondTable::TriState, numOfCols>;
 template <size_t numOfRows, size_t numOfCols>
 using condTableSrc_t = std::array<condInput_t<numOfCols>, numOfRows>;
 
-bool Game::Enemies::computeNeedChangeDirection(float currentDirection, float currentXPosition, float mostLeft, float mostRight) noexcept
+bool Game::Core::Enemies::computeNeedChangeDirection(float currentDirection, float currentXPosition, float mostLeft, float mostRight) noexcept
 {
 
     // xOnLeftSide, xOnRightSide, directionLeft, directionRight
@@ -54,7 +54,7 @@ bool Game::Enemies::computeNeedChangeDirection(float currentDirection, float cur
 
 }
 
-float Game::Enemies::computeNewDirection(float currentDirection, bool strobe) noexcept
+float Game::Core::Enemies::computeNewDirection(float currentDirection, bool strobe) noexcept
 {
 
     const auto newDirection{ currentDirection + (-currentDirection) * 2.f * strobe };
@@ -63,7 +63,7 @@ float Game::Enemies::computeNewDirection(float currentDirection, bool strobe) no
 
 }
 
-float Game::Enemies::computeNewYPosition(float currentYPosition, float stride, bool strobe) noexcept
+float Game::Core::Enemies::computeNewYPosition(float currentYPosition, float stride, bool strobe) noexcept
 {
 
     const auto newBatchYCoord{ currentYPosition + stride * strobe };
@@ -72,7 +72,7 @@ float Game::Enemies::computeNewYPosition(float currentYPosition, float stride, b
 
 }
 
-float Game::Enemies::computeNewXPosition(float currentDirection, float currentXPosition, float stride, bool strobe) noexcept
+float Game::Core::Enemies::computeNewXPosition(float currentDirection, float currentXPosition, float stride, bool strobe) noexcept
 {
 
     const auto newXPosition{ currentXPosition + stride * currentDirection * strobe };
@@ -81,19 +81,19 @@ float Game::Enemies::computeNewXPosition(float currentDirection, float currentXP
 
 }
 
-float Game::Enemies::updateStrobeCountdown(float dt, float prevTimeLeft, float initialTime) noexcept
+float Game::Core::Enemies::updateStrobeCountdown(float dt, float prevTimeLeft, float initialTime) noexcept
 {
     const auto newValue{ prevTimeLeft - dt };
     const auto bReset{ newValue <= 0 };
     return newValue + bReset * (initialTime - newValue);
 }
 
-bool Game::Enemies::updateStrobe(float prevTimeLeft, float currentTime) noexcept
+bool Game::Core::Enemies::updateStrobe(float prevTimeLeft, float currentTime) noexcept
 {
     return currentTime > prevTimeLeft;
 }
 
-void Game::Enemies::generateX(
+void Game::Core::Enemies::generateX(
     Dod::DBBuffer<float>& xCoords,
     int32_t elementsPerRow,
     int32_t elementsPerCol,
@@ -111,7 +111,7 @@ void Game::Enemies::generateX(
     }
 }
 
-void Game::Enemies::generateY(
+void Game::Core::Enemies::generateY(
     Dod::DBBuffer<float>& yCoords,
     int32_t elementsPerRow,
     int32_t elementsPerCol,

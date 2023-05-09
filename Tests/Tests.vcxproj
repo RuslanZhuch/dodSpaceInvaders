@@ -50,10 +50,13 @@
     <ClCompile Include="engineTests\BufferUtils.cpp" />
     <ClCompile Include="engineTests\MemPool.cpp" />
     <ClCompile Include="engineTests\MemUtils.cpp" />
+    <ClCompile Include="gameTests\Bullets.cpp" />
+    <ClCompile Include="gameTests\Collision.cpp" />
     <ClCompile Include="gameTests\Enemies.cpp" />
     <ClCompile Include="gameTests\InputsSystem.cpp" />
     <ClCompile Include="gameTests\Mocks\MockInstantRenderer.cpp" />
     <ClCompile Include="gameTests\GameRenderer.cpp" />
+    <ClCompile Include="gameTests\Obstacles.cpp" />
     <ClCompile Include="gameTests\SceneRender.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

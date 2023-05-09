@@ -9,17 +9,47 @@
     <ClCompile Include="src\game\renderer\instantRenderer.cpp">
       <Filter>game\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\Renderer.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game\Scene.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
     <ClCompile Include="src\game\Inputs.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\Enemies.cpp">
-      <Filter>game</Filter>
+    <ClCompile Include="src\game\EnemiesCore.cpp">
+      <Filter>game\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\EnemiesGameplay.cpp">
+      <Filter>game\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\randomGenerator.cpp">
+      <Filter>game\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\MainExecution.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\BulletsCore.cpp">
+      <Filter>game\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\CollisionCore.cpp">
+      <Filter>game\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\BulletsGameplay.cpp">
+      <Filter>game\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObstaclesCore.cpp">
+      <Filter>game\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\PlayerGameplay.cpp">
+      <Filter>game\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Renderer.cpp">
+      <Filter>game\CoreGameRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\SceneRenderer.cpp">
+      <Filter>game\GameRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\GameRender.cpp">
+      <Filter>game\GameRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObstaclesGameplay.cpp">
+      <Filter>game\Gameplay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,20 +75,65 @@
     <ClInclude Include="src\dod\ConditionTable.h">
       <Filter>dod</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\Renderer.h">
-      <Filter>game</Filter>
-    </ClInclude>
     <ClInclude Include="src\game\renderer\instantRenderer.h">
       <Filter>game\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\Scene.h">
-      <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="src\game\Inputs.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\Enemies.h">
-      <Filter>game</Filter>
+    <ClInclude Include="src\game\EnemiesCore.h">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\EnemiesGameplay.h">
+      <Filter>game\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\EnemiesContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\randomGenerator.h">
+      <Filter>game\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\MainExecution.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\BulletsCore.h">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\CollisionCore.h">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\BulletsGameplay.h">
+      <Filter>game\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstaclesCore.h">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerGameplay.h">
+      <Filter>game\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Renderer.h">
+      <Filter>game\CoreGameRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\SceneRenderer.h">
+      <Filter>game\GameRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\GameRender.h">
+      <Filter>game\GameRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\BulletsContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstaclesContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\CommonContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstaclesGameplay.h">
+      <Filter>game\Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +145,27 @@
     </Filter>
     <Filter Include="game\Renderer">
       <UniqueIdentifier>{411182a0-7133-47fe-b702-6146fa75473e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core">
+      <UniqueIdentifier>{59b469ad-d4a0-464a-acf3-4fa640915d0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Gameplay">
+      <UniqueIdentifier>{f05b4461-a316-4e1e-b536-beaf5a464d25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Context">
+      <UniqueIdentifier>{a5cd2968-d0b3-46d9-9fa1-e21b64d15a0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Utils">
+      <UniqueIdentifier>{ff9922f9-acb5-4cbf-bc07-1d8a16f30c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\ExecutionBlocks">
+      <UniqueIdentifier>{9528f312-9d8f-4083-9c9d-25ec88635209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\CoreGameRender">
+      <UniqueIdentifier>{8ef4e6e4-3c1b-4d51-a008-99aa992b5463}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\GameRender">
+      <UniqueIdentifier>{e76f1b46-286c-4572-b434-e918c10b1456}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
