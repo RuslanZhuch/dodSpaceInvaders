@@ -2,8 +2,7 @@
 
 #include <game/Renderer.h>
 
-#include <game/Scene.h>
-#include <game/Scene.cpp>
+#include <game/SceneRenderer.cpp>
 
 #include "Mocks/MockInstantRenderer.h"
 #include "gameTests/GameTestsContext.h"
@@ -13,7 +12,7 @@ TEST(SceneRender, DrawField)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::Scene::drawField(renderer);
+	Game::SceneRenderer::drawField(renderer);
 
 	const auto& ctx{ GameTests::ctx.ctxs.back() };
 
@@ -38,7 +37,7 @@ TEST(SceneRender, DrawPlayer)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::Scene::drawPlayer(renderer, {10.f, 20.f}, 1);
+	Game::SceneRenderer::drawPlayer(renderer, {10.f, 20.f}, 1);
 
 	const auto totalCtxs{ GameTests::ctx.ctxs.size() };
 	EXPECT_GE(totalCtxs, 3);
@@ -86,7 +85,7 @@ TEST(SceneRender, DrawObstacle)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::Scene::drawObstacle(renderer, 150.f, 250.f);
+	Game::SceneRenderer::drawObstacle(renderer, 150.f, 250.f);
 
 	const auto& ctx{ GameTests::ctx.ctxs.back() };
 
@@ -111,7 +110,7 @@ TEST(SceneRender, DrawBullet)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::Scene::drawBullet(renderer, 350.f, 450.f);
+	Game::SceneRenderer::drawBullet(renderer, 350.f, 450.f);
 
 	const auto& ctx{ GameTests::ctx.ctxs.back() };
 
@@ -145,7 +144,7 @@ TEST(SceneRender, DrawEnemy)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::Scene::drawEnemy(renderer, 550.f, 650.f);
+	Game::SceneRenderer::drawEnemy(renderer, 550.f, 650.f);
 
 	const auto& ctx{ GameTests::ctx.ctxs.back() };
 
