@@ -59,12 +59,12 @@ namespace Game::Core::Enemies
 
 	void generateBullet(
 		Dod::DBBuffer<float>& bulletPosition,
-		const Dod::ImBuffer<float>& spawnPositions,
+		Dod::ImBuffer<float> spawnPositions,
 		auto& generator,
 		bool strobe
 	) noexcept
 	{
-		const auto numOfSources{ spawnPositions.numOfFilledEls };
+		const auto numOfSources{ Dod::BufferUtils::getNumFilledElements(spawnPositions) };
 		const auto spawnerId{ generator.generate(0, (numOfSources - 1) * (numOfSources > 0)) };
 
 		Dod::BufferUtils::populate(bulletPosition, spawnPositions.dataBegin[spawnerId], strobe & (numOfSources > 0));

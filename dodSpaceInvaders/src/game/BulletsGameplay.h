@@ -8,10 +8,10 @@ namespace Game::Gameplay::Bullets
     void collisionUpdate(
         Dod::DBBuffer<int32_t>& enemiesToRemove,
         Dod::DBBuffer<int32_t>& playerBulletsToRemove,
-        const Dod::ImBuffer<float>& playersBulletXCoords,
-        const Dod::ImBuffer<float>& playersBulletYCoords,
-        const Dod::ImBuffer<float>& enemiesXCoords,
-        const Dod::ImBuffer<float>& enemiesYCoords,
+        Dod::ImBuffer<float> playersBulletXCoords,
+        Dod::ImBuffer<float> playersBulletYCoords,
+        Dod::ImBuffer<float> enemiesXCoords,
+        Dod::ImBuffer<float> enemiesYCoords,
         float enemiesWidth,
         float enemiesHeight
     ) noexcept;
@@ -19,10 +19,10 @@ namespace Game::Gameplay::Bullets
     void testWithObstacles(
         Dod::DBBuffer<int32_t>& bulletsToDelete,
         Dod::DBBuffer<int32_t>& obstaclesToHit,
-        const Dod::ImBuffer<float>& bulletsX,
-        const Dod::ImBuffer<float>& bulletsY,
-        const Dod::ImBuffer<float>& obstaclesX,
-        const Dod::ImBuffer<float>& obstaclesY,
+        Dod::ImBuffer<float> bulletsX,
+        Dod::ImBuffer<float> bulletsY,
+        Dod::ImBuffer<float> obstaclesX,
+        Dod::ImBuffer<float> obstaclesY,
         float obstaclesWidth,
         float obstaclesHeight
     ) noexcept;

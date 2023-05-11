@@ -7,22 +7,22 @@ namespace Game::Core::Collision
 
 	void pointsAreaIntersection(
 		Dod::DBBuffer<int32_t>& intersections,
-		const Dod::ImBuffer<float>& pointsCenter,
+		Dod::ImBuffer<float> pointsCenter,
 		const float areaCenter,
 		const float areaWidth
 	) noexcept;
 
 	void pointsAreasIntersection(
 		Dod::DBBuffer<uint64_t>& collisions, 
-		const Dod::ImBuffer<float>& lefts, 
-		const Dod::ImBuffer<float>& rights,
+		Dod::ImBuffer<float> lefts, 
+		Dod::ImBuffer<float> rights,
 		float maxRadius
 	) noexcept;	
 	
 	void pointsSquareIntersection(
 		Dod::DBBuffer<int32_t>& intersections,
-		const Dod::ImBuffer<float>& xPointsCoords, 
-		const Dod::ImBuffer<float>& yPointsCoords,
+		Dod::ImBuffer<float> xPointsCoords, 
+		Dod::ImBuffer<float> yPointsCoords,
 		float squareX,
 		float squareY,
 		float width,
@@ -31,17 +31,17 @@ namespace Game::Core::Collision
 
 	void pointsSquaresIntersection(
 		Dod::DBBuffer<uint64_t>& intersections, 
-		const Dod::ImBuffer<float>& xPointsCoords, 
-		const Dod::ImBuffer<float>& yPointsCoords, 
-		const Dod::ImBuffer<float>& xSquaresCoords,
-		const Dod::ImBuffer<float>& ySquaresCoords,
+		Dod::ImBuffer<float> xPointsCoords, 
+		Dod::ImBuffer<float> yPointsCoords, 
+		Dod::ImBuffer<float> xSquaresCoords,
+		Dod::ImBuffer<float> ySquaresCoords,
 		float widths,
 		float heights
 	) noexcept;
 
 	void pointsPlaneIntersection(
 		Dod::DBBuffer<int32_t>& intersections,
-		const Dod::ImBuffer<float>& yPointsCoords,
+		Dod::ImBuffer<float> yPointsCoords,
 		float planeY,
 		float direction
 	) noexcept;

@@ -73,10 +73,10 @@ void Game::Gameplay::Enemies::enemiesUpdate(
     batchCoordX = newBatchCoordX;
     batchCoordY = newBatchCoordY;
 
-    for (int32_t elId{ 0 }; elId < enemiesXCoords.numOfFilledEls; ++elId)
+    for (int32_t elId{ 0 }; elId < Dod::BufferUtils::getNumFilledElements(enemiesXCoords); ++elId)
         Dod::BufferUtils::get(enemiesXCoords, elId) += moveX;
 
-    for (int32_t elId{ 0 }; elId < enemiesYCoords.numOfFilledEls; ++elId)
+    for (int32_t elId{ 0 }; elId < Dod::BufferUtils::getNumFilledElements(enemiesYCoords); ++elId)
         Dod::BufferUtils::get(enemiesYCoords, elId) += moveYDelata;
 
 }

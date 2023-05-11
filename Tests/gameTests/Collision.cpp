@@ -50,7 +50,7 @@ TEST_F(PointsAreaIntersection, inCenter)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 3);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), 1);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), 2);
@@ -72,7 +72,7 @@ TEST_F(PointsAreaIntersection, areaOffset)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 3);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), 1);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), 2);
@@ -94,7 +94,7 @@ TEST_F(PointsAreaIntersection, areaOffsetInverted)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 3);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), 1);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), 2);
@@ -116,7 +116,7 @@ TEST_F(PointsAreaIntersection, areaOffset2)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 0);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 0);
 
 }
 
@@ -135,7 +135,7 @@ TEST_F(PointsAreaIntersection, areaOffset2Inverted)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 0);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 0);
 
 }
 
@@ -154,7 +154,7 @@ TEST_F(PointsAreaIntersection, pointsOffset)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 1);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 1);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), 1);
 
 }
@@ -174,7 +174,7 @@ TEST_F(PointsAreaIntersection, pointsOffsetRadius)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 2);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), 1);
 
@@ -226,7 +226,7 @@ TEST_F(PointsAreasIntersection, inCenter)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 9);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 9);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -254,7 +254,7 @@ TEST_F(PointsAreasIntersection, leftMoved)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 6);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -279,7 +279,7 @@ TEST_F(PointsAreasIntersection, leftInverted)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 6);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -304,7 +304,7 @@ TEST_F(PointsAreasIntersection, rightMoved)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 6);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(1) << 32) | (0 << 0));
@@ -329,7 +329,7 @@ TEST_F(PointsAreasIntersection, rightInverted)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 6);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(1) << 32) | (0 << 0));
@@ -354,7 +354,7 @@ TEST_F(PointsAreasIntersection, lessRightPoints)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 4);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 4);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(1) << 32) | (0 << 0));
@@ -377,7 +377,7 @@ TEST_F(PointsAreasIntersection, lessRightPointsLargerRadius)
         maxRadius
     );
 
-    ASSERT_EQ(xAxisCollided.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xAxisCollided), 6);
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(xAxisCollided, 2), (static_cast<int64_t>(1) << 32) | (0 << 0));
@@ -439,7 +439,7 @@ TEST_F(PointsSquareIntersection, inCenter)
         squareHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 3);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), 2);
@@ -467,7 +467,7 @@ TEST_F(PointsSquareIntersection, offsetX)
         squareHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 2);
 
@@ -494,7 +494,7 @@ TEST_F(PointsSquareIntersection, offsetY)
         squareHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 1);
 
@@ -558,7 +558,7 @@ TEST_F(PointsSquaresIntersection, inCenter)
         squaresHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 9);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 9);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -592,7 +592,7 @@ TEST_F(PointsSquaresIntersection, xOffset)
         squaresHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 3);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), (static_cast<int64_t>(1) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), (static_cast<int64_t>(1) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), (static_cast<int64_t>(1) << 32) | (2 << 0));
@@ -620,7 +620,7 @@ TEST_F(PointsSquaresIntersection, yOffset)
         squaresHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 9);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 9);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -654,7 +654,7 @@ TEST_F(PointsSquaresIntersection, yOffsetShorter)
         squaresHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 6);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 6);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), (static_cast<int64_t>(0) << 32) | (0 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), (static_cast<int64_t>(0) << 32) | (2 << 0));
@@ -685,7 +685,7 @@ TEST_F(PointsSquaresIntersection, squaresOffsets)
         squaresHeight
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 3);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 3);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), (static_cast<int64_t>(0) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), (static_cast<int64_t>(1) << 32) | (1 << 0));
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 2), (static_cast<int64_t>(2) << 32) | (1 << 0));
@@ -735,7 +735,7 @@ TEST_F(PointsPlaneCollision, initial)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 1);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 0);
 
 }
@@ -755,7 +755,7 @@ TEST_F(PointsPlaneCollision, pointsOffset)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 1);
 
@@ -776,7 +776,7 @@ TEST_F(PointsPlaneCollision, planeOffset)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 0);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 1);
 
@@ -797,7 +797,7 @@ TEST_F(PointsPlaneCollision, inverted)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 2);
 
@@ -818,7 +818,7 @@ TEST_F(PointsPlaneCollision, pointsOffsetInverted)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 2);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 2);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 1), 2);
 
@@ -839,7 +839,7 @@ TEST_F(PointsPlaneCollision, planeOffsetInverted)
         direction
     );
 
-    ASSERT_EQ(intersections.numOfFilledEls, 1);
+    ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(intersections), 1);
     EXPECT_EQ(Dod::BufferUtils::get(intersections, 0), 2);
 
 }

@@ -9,12 +9,12 @@ namespace Dod::Algorithms
 	static void leftUniques(DBBuffer<T>& buffer) noexcept
 	{
 
-		if (buffer.numOfFilledEls == 0)
+		if (Dod::BufferUtils::getNumFilledElements(buffer) == 0)
 			return;
 
 		T prevElValue{ buffer.dataBegin[1] };
 		int32_t prevUniqueId{ 1 };
-		for (int32_t elId{ 2 }; elId < buffer.numOfFilledEls + 1; ++elId)
+		for (int32_t elId{ 2 }; elId < Dod::BufferUtils::getNumFilledElements(buffer) + 1; ++elId)
 		{
 			const auto bIsUnique{ prevElValue != buffer.dataBegin[elId] };
 			prevElValue = buffer.dataBegin[elId];
@@ -40,7 +40,7 @@ namespace Dod::Algorithms
 		int32_t srcLeftId{ 0 };
 		int32_t srcRightId{ 0 };
 
-		while (srcLeftId < srcLeft.numOfFilledEls && srcRightId < srcRight.numOfFilledEls)
+		while (srcLeftId < Dod::BufferUtils::getNumFilledElements(srcLeft) && srcRightId < srcRight.numOfFilledEls)
 		{
 
 			const auto leftValue{ BufferUtils::get(srcLeft, srcLeftId) };

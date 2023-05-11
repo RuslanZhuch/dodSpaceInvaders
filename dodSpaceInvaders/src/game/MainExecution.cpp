@@ -38,13 +38,9 @@ struct ObstaclesParamets
 
 static constexpr auto totalBytesForScene{ 1024 * 1024 * 10 };
 
-Game::ExecutionBlock::Main::Main()
-    :memory(totalBytesForScene)
-{
-}
-
 void Game::ExecutionBlock::Main::loadContext()
 {
+    this->memory.allocate(totalBytesForScene);
 
     this->parameters.numOfEnemiesPerRow = EnemiesParamets::numOfEnemiesPerRow;
     this->parameters.numOfEnemiesCols = EnemiesParamets::numOfEnemiesCols;
@@ -90,13 +86,17 @@ void Game::ExecutionBlock::Main::loadContext()
     Dod::BufferUtils::initFromMemory(this->playerBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, playerBulletsBytesToAquire, header));
     Dod::BufferUtils::initFromMemory(this->playerBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, 1024, header));
 
+    this->commonContext.width = 800.f;
+    this->commonContext.height = 900.f;
+
+    this->playerPositionContext = { 400.f, 850.f };
+    this->playerLifetimeContext.lifes = 1;
+
 }
 
 void Game::ExecutionBlock::Main::initiate()
 {
 
-    this->commonContext.width = 800.f;
-    this->commonContext.height = 900.f;
 
     Game::Gameplay::Enemies::generateEnemies(
         this->parameters.numOfEnemiesPerRow,
@@ -109,8 +109,6 @@ void Game::ExecutionBlock::Main::initiate()
         this->unitsContext.yCoords
     );
 
-    this->playerPositionContext = { 400.f, 850.f };
-    this->playerLifetimeContext.lifes = 1;
 
     Game::Gameplay::Obstacles::create(
         this->obstaclesContext.xCoords,
@@ -130,7 +128,7 @@ void Game::ExecutionBlock::Main::initiate()
 
 }
 
-void Game::ExecutionBlock::Main::update(float dt)
+bool Game::ExecutionBlock::Main::update(float dt)
 {
 
     sf::Event event;
@@ -197,8 +195,8 @@ void Game::ExecutionBlock::Main::update(float dt)
         this->obstaclesParameters.obstaclesStride * 0.5f
     );
 
-    if (this->obstaclesContext.toHit.numOfFilledEls > 0)
-        std::cout << this->obstaclesContext.toHit.numOfFilledEls << '\n';
+    if (Dod::BufferUtils::getNumFilledElements(this->obstaclesContext.toHit) > 0)
+        std::cout << Dod::BufferUtils::getNumFilledElements(this->obstaclesContext.toHit) << '\n';
 
     Game::Core::Bullets::updateLifetime(
         this->playerBulletsContext.toRemove,
@@ -319,5 +317,7 @@ void Game::ExecutionBlock::Main::update(float dt)
     );
 
     window.display();
+
+    return window.isOpen();
 
 }

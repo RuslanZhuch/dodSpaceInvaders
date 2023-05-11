@@ -71,8 +71,8 @@ void Game::Gameplay::Player::createBullets(
 
 void Game::Gameplay::Player::testWithBullets(
     Dod::DBBuffer<int32_t>& bulletsToDelete,
-    const Dod::ImBuffer<float>& bulletsXCorrds,
-    const Dod::ImBuffer<float>& bulletsYCorrds,
+    Dod::ImBuffer<float> bulletsXCorrds,
+    Dod::ImBuffer<float> bulletsYCorrds,
     int32_t& playerLifes,
     float playerX,
     float playerY,
@@ -81,7 +81,7 @@ void Game::Gameplay::Player::testWithBullets(
 ) noexcept
 {
 
-    const auto prevNumBulletsToDelete{ bulletsToDelete.numOfFilledEls };
+    const auto prevNumBulletsToDelete{ Dod::BufferUtils::getNumFilledElements(bulletsToDelete) };
 
     Game::Core::Collision::pointsSquareIntersection(
         bulletsToDelete,
@@ -93,7 +93,7 @@ void Game::Gameplay::Player::testWithBullets(
         playerHeight
     );
 
-    const auto currNumBulletsToDelete{ bulletsToDelete.numOfFilledEls };
+    const auto currNumBulletsToDelete{ Dod::BufferUtils::getNumFilledElements(bulletsToDelete) };
 
     playerLifes -= int32_t(1) * (currNumBulletsToDelete - prevNumBulletsToDelete > 0);
 

@@ -17,7 +17,8 @@ TEST(MemPool, generation)
 
 	for (const auto bytes : bytesToAllocate)
 	{
-		Dod::MemPool pool(bytes);
+		Dod::MemPool pool;
+		pool.allocate(bytes);
 		const auto begin{ pool.dataBegin };
 		const auto end{ pool.dataEnd };
 		EXPECT_NE(begin, nullptr);
@@ -26,7 +27,7 @@ TEST(MemPool, generation)
 	}
 
 	{
-		Dod::MemPool pool(0);
+		Dod::MemPool pool;
 		const auto begin{ pool.dataBegin };
 		const auto end{ pool.dataEnd };
 		EXPECT_EQ(begin, nullptr);
@@ -35,35 +36,3 @@ TEST(MemPool, generation)
 	}
 
 }
-
-//TEST(MemPool, Acquiring)
-//{
-//
-//	Dod::MemPool pool(100);
-//
-//	const auto ptr1{ pool.aquire(10) };
-//	EXPECT_NE(ptr1, nullptr);
-//
-//	const auto ptr2{ pool.aquire(20) };
-//	EXPECT_NE(ptr2, nullptr);
-//	EXPECT_EQ(ptr2 - ptr1, 10);
-//
-//	const auto ptr3{ pool.aquire(30) };
-//	EXPECT_NE(ptr3, nullptr);
-//	EXPECT_EQ(ptr3 - ptr2, 20);
-//
-//	{
-//		const auto ptr{ pool.aquire(60) };
-//		EXPECT_EQ(ptr, nullptr);
-//	}
-//
-//	const auto ptr4{ pool.aquire(40) };
-//	EXPECT_NE(ptr4, nullptr);
-//	EXPECT_EQ(ptr4 - ptr3, 30);
-//
-//	{
-//		const auto ptr{ pool.aquire(1) };
-//		EXPECT_EQ(ptr, nullptr);
-//	}
-//
-//}

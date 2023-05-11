@@ -33,8 +33,8 @@ TEST(ConditionTable, Generation)
 
 	Dod::CondTable::Table table{ Dod::CondTable::generate(tableSrc, xOrMem, ignoreMem) };
 
-	EXPECT_EQ(table.xOrMasks.numOfFilledEls, totalRows);
-	EXPECT_EQ(table.ignoreMasks.numOfFilledEls, totalRows);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(table.xOrMasks), totalRows);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(table.ignoreMasks), totalRows);
 
 	EXPECT_EQ(Dod::BufferUtils::get(table.xOrMasks, 0), 0x0000'0002);
 	EXPECT_EQ(Dod::BufferUtils::get(table.xOrMasks, 1), 0x0000'0000);
@@ -80,8 +80,8 @@ TEST(ConditionTable, GenerationNonUniform)
 
 	Dod::CondTable::Table table{ Dod::CondTable::generate(tableSrc, xOrMem, ignoreMem) };
 
-	EXPECT_EQ(table.xOrMasks.numOfFilledEls, totalRows);
-	EXPECT_EQ(table.ignoreMasks.numOfFilledEls, totalRows);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(table.xOrMasks), totalRows);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(table.ignoreMasks), totalRows);
 
 	EXPECT_EQ(Dod::BufferUtils::get(table.xOrMasks, 0), 0x0000'0001);
 	EXPECT_EQ(Dod::BufferUtils::get(table.xOrMasks, 1), 0x0000'0003);
@@ -137,28 +137,28 @@ TEST(ConditionTable, QueryPopulation)
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0001 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0003 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0002 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 2);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0000 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 3);
 	}
 
@@ -202,27 +202,27 @@ TEST(ConditionTable, QueryPopulationNoHit)
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0001 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0003 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0002 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 0);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0000 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 0);
 	}
 
 }
@@ -265,7 +265,7 @@ TEST(ConditionTable, QueryPopulationWithSkips)
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0002 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 1), 1);
 	}
@@ -273,14 +273,14 @@ TEST(ConditionTable, QueryPopulationWithSkips)
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0000 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
 	}
 	{
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0003 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 0);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 1), 1);
 	}
@@ -288,7 +288,7 @@ TEST(ConditionTable, QueryPopulationWithSkips)
 		quary.numOfFilledEls = 0;
 		type_t inputs{ 0x0000'0001 };
 		Dod::CondTable::populateQuery(quary, inputs, table);
-		EXPECT_EQ(quary.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(quary), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(quary, 0), 1);
 	}
 

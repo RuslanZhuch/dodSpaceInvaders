@@ -31,8 +31,8 @@ namespace Game::Gameplay::Player
 
     void testWithBullets(
         Dod::DBBuffer<int32_t>& bulletsToDelete,
-        const Dod::ImBuffer<float>& bulletsXCorrds,
-        const Dod::ImBuffer<float>& bulletsYCorrds,
+        Dod::ImBuffer<float> bulletsXCorrds,
+        Dod::ImBuffer<float> bulletsYCorrds,
         int32_t& playerLifes,
         float playerX,
         float playerY,

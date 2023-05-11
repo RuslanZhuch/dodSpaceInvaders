@@ -18,7 +18,8 @@ namespace Dod::BufferUtils
 		//TODO: Is it legal?
 		dbBuffer.dataBegin = reinterpret_cast<decltype(dbBuffer.dataBegin)>(actualData.dataBegin);
 		dbBuffer.dataEnd = reinterpret_cast<decltype(dbBuffer.dataEnd)>(actualData.dataEnd);
-		dbBuffer.numOfFilledEls = 0;
+		if constexpr (requires {dbBuffer.numOfFilledEls; })
+			dbBuffer.numOfFilledEls = 0;
 
 	}
 
@@ -30,7 +31,8 @@ namespace Dod::BufferUtils
 		//TODO: Is it legal?
 		dbBuffer.dataBegin = reinterpret_cast<decltype(dbBuffer.dataBegin)>(actualData.dataBegin);
 		dbBuffer.dataEnd = reinterpret_cast<decltype(dbBuffer.dataEnd)>(actualData.dataEnd);
-		dbBuffer.numOfFilledEls = 0;
+		if constexpr (requires {dbBuffer.numOfFilledEls; })
+			dbBuffer.numOfFilledEls = 0;
 
 	}
 
@@ -70,15 +72,45 @@ namespace Dod::BufferUtils
 
 	}
 
+	template <typename T>
+	[[nodiscard]] static auto initFromArray(MutBuffer<T>& buffer, auto& src) noexcept
+	{
+
+		struct MemSpan
+		{
+			MemTypes::dataPoint_t dataBegin{};
+			MemTypes::dataPoint_t dataEnd{};
+		};
+		const MemSpan memSpan(
+			reinterpret_cast<Dod::MemTypes::dataPoint_t>(src.data()),
+			reinterpret_cast<Dod::MemTypes::dataPoint_t>(src.data() + src.size())
+		);
+
+		initFromMemory(buffer, memSpan);
+
+	}
+
+	template <typename T>
+	[[nodiscard]] auto getNumFilledElements(const Dod::DBBuffer<T>& buffer) noexcept
+	{
+		return buffer.numOfFilledEls;
+	}
+
+	template<typename BufferType>
+	[[nodiscard]] auto getNumFilledElements(BufferType buffer) noexcept
+	{
+		return static_cast<int32_t>(buffer.dataEnd - buffer.dataBegin);
+	}
+
 	template<typename T>
 	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept
 	{
 
 		const auto capacity{ buffer.dataEnd - buffer.dataBegin };
-		const auto bCanAddValue{ (buffer.numOfFilledEls + 1 < capacity) && strobe };
+		const auto bCanAddValue{ (Dod::BufferUtils::getNumFilledElements(buffer) + 1 < capacity) && strobe };
 
 		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
-		buffer.dataBegin[buffer.numOfFilledEls * bCanAddValue] = value;
+		buffer.dataBegin[Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue] = value;
 
 	}
 
@@ -97,31 +129,29 @@ namespace Dod::BufferUtils
 	void remove(DBBuffer<T>& buffer, const ImBuffer<int32_t> indicesToRemove) noexcept
 	{
 
-		auto targetIdx{ buffer.numOfFilledEls };
-		for (int32_t idx{ 0 }; idx < indicesToRemove.numOfFilledEls; ++idx)
+		auto targetIdx{ Dod::BufferUtils::getNumFilledElements(buffer) };
+		for (int32_t idx{ 0 }; idx < Dod::BufferUtils::getNumFilledElements(indicesToRemove); ++idx)
 		{
 			const auto removeId{ indicesToRemove.dataBegin[idx] };
 			std::swap(buffer.dataBegin[removeId + 1], buffer.dataBegin[targetIdx]);
 			--targetIdx;
 		}
-		buffer.numOfFilledEls -= indicesToRemove.numOfFilledEls;
+		buffer.numOfFilledEls -= Dod::BufferUtils::getNumFilledElements(indicesToRemove);
 
 	}
 
-	template<typename T>
-	void initFromBuffer(ImBuffer<T>& dest, const DBBuffer<T>& src) noexcept
+	template<typename BufferType>
+	void initFromBuffer(BufferType& dest, const DBBuffer<typename BufferType::type_t>& src) noexcept
 	{
 		dest.dataBegin = src.dataBegin + 1;
 		dest.dataEnd = src.dataEnd;
-		dest.numOfFilledEls = src.numOfFilledEls;
 	}
 
-	template<typename T>
-	void initFromBuffer(ImBuffer<T>& dest, const DBBuffer<T>& src, int32_t elementBeginId, int32_t elementEndId) noexcept
+	template<typename BufferType>
+	void initFromBuffer(BufferType& dest, const DBBuffer<typename BufferType::type_t>& src, int32_t elementBeginId, int32_t elementEndId) noexcept
 	{
 		dest.dataBegin = src.dataBegin + 1 + elementBeginId;
 		dest.dataEnd = src.dataBegin + 1 + elementEndId;
-		dest.numOfFilledEls = elementEndId - elementBeginId;
 	}
 
 	[[nodiscard]] auto createImFromBuffer(const auto& srcBuffer) noexcept
@@ -130,7 +160,7 @@ namespace Dod::BufferUtils
 		using type_t = std::remove_pointer_t<decltype(srcBuffer.dataBegin)>;
 
 		Dod::ImBuffer<type_t> imBuffer;
-		initFromBuffer(imBuffer, srcBuffer, 0, srcBuffer.numOfFilledEls);
+		initFromBuffer(imBuffer, srcBuffer, 0, Dod::BufferUtils::getNumFilledElements(srcBuffer));
 
 		return imBuffer;
 

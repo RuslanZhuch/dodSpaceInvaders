@@ -47,7 +47,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 4);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 4);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2), 3);
@@ -62,7 +62,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 1);
 	}
 
@@ -74,7 +74,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1), 2);
 	}
@@ -87,7 +87,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1), 1);
 	}
@@ -100,7 +100,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 3);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 3);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2), 3);
@@ -114,7 +114,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 0);
 	}
 
 	{
@@ -125,7 +125,7 @@ TEST(Algorithms, LeftUniques)
 
 		Dod::Algorithms::leftUniques(buffer);
 
-		EXPECT_EQ(buffer.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0), 1);
 	}
 
@@ -156,7 +156,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 3);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 3);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 2), 3);
@@ -177,7 +177,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
 	}
@@ -197,7 +197,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 2);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 2);
 	}
@@ -217,7 +217,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 4);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 4);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 1), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 2), 2);
@@ -239,7 +239,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 0);
 	}
 
 	{
@@ -257,7 +257,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 0);
 	}
 
 	{
@@ -275,7 +275,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 0);
 	}
 
 	{
@@ -293,7 +293,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 0);
 	}
 
 	{
@@ -311,7 +311,7 @@ TEST(Algorithms, GetIntersections)
 
 		Dod::Algorithms::getIntersections(resultBuffer, bufferLeft, bufferRight);
 
-		EXPECT_EQ(resultBuffer.numOfFilledEls, 1);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(resultBuffer), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(resultBuffer, 0), 1);
 	}
 

@@ -41,8 +41,8 @@ TEST_F(ObstaclesLifetimeUpdate, all)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 3); 
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 3); 
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 0), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 1), 1);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 2), 2);
@@ -56,8 +56,8 @@ TEST_F(ObstaclesLifetimeUpdate, none)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 
 }
 
@@ -69,8 +69,8 @@ TEST_F(ObstaclesLifetimeUpdate, partial)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 0), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 1), 2);
 
@@ -84,8 +84,8 @@ TEST_F(ObstaclesLifetimeUpdate, allInverted)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 3);
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 3);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 0), 2);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 1), 1);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 2), 0);
@@ -100,8 +100,8 @@ TEST_F(ObstaclesLifetimeUpdate, allMixed)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 3);
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 3);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 0), 2);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 1), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 2), 1);
@@ -116,8 +116,8 @@ TEST_F(ObstaclesLifetimeUpdate, allLifes)
 
 	Game::Core::Obstacles::updateLifetime(obstaclesToRemove, obstaclesToHit, obstaclesLifes);
 
-	ASSERT_EQ(obstaclesToRemove.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesToHit.numOfFilledEls, 0);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToHit), 0);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 0), 1);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesToRemove, 1), 2);
 
@@ -169,10 +169,10 @@ TEST_F(ObstaclesRemove, all)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 0);
 
 }
 
@@ -185,10 +185,10 @@ TEST_F(ObstaclesRemove, none)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 3);
-	ASSERT_EQ(obstaclesXCoords.numOfFilledEls, 3);
-	ASSERT_EQ(obstaclesYCoords.numOfFilledEls, 3);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 3);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 3);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 3);
 
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 0), 10.f);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 1), 20.f);
@@ -209,10 +209,10 @@ TEST_F(ObstaclesRemove, inverted)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 0);
 
 }
 
@@ -226,10 +226,10 @@ TEST_F(ObstaclesRemove, partial)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 2);
 
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 0), 10.f);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 1), 30.f);
@@ -241,10 +241,10 @@ TEST_F(ObstaclesRemove, partial)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 1);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 1);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 1);
 
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 0), 10.f);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesYCoords, 0), 40.f);
@@ -254,10 +254,10 @@ TEST_F(ObstaclesRemove, partial)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 0);
 
 }
 
@@ -271,10 +271,10 @@ TEST_F(ObstaclesRemove, partial2)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 2);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 2);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 2);
 
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 0), 30.f);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 1), 20.f);
@@ -286,10 +286,10 @@ TEST_F(ObstaclesRemove, partial2)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 1);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 1);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 1);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 1);
 
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesXCoords, 0), 30.f);
 	EXPECT_EQ(Dod::BufferUtils::get(obstaclesYCoords, 0), 60.f);
@@ -299,9 +299,9 @@ TEST_F(ObstaclesRemove, partial2)
 
 	Game::Core::Obstacles::remove(obstaclesToRemove, obstaclesLifes, obstaclesXCoords, obstaclesYCoords);
 
-	EXPECT_EQ(obstaclesToRemove.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesLifes.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesXCoords.numOfFilledEls, 0);
-	EXPECT_EQ(obstaclesYCoords.numOfFilledEls, 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesToRemove), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesLifes), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesXCoords), 0);
+	EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(obstaclesYCoords), 0);
 
 }

@@ -12,7 +12,7 @@ void Game::Core::Bullets::updateLifetime(
 )
 {
 
-    std::sort(elementsToDelete.dataBegin + 1, elementsToDelete.dataBegin + 1 + elementsToDelete.numOfFilledEls, std::greater());
+    std::sort(elementsToDelete.dataBegin + 1, elementsToDelete.dataBegin + 1 + Dod::BufferUtils::getNumFilledElements(elementsToDelete), std::greater());
     Dod::Algorithms::leftUniques(elementsToDelete);
 
     const auto bulletsToRemoveIm{ Dod::BufferUtils::createImFromBuffer(elementsToDelete) };
@@ -27,7 +27,7 @@ void Game::Core::Bullets::updateLifetime(
 void Game::Core::Bullets::updateMovement(Dod::DBBuffer<float>& positions, float velocity, float dt)
 {
 
-    for (int32_t idx{ 0 }; idx < positions.numOfFilledEls; ++idx) {
+    for (int32_t idx{ 0 }; idx < Dod::BufferUtils::getNumFilledElements(positions); ++idx) {
         Dod::BufferUtils::get(positions, idx) += velocity * dt;
     }
 

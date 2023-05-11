@@ -19,12 +19,10 @@ namespace Game::ExecutionBlock
     {
 
     public:
-        Main();
-
         void loadContext();
 
         void initiate();
-        void update(float dt);
+        [[nodiscard]] bool update(float dt);
 
         [[nodiscard]] auto& getWindow() { return this->gameRenderer->getWindow(); }
 

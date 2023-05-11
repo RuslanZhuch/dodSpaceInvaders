@@ -15,8 +15,7 @@ namespace Dod
 	struct MemPool
 	{
 
-
-		explicit MemPool(MemTypes::capacity_t capacityInBytes) noexcept;
+		void allocate(MemTypes::capacity_t capacityInBytes) noexcept;
 
 		MemTypes::dataPoint_t dataBegin{ nullptr };
 		MemTypes::dataPoint_t dataEnd{ nullptr };

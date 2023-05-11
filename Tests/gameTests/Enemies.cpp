@@ -294,8 +294,8 @@ TEST(Enemies, Generation)
 	Game::Core::Enemies::generateX(xCoords, enemiesPerRow, enemiesPerCol, offsetX, strideX);
 	Game::Core::Enemies::generateY(yCoords, enemiesPerRow, enemiesPerCol, offsetY, strideY);
 
-	ASSERT_EQ(xCoords.numOfFilledEls, totalEnemies);
-	ASSERT_EQ(yCoords.numOfFilledEls, totalEnemies);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(xCoords), totalEnemies);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(yCoords), totalEnemies);
 
 	EXPECT_EQ(Dod::BufferUtils::get(xCoords, 0), offsetX + strideX * 0);
 	EXPECT_EQ(Dod::BufferUtils::get(xCoords, 1), offsetX + strideX * 1);
@@ -364,25 +364,25 @@ TEST(Enemies, BulletsGeneration)
 
 		{
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 1);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 2);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 2);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 		}
 		{
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 3);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
 		}
 		{
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 4);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 4);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
@@ -390,7 +390,7 @@ TEST(Enemies, BulletsGeneration)
 		}
 		{
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 5);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 5);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 20.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 30.f);
@@ -408,26 +408,26 @@ TEST(Enemies, BulletsGeneration)
 		{
 			const auto strobe{ true };
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 1);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
 			const auto strobe{ false };
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 1);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 1);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 		}
 		{
 			const auto strobe{ true };
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 2);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 2);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
 		}
 		{
 			const auto strobe{ true };
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 3);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 40.f);
@@ -435,7 +435,7 @@ TEST(Enemies, BulletsGeneration)
 		{
 			const auto strobe{ false };
 			Game::Core::Enemies::generateBullet(positions, Dod::BufferUtils::createImFromBuffer(spawnPositions), gen, strobe);
-			ASSERT_EQ(positions.numOfFilledEls, 3);
+			ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positions), 3);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 0), 10.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 1), 30.f);
 			EXPECT_EQ(Dod::BufferUtils::get(positions, 2), 40.f);

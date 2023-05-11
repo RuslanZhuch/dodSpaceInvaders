@@ -33,8 +33,8 @@ TEST(Bullets, bulletsLifetimeUpdate)
 
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
 
-		EXPECT_EQ(positionsX.numOfFilledEls, 0);
-		EXPECT_EQ(positionsY.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 0);
 	}
 
 	{
@@ -48,8 +48,8 @@ TEST(Bullets, bulletsLifetimeUpdate)
 
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
 
-		EXPECT_EQ(positionsX.numOfFilledEls, 0);
-		EXPECT_EQ(positionsY.numOfFilledEls, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 0);
 	}
 
 	{
@@ -64,8 +64,8 @@ TEST(Bullets, bulletsLifetimeUpdate)
 		Dod::BufferUtils::populate(elsToRemove, 3, true);
 		Dod::BufferUtils::populate(elsToRemove, 4, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 3);
-		ASSERT_EQ(positionsY.numOfFilledEls, 3);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 3);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 3);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 1.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsY, 0), 10.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 2.f);
@@ -75,8 +75,8 @@ TEST(Bullets, bulletsLifetimeUpdate)
 
 		Dod::BufferUtils::populate(elsToRemove, 1, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 2);
-		ASSERT_EQ(positionsY.numOfFilledEls, 2);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 2);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 1.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsY, 0), 10.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 3.f);
@@ -84,15 +84,15 @@ TEST(Bullets, bulletsLifetimeUpdate)
 
 		Dod::BufferUtils::populate(elsToRemove, 0, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 1);
-		ASSERT_EQ(positionsY.numOfFilledEls, 1);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 1);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 3.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsY, 0), 30.f);
 
 		Dod::BufferUtils::populate(elsToRemove, 0, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 0);
-		ASSERT_EQ(positionsY.numOfFilledEls, 0);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 0);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 0);
 	}
 
 	{
@@ -108,8 +108,8 @@ TEST(Bullets, bulletsLifetimeUpdate)
 		Dod::BufferUtils::populate(elsToRemove, 1, true);
 		Dod::BufferUtils::populate(elsToRemove, 2, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 2);
-		ASSERT_EQ(positionsY.numOfFilledEls, 2);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 2);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 2);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 5.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsY, 0), 50.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 4.f);
@@ -117,15 +117,15 @@ TEST(Bullets, bulletsLifetimeUpdate)
 
 		Dod::BufferUtils::populate(elsToRemove, 1, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 1);
-		ASSERT_EQ(positionsY.numOfFilledEls, 1);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 1);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 1);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 5.f);
 		EXPECT_EQ(Dod::BufferUtils::get(positionsY, 0), 50.f);
 
 		Dod::BufferUtils::populate(elsToRemove, 0, true);
 		Game::Core::Bullets::updateLifetime(elsToRemove, positionsX, positionsY);
-		ASSERT_EQ(positionsX.numOfFilledEls, 0);
-		ASSERT_EQ(positionsY.numOfFilledEls, 0);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 0);
+		ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsY), 0);
 	}
 
 }
@@ -160,7 +160,7 @@ TEST_F(BulletsUpdateMovement, initial)
 	constexpr auto dt{ 2.f };
 
 	Game::Core::Bullets::updateMovement(positionsX, velocity, dt);
-	ASSERT_EQ(positionsX.numOfFilledEls, 5);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 5);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 3.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 4.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 2), 5.f);
@@ -168,7 +168,7 @@ TEST_F(BulletsUpdateMovement, initial)
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 4), 7.f);
 
 	Game::Core::Bullets::updateMovement(positionsX, velocity, dt);
-	ASSERT_EQ(positionsX.numOfFilledEls, 5);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 5);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 5.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 6.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 2), 7.f);
@@ -186,7 +186,7 @@ TEST_F(BulletsUpdateMovement, doubleVelocity)
 	constexpr auto dt{ 2.f };
 
 	Game::Core::Bullets::updateMovement(positionsX, velocity, dt);
-	ASSERT_EQ(positionsX.numOfFilledEls, 5);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 5);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 5.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 6.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 2), 7.f);
@@ -204,7 +204,7 @@ TEST_F(BulletsUpdateMovement, increaseDt)
 	constexpr auto dt{ 3.f };
 
 	Game::Core::Bullets::updateMovement(positionsX, velocity, dt);
-	ASSERT_EQ(positionsX.numOfFilledEls, 5);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(positionsX), 5);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 0), 4.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 1), 5.f);
 	EXPECT_EQ(Dod::BufferUtils::get(positionsX, 2), 6.f);

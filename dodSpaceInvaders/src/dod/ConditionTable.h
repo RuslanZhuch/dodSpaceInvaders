@@ -55,7 +55,7 @@ namespace Dod::CondTable
 	void populateQuery(DBBuffer<T>& query, const uint32_t inputs, const Table& table) noexcept
 	{
 
-		for (int32_t rowId{}; rowId < table.xOrMasks.numOfFilledEls; ++rowId)
+		for (int32_t rowId{}; rowId < Dod::BufferUtils::getNumFilledElements(table.xOrMasks); ++rowId)
 		{
 			const auto xOr{ Dod::BufferUtils::get(table.xOrMasks, rowId) };
 			const auto ignore{ Dod::BufferUtils::get(table.ignoreMasks, rowId) };
@@ -71,7 +71,7 @@ namespace Dod::CondTable
 	void applyTransform(TOutput& target, const std::span<const TOutput> outputs, const Dod::ImBuffer<TInput>& query) noexcept
 	{
 
-		for (int32_t id{ 0 }; id < query.numOfFilledEls; ++id)
+		for (int32_t id{ 0 }; id < Dod::BufferUtils::getNumFilledElements(query); ++id)
 		{
 			const auto outputId{ Dod::BufferUtils::get(query, id) };
 			target = outputs[outputId];

@@ -9,10 +9,10 @@
 void Game::Gameplay::Bullets::collisionUpdate(
     Dod::DBBuffer<int32_t>& enemiesToRemove,
     Dod::DBBuffer<int32_t>& playerBulletsToRemove,
-    const Dod::ImBuffer<float>& playersBulletXCoords,
-    const Dod::ImBuffer<float>& playersBulletYCoords,
-    const Dod::ImBuffer<float>& enemiesXCoords,
-    const Dod::ImBuffer<float>& enemiesYCoords,
+    Dod::ImBuffer<float> playersBulletXCoords,
+    Dod::ImBuffer<float> playersBulletYCoords,
+    Dod::ImBuffer<float> enemiesXCoords,
+    Dod::ImBuffer<float> enemiesYCoords,
     float enemiesWidth,
     float enemiesHeight
 ) noexcept
@@ -35,10 +35,10 @@ void Game::Gameplay::Bullets::collisionUpdate(
 
     Dod::Algorithms::getIntersections(collided, xAxisCollided, yAxisCollided);
 
-    for (int32_t elId{}; elId < collided.numOfFilledEls; ++elId)
+    for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(collided); ++elId)
         Dod::BufferUtils::populate(enemiesToRemove, static_cast<int32_t>(Dod::BufferUtils::get(collided, elId)), true);
 
-    for (int32_t elId{}; elId < collided.numOfFilledEls; ++elId)
+    for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(collided); ++elId)
         Dod::BufferUtils::populate(playerBulletsToRemove, static_cast<int32_t>(Dod::BufferUtils::get(collided, elId) >> 32), true);
 
 }
@@ -46,10 +46,10 @@ void Game::Gameplay::Bullets::collisionUpdate(
 void Game::Gameplay::Bullets::testWithObstacles(
     Dod::DBBuffer<int32_t>& bulletsToDelete,
     Dod::DBBuffer<int32_t>& obstaclesToHit,
-    const Dod::ImBuffer<float>& bulletsX,
-    const Dod::ImBuffer<float>& bulletsY,
-    const Dod::ImBuffer<float>& obstaclesX,
-    const Dod::ImBuffer<float>& obstaclesY,
+    Dod::ImBuffer<float> bulletsX,
+    Dod::ImBuffer<float> bulletsY,
+    Dod::ImBuffer<float> obstaclesX,
+    Dod::ImBuffer<float> obstaclesY,
     float obstaclesWidth,
     float obstaclesHeight
 ) noexcept
@@ -69,10 +69,10 @@ void Game::Gameplay::Bullets::testWithObstacles(
         obstaclesHeight
     );
 
-    for (int32_t elId{}; elId < intersections.numOfFilledEls; ++elId)
+    for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(intersections); ++elId)
         Dod::BufferUtils::populate(obstaclesToHit, static_cast<int32_t>(Dod::BufferUtils::get(intersections, elId)), true);
 
-    for (int32_t elId{}; elId < intersections.numOfFilledEls; ++elId)
+    for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(intersections); ++elId)
         Dod::BufferUtils::populate(bulletsToDelete, static_cast<int32_t>(Dod::BufferUtils::get(intersections, elId) >> 32), true);
 
 }

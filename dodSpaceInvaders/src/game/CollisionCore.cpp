@@ -7,7 +7,7 @@
 
 void Game::Core::Collision::pointsAreaIntersection(
     Dod::DBBuffer<int32_t>& intersections,
-    const Dod::ImBuffer<float>& pointsCenter,
+    Dod::ImBuffer<float> pointsCenter,
     const float areaCenter,
     const float maxRadius
 ) noexcept
@@ -15,7 +15,7 @@ void Game::Core::Collision::pointsAreaIntersection(
 
     const auto maxDistForCollisionSqr{ maxRadius * maxRadius };
 
-    for (int32_t pointId{ 0 }; pointId < pointsCenter.numOfFilledEls; ++pointId)
+    for (int32_t pointId{ 0 }; pointId < Dod::BufferUtils::getNumFilledElements(pointsCenter); ++pointId)
     {
         const auto pointCenter{ Dod::BufferUtils::get(pointsCenter, pointId) };
 
@@ -29,16 +29,16 @@ void Game::Core::Collision::pointsAreaIntersection(
 
 void Game::Core::Collision::pointsAreasIntersection(
 	Dod::DBBuffer<uint64_t>& collisions, 
-	const Dod::ImBuffer<float>& lefts, 
-	const Dod::ImBuffer<float>& rights, 
+	Dod::ImBuffer<float> lefts, 
+	Dod::ImBuffer<float> rights, 
 	float maxRadius
 ) noexcept
 {
     const auto maxDistForCollisionSqr{ maxRadius * maxRadius };
 
-    for (int32_t leftIdx{ 0 }; leftIdx < lefts.numOfFilledEls; ++leftIdx)
+    for (int32_t leftIdx{ 0 }; leftIdx < Dod::BufferUtils::getNumFilledElements(lefts); ++leftIdx)
     {
-        for (int32_t rightIdx{ 0 }; rightIdx < rights.numOfFilledEls; ++rightIdx)
+        for (int32_t rightIdx{ 0 }; rightIdx < Dod::BufferUtils::getNumFilledElements(rights); ++rightIdx)
         {
             const auto distanceSqr{ std::powf(Dod::BufferUtils::get(rights, rightIdx) - Dod::BufferUtils::get(lefts, leftIdx), 2) };
             const auto bInRange{ distanceSqr <= maxDistForCollisionSqr };
@@ -49,8 +49,8 @@ void Game::Core::Collision::pointsAreasIntersection(
 
 void Game::Core::Collision::pointsSquareIntersection(
     Dod::DBBuffer<int32_t>& intersections,
-    const Dod::ImBuffer<float>& xPointsCoords,
-    const Dod::ImBuffer<float>& yPointsCoords,
+    Dod::ImBuffer<float> xPointsCoords,
+    Dod::ImBuffer<float> yPointsCoords,
     float squareX,
     float squareY,
     float width,
@@ -75,10 +75,10 @@ void Game::Core::Collision::pointsSquareIntersection(
 
 void Game::Core::Collision::pointsSquaresIntersection(
     Dod::DBBuffer<uint64_t>& intersections, 
-    const Dod::ImBuffer<float>& xPointsCoords, 
-    const Dod::ImBuffer<float>& yPointsCoords, 
-    const Dod::ImBuffer<float>& xSquaresCoords, 
-    const Dod::ImBuffer<float>& ySquaresCoords, 
+    Dod::ImBuffer<float> xPointsCoords, 
+    Dod::ImBuffer<float> yPointsCoords, 
+    Dod::ImBuffer<float> xSquaresCoords, 
+    Dod::ImBuffer<float> ySquaresCoords, 
     float widths, 
     float heights
 ) noexcept
@@ -103,13 +103,13 @@ void Game::Core::Collision::pointsSquaresIntersection(
 
 void Game::Core::Collision::pointsPlaneIntersection(
     Dod::DBBuffer<int32_t>& intersections, 
-    const Dod::ImBuffer<float>& yPointsCoords, 
+    Dod::ImBuffer<float> yPointsCoords, 
     float planeY, 
     float direction
 ) noexcept
 {
 
-    for (int32_t pointId{ 0 }; pointId < yPointsCoords.numOfFilledEls; ++pointId)
+    for (int32_t pointId{ 0 }; pointId < Dod::BufferUtils::getNumFilledElements(yPointsCoords); ++pointId)
     {
         const auto bIsColliding{ Dod::BufferUtils::get(yPointsCoords, pointId) * direction <= planeY * direction };
         Dod::BufferUtils::populate(intersections, pointId, bIsColliding);

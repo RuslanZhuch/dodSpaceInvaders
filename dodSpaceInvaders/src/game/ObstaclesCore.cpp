@@ -9,7 +9,7 @@ void Game::Core::Obstacles::updateLifetime(
 ) noexcept
 {
 
-    for (int32_t elId{ 0 }; elId < obstaclesToHit.numOfFilledEls; ++elId)
+    for (int32_t elId{ 0 }; elId < Dod::BufferUtils::getNumFilledElements(obstaclesToHit); ++elId)
     {
         const auto obstacleToHitId{ Dod::BufferUtils::get(obstaclesToHit, elId) };
         const auto lifesLeft{ --Dod::BufferUtils::get(obstaclesLifes, obstacleToHitId) };

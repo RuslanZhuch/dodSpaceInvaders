@@ -4,9 +4,9 @@
 
 #include "MainExecution.h"
 
-void msgLoop(float dt, Game::ExecutionBlock::Main& exe)
+bool msgLoop(float dt, Game::ExecutionBlock::Main& exe)
 {
-    exe.update(dt);
+    return exe.update(dt);
 }
 
 void Game::run()
@@ -19,10 +19,12 @@ void Game::run()
 
     float deltaTime{ 0.f };
 
-    while (exe.getWindow().isOpen())
+    while (true)
     {
         const auto start{ std::chrono::high_resolution_clock::now() };
-        msgLoop(deltaTime, exe);
+        if (!msgLoop(deltaTime, exe))
+            break;
+
         const auto end{ std::chrono::high_resolution_clock::now() };
         deltaTime = static_cast<float>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()) / 1'000'000'000.f;
     }
