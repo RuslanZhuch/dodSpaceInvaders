@@ -114,8 +114,8 @@ void Game::Gameplay::Enemies::generateEnemies(
     Dod::DBBuffer<float>& yCoords
 )
 {
-    batchXCoord = 100.f;
-    batchYCoord = 200.f;
+//    batchXCoord = 100.f;
+//    batchYCoord = 200.f;
 
     Game::Core::Enemies::generateX(
         xCoords,

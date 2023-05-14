@@ -14,13 +14,20 @@ void Game::SceneRenderer::drawField(GameRenderer& renderer) noexcept
 
 }
 
-void Game::SceneRenderer::drawPlayer(GameRenderer& renderer, const sf::Vector2f& position, bool strobe) noexcept
+void Game::SceneRenderer::drawPlayer(
+    GameRenderer& renderer, 
+    const sf::Vector2f& position, 
+    float width,
+    float height,
+    bool strobe
+) noexcept
 {
 
-    const auto radius{ 25.f * strobe };
-    const auto leftPoint{ position - sf::Vector2f(-radius, -radius * 0.5f) };
-    const auto rightPoint{ position - sf::Vector2f(radius, -radius * 0.5f) };
-    const auto topPoint{ position - sf::Vector2f(0.f, radius * 0.5f) };
+    const auto widthHalf{ width * 0.5f * strobe };
+    const auto heightHalf{ height * 0.5f * strobe };
+    const auto leftPoint{ position - sf::Vector2f(-widthHalf, -heightHalf) };
+    const auto rightPoint{ position - sf::Vector2f(widthHalf, -heightHalf) };
+    const auto topPoint{ position - sf::Vector2f(0.f, heightHalf) };
 
     const auto playerColor{ sf::Color(150, 200, 90) };
     renderer.drawLine(leftPoint, rightPoint, playerColor);

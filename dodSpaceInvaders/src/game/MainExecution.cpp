@@ -13,100 +13,287 @@
 #include <dod/MemUtils.h>
 #include <dod/BufferUtils.h>
 
+#include <rapidjson/document.h>
+#include <rapidjson/reader.h>
+
 #include <iostream>
-
-struct EnemiesParamets
-{
-    static constexpr auto numOfEnemiesPerRow{ 10 };
-    static constexpr auto numOfEnemiesCols{ 4 };
-    static constexpr auto enemiesXStride{ 50.f };
-    static constexpr auto enemiesYStride{ 50.f };
-    static constexpr auto width{ 25.f };
-    static constexpr auto height{ 30.f };
-};
-
-struct ObstaclesParamets
-{
-    static constexpr auto obstaclesStride{ 30.f };
-    static constexpr auto obstaclesPerRow{ 5 };
-    static constexpr auto obstaclesPerCol{ 2 };
-    static constexpr auto obstaclesClusters{ 3 };
-    static constexpr auto obstaclesClustersTotalAreaWidth{ 700 };
-    static constexpr auto obstaclesClusterY{ 650.f };
-    static constexpr auto initialLifes{ 1 };
-};
-
-static constexpr auto totalBytesForScene{ 1024 * 1024 * 10 };
+#include <fstream>
 
 void Game::ExecutionBlock::Main::loadContext()
 {
-    this->memory.allocate(totalBytesForScene);
 
-    this->parameters.numOfEnemiesPerRow = EnemiesParamets::numOfEnemiesPerRow;
-    this->parameters.numOfEnemiesCols = EnemiesParamets::numOfEnemiesCols;
-    this->parameters.enemiesXStride = EnemiesParamets::enemiesXStride;
-    this->parameters.enemiesYStride = EnemiesParamets::enemiesYStride;
-    this->parameters.width = EnemiesParamets::width;
-    this->parameters.height = EnemiesParamets::height;
+    std::ifstream contextFile("resources/contexts/mainContext.json");
+    assert(contextFile.is_open());
+    const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
 
-    this->obstaclesParameters.initialLifes = ObstaclesParamets::initialLifes;
-    this->obstaclesParameters.obstaclesClusters = ObstaclesParamets::obstaclesClusters;
-    this->obstaclesParameters.obstaclesClustersTotalAreaWidth = ObstaclesParamets::obstaclesClustersTotalAreaWidth;
-    this->obstaclesParameters.obstaclesClusterY = ObstaclesParamets::obstaclesClusterY;
-    this->obstaclesParameters.obstaclesPerCol = ObstaclesParamets::obstaclesPerCol;
-    this->obstaclesParameters.obstaclesPerRow = ObstaclesParamets::obstaclesPerRow;
-    this->obstaclesParameters.obstaclesStride = ObstaclesParamets::obstaclesStride;
+    rapidjson::Document json;
+    json.Parse(fileRawData.c_str());
+    const auto root{ json.GetObject() };
 
     int32_t header{ 0 };
-    constexpr auto totalEnemies{ EnemiesParamets::numOfEnemiesCols * EnemiesParamets::numOfEnemiesPerRow + 1 };
-    constexpr auto enemiesBytesToAquire{ totalEnemies * 4 };
-    Dod::BufferUtils::initFromMemory(this->unitsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, enemiesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->unitsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, enemiesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->unitsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, enemiesBytesToAquire, header));
 
-    constexpr auto maxinumEnemyBullets{ 512 };
-    constexpr auto enemyBulletsBytesToAquire{ maxinumEnemyBullets * 4 };
-    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, enemyBulletsBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, enemyBulletsBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, 1024, header));
+    for (const auto& element : root) 
+    {
+        if (element.name == "contextName")
+        {
+            const auto contextName{ element.value.GetString() };
+            std::cout << "Loading context: " << contextName << "\n";
+        }
+        else if (element.name == "data")
+        {
+            for (const auto& dataElement : element.value.GetObject())
+            {
+                if (dataElement.name == "applicationContext" && dataElement.value.IsObject())
+                {
+                    const auto applicationContextObj{ dataElement.value.GetObject() };
+                    const auto totalMemoryBytes{ applicationContextObj["totalMemoryBytes"].GetInt() };
+                    this->memory.allocate(totalMemoryBytes);
+                    const auto windowWidth{ applicationContextObj["windowWidth"].GetInt() };
+                    this->commonContext.width = windowWidth;
+                    const auto windowHeight{ applicationContextObj["windowHeight"].GetInt() };
+                    this->commonContext.height = windowHeight;
+                    const auto title{ applicationContextObj["title"].GetString() };
+                    const auto titleSize{ applicationContextObj["title"].GetStringLength() };
+                    std::memcpy(this->commonContext.title.data(), title, std::min(this->commonContext.title.size(), static_cast<size_t>(titleSize)));
+                }
+                else if (dataElement.name == "sceneParameters" && dataElement.value.IsObject())
+                {
+                    const auto sceneParametersObj{ dataElement.value.GetObject() };
+                    const auto topPlaneY{ sceneParametersObj["topPlaneY"].GetFloat() };
+                    this->sceneParameters.topPlaneY = topPlaneY;
+                    const auto topPlaneDir{ sceneParametersObj["topPlaneDire"].GetFloat() };
+                    this->sceneParameters.topPlaneDir = topPlaneDir;
+                    const auto bottomPlaneY{ sceneParametersObj["bottomPlaneY"].GetFloat() };
+                    this->sceneParameters.bottomPlaneY = bottomPlaneY;
+                    const auto bottomPlaneDir{ sceneParametersObj["bottomPlaneDir"].GetFloat() };
+                    this->sceneParameters.bottomPlaneDir = bottomPlaneDir;
+                }
+                else if (dataElement.name == "enemiesParameters" && dataElement.value.IsObject())
+                {
+                    const auto enemiesParametersObj{ dataElement.value.GetObject() };
+                    const auto numOfEnemiesPerRow{ enemiesParametersObj["numOfEnemiesPerRow"].GetInt() };
+                    this->enemiesParameters.numOfEnemiesPerRow = numOfEnemiesPerRow;
+                    const auto numOfEnemiesPerCol{ enemiesParametersObj["numOfEnemiesPerCol"].GetInt() };
+                    this->enemiesParameters.numOfEnemiesCols = numOfEnemiesPerCol;
+                    const auto enemiesXStride{ enemiesParametersObj["enemiesXStride"].GetFloat() };
+                    this->enemiesParameters.enemiesXStride = enemiesXStride;
+                    const auto enemiesYStride{ enemiesParametersObj["enemiesYStride"].GetFloat() };
+                    this->enemiesParameters.enemiesYStride = enemiesYStride;
+                    const auto width{ enemiesParametersObj["width"].GetFloat() };
+                    this->enemiesParameters.width = width;
+                    const auto height{ enemiesParametersObj["height"].GetFloat() };
+                    this->enemiesParameters.height = height;
+                    const auto weaponCooldownTime{ enemiesParametersObj["weaponCooldownTime"].GetFloat() };
+                    this->enemiesParameters.weaponCooldownTime = weaponCooldownTime;
+                    const auto startCoordX{ enemiesParametersObj["startCoordX"].GetFloat() };
+                    this->enemyBatchContext.batchCoordX = startCoordX;
+                    const auto startCoordY{ enemiesParametersObj["startCoordY"].GetFloat() };
+                    this->enemyBatchContext.batchCoordY = startCoordY;
+                }
+                else if (dataElement.name == "enemiesWeaponContext" && dataElement.value.IsObject())
+                {
+                    const auto enemiesWeaponContextObj{ dataElement.value.GetObject() };
+                    [[maybe_unused]] const auto cooldownTimeLeft{ enemiesWeaponContextObj["cooldownTimeLeft"].GetInt() };
+                }
+                else if (dataElement.name == "enemiesUnitsContext" && dataElement.value.IsObject())
+                {
+                    const auto enemiesUnitsContextObj{ dataElement.value.GetObject() };
 
+                    const auto xCoords{ enemiesUnitsContextObj["xCoords"].GetObject() };
+                    const auto xCoordsType{ xCoords["type"].GetString() };
+                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
 
-    const auto totalObstacles{ this->obstaclesParameters.obstaclesPerRow * this->obstaclesParameters.obstaclesPerCol * this->obstaclesParameters.obstaclesClusters + 1 };
-    const auto obstaclesBytesToAquire{ totalObstacles * 4 };
-    Dod::BufferUtils::initFromMemory(this->obstaclesContext.xCoords, Dod::MemUtils::stackAquire(this->memory, obstaclesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->obstaclesContext.yCoords, Dod::MemUtils::stackAquire(this->memory, obstaclesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->obstaclesContext.lifes, Dod::MemUtils::stackAquire(this->memory, obstaclesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->obstaclesContext.toHit, Dod::MemUtils::stackAquire(this->memory, obstaclesBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->obstaclesContext.toRemove, Dod::MemUtils::stackAquire(this->memory, obstaclesBytesToAquire, header));
+                    const auto yCoords{ enemiesUnitsContextObj["yCoords"].GetObject() };
+                    const auto yCoordsType{ yCoords["type"].GetString() };
+                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
 
+                    const auto toRemove{ enemiesUnitsContextObj["toRemove"].GetObject() };
+                    const auto toRemoveType{ toRemove["type"].GetString() };
+                    const auto toRemoveDataType{ toRemove["dataType"].GetString() };
+                    const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
+                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t)};
+                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
+                }
+                else if (dataElement.name == "enemyBulletsParameters" && dataElement.value.IsObject())
+                {
+                    const auto enemyBulletsParametersObj{ dataElement.value.GetObject() };
+                    [[maybe_unused]] const auto velocity{ enemyBulletsParametersObj["velocity"].GetFloat() };
+                    this->enemyBulletsParameters.velocity = velocity;
+                }
+                else if (dataElement.name == "enemyBulletsContext" && dataElement.value.IsObject())
+                {
+                    const auto enemyBulletsContextObj{ dataElement.value.GetObject() };
 
-    constexpr auto maxinumPlayerBullets{ 512 };
-    constexpr auto playerBulletsBytesToAquire{ maxinumPlayerBullets * 4 };
-    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, playerBulletsBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, playerBulletsBytesToAquire, header));
-    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, 1024, header));
+                    const auto xCoords{ enemyBulletsContextObj["xCoords"].GetObject() };
+                    const auto xCoordsType{ xCoords["type"].GetString() };
+                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
 
-    this->commonContext.width = 800.f;
-    this->commonContext.height = 900.f;
+                    const auto yCoords{ enemyBulletsContextObj["yCoords"].GetObject() };
+                    const auto yCoordsType{ yCoords["type"].GetString() };
+                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
 
-    this->playerPositionContext = { 400.f, 850.f };
-    this->playerLifetimeContext.lifes = 1;
+                    const auto toRemove{ enemyBulletsContextObj["toRemove"].GetObject() };
+                    const auto toRemoveType{ toRemove["type"].GetString() };
+                    const auto toRemoveDataType{ toRemove["dataType"].GetString() };
+                    const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
+                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
+                    Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
+                }
+                else if (dataElement.name == "playerParameters" && dataElement.value.IsObject())
+                {
+                    const auto playerParametersObj{ dataElement.value.GetObject() };
+                    const auto width{ playerParametersObj["width"].GetFloat() };
+                    this->playerParameters.width = width;
+                    const auto height{ playerParametersObj["height"].GetFloat() };
+                    this->playerParameters.height = height;
+                }
+                else if (dataElement.name == "playerPositionContext" && dataElement.value.IsObject())
+                {
+                    const auto playerPositionContextObj{ dataElement.value.GetObject() };
+                    const auto positionX{ playerPositionContextObj["positionX"].GetFloat() };
+                    const auto positionY{ playerPositionContextObj["positionY"].GetFloat() };
+                    this->playerPositionContext = { positionX, positionY };
+                }
+                else if (dataElement.name == "playerLifetimeContext" && dataElement.value.IsObject())
+                {
+                    const auto playerLifetimeContextObj{ dataElement.value.GetObject() };
+                    const auto lifes{ playerLifetimeContextObj["lifes"].GetInt() };
+                    this->playerLifetimeContext.lifes = lifes;
+                }
+                else if (dataElement.name == "playerInputsContext" && dataElement.value.IsObject())
+                {
+                    const auto playerInputsContextObj{ dataElement.value.GetObject() };
+                    const auto inputs{ playerInputsContextObj["inputs"].GetInt() };
+                    const auto prevInputs{ playerInputsContextObj["prevInputs"].GetInt() };
+                }
+                else if (dataElement.name == "playerMovement" && dataElement.value.IsObject())
+                {
+                    const auto playerMovementObj{ dataElement.value.GetObject() };
+                    const auto move{ playerMovementObj["move"].GetInt() };
+                }
+                else if (dataElement.name == "playerFire" && dataElement.value.IsObject())
+                {
+                    const auto playerFireObj{ dataElement.value.GetObject() };
+                    const auto move{ playerFireObj["fire"].GetInt() };
+                }
+                else if (dataElement.name == "playerBulletsParameters" && dataElement.value.IsObject())
+                {
+                    const auto playerBulletsParametersObj{ dataElement.value.GetObject() };
+                    [[maybe_unused]] const auto velocity{ playerBulletsParametersObj["velocity"].GetFloat() };
+                    this->playerBulletsParameters.velocity = velocity;
+                }
+                else if (dataElement.name == "playerBulletsContext" && dataElement.value.IsObject())
+                {
+                    const auto playerBulletsContextObj{ dataElement.value.GetObject() };
+
+                    const auto xCoords{ playerBulletsContextObj["xCoords"].GetObject() };
+                    const auto xCoordsType{ xCoords["type"].GetString() };
+                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
+
+                    const auto yCoords{ playerBulletsContextObj["yCoords"].GetObject() };
+                    const auto yCoordsType{ yCoords["type"].GetString() };
+                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
+
+                    const auto toRemove{ playerBulletsContextObj["toRemove"].GetObject() };
+                    const auto toRemoveType{ toRemove["type"].GetString() };
+                    const auto toRemoveDataType{ toRemove["dataType"].GetString() };
+                    const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
+                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
+                    Dod::BufferUtils::initFromMemory(this->playerBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
+                }
+                else if (dataElement.name == "obstaclesParameters" && dataElement.value.IsObject())
+                {
+                    const auto obstaclesParametersObj{ dataElement.value.GetObject() };
+                    const auto stride{ obstaclesParametersObj["stride"].GetFloat() };
+                    this->obstaclesParameters.obstaclesStride = stride;
+                    const auto perRow{ obstaclesParametersObj["perRow"].GetInt() };
+                    this->obstaclesParameters.obstaclesPerRow = perRow;
+                    const auto perCol{ obstaclesParametersObj["perCol"].GetInt() };
+                    this->obstaclesParameters.obstaclesPerCol = perCol;
+                    const auto numOfClusters{ obstaclesParametersObj["numOfClusters"].GetInt() };
+                    this->obstaclesParameters.obstaclesClusters = numOfClusters;
+                    const auto clustersTotalAreaWidth{ obstaclesParametersObj["clustersTotalAreaWidth"].GetInt() };
+                    this->obstaclesParameters.obstaclesClustersTotalAreaWidth = clustersTotalAreaWidth;
+                    const auto clusterY{ obstaclesParametersObj["clusterY"].GetInt() };
+                    this->obstaclesParameters.obstaclesClusterY = clusterY;
+                    const auto initialLifes{ obstaclesParametersObj["initialLifes"].GetInt() };
+                    this->obstaclesParameters.initialLifes = initialLifes;
+                }
+                else if (dataElement.name == "obstaclesUnitsContext" && dataElement.value.IsObject())
+                {
+                    const auto obstaclesUnitsContextObj{ dataElement.value.GetObject() };
+
+                    const auto xCoords{ obstaclesUnitsContextObj["xCoords"].GetObject() };
+                    const auto xCoordsType{ xCoords["type"].GetString() };
+                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->obstaclesContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
+
+                    const auto yCoords{ obstaclesUnitsContextObj["yCoords"].GetObject() };
+                    const auto yCoordsType{ yCoords["type"].GetString() };
+                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+                    Dod::BufferUtils::initFromMemory(this->obstaclesContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
+
+                    const auto lifes{ obstaclesUnitsContextObj["lifes"].GetObject() };
+                    const auto lifesType{ lifes["type"].GetString() };
+                    const auto lifesDataType{ lifes["dataType"].GetString() };
+                    const auto lifesCapacity{ lifes["capacity"].GetInt() };
+                    const auto lifesCapacityBytes{ lifesCapacity * sizeof(int32_t) };
+                    Dod::BufferUtils::initFromMemory(this->obstaclesContext.lifes, Dod::MemUtils::stackAquire(this->memory, lifesCapacityBytes, header));
+
+                    const auto toHit{ obstaclesUnitsContextObj["toHit"].GetObject() };
+                    const auto toHitType{ toHit["type"].GetString() };
+                    const auto toHitDataType{ toHit["dataType"].GetString() };
+                    const auto toHitCapacity{ toHit["capacity"].GetInt() };
+                    const auto toHitCapacityBytes{ toHitCapacity * sizeof(int32_t) };
+                    Dod::BufferUtils::initFromMemory(this->obstaclesContext.toHit, Dod::MemUtils::stackAquire(this->memory, toHitCapacityBytes, header));
+
+                    const auto toRemove{ obstaclesUnitsContextObj["toRemove"].GetObject() };
+                    const auto toRemoveType{ toRemove["type"].GetString() };
+                    const auto toRemoveDataType{ toRemove["dataType"].GetString() };
+                    const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
+                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
+                    Dod::BufferUtils::initFromMemory(this->obstaclesContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
+                }
+            }
+        }
+    }
 
 }
 
 void Game::ExecutionBlock::Main::initiate()
 {
 
-
     Game::Gameplay::Enemies::generateEnemies(
-        this->parameters.numOfEnemiesPerRow,
-        this->parameters.numOfEnemiesCols,
-        this->parameters.enemiesXStride,
-        this->parameters.enemiesYStride,
-        this->batchContext.batchCoordX,
-        this->batchContext.batchCoordY,
-        this->unitsContext.xCoords,
-        this->unitsContext.yCoords
+        this->enemiesParameters.numOfEnemiesPerRow,
+        this->enemiesParameters.numOfEnemiesCols,
+        this->enemiesParameters.enemiesXStride,
+        this->enemiesParameters.enemiesYStride,
+        this->enemyBatchContext.batchCoordX,
+        this->enemyBatchContext.batchCoordY,
+        this->enemyUnitsContext.xCoords,
+        this->enemyUnitsContext.yCoords
     );
 
 
@@ -124,7 +311,7 @@ void Game::ExecutionBlock::Main::initiate()
         this->commonContext.width
     );
 
-    this->gameRenderer = std::make_unique<GameRenderer>(commonContext.width, commonContext.height, "dod Space Invaders");
+    this->gameRenderer = std::make_unique<GameRenderer>(commonContext.width, commonContext.height, commonContext.title.data());
 
 }
 
@@ -165,23 +352,27 @@ bool Game::ExecutionBlock::Main::update(float dt)
         this->playerInputsContext.prevInputs
     );
         
-    Game::Core::Bullets::updateMovement(this->playerBulletsContext.yCoords, -220.f, dt);
+    Game::Core::Bullets::updateMovement(
+        this->playerBulletsContext.yCoords, 
+        this->playerBulletsParameters.velocity, 
+        dt
+    );
     Game::Gameplay::Bullets::collisionUpdate(
-        this->unitsContext.toRemove,
+        this->enemyUnitsContext.toRemove,
         this->playerBulletsContext.toRemove, 
         Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.xCoords),
         Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords),
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords),
-        this->parameters.width,
-        this->parameters.height
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords),
+        this->enemiesParameters.width,
+        this->enemiesParameters.height
     );
 
     Game::Core::Collision::pointsPlaneIntersection(
         this->playerBulletsContext.toRemove,
         Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords),
-        100.f, 
-        1.f
+        this->sceneParameters.topPlaneY,
+        this->sceneParameters.topPlaneDir
     );
 
     Game::Gameplay::Bullets::testWithObstacles(
@@ -205,43 +396,43 @@ bool Game::ExecutionBlock::Main::update(float dt)
     );
 
     Game::Gameplay::Enemies::enemiesLifetimeUpdate(
-        this->unitsContext.toRemove,
-        this->unitsContext.xCoords,
-        this->unitsContext.yCoords
+        this->enemyUnitsContext.toRemove,
+        this->enemyUnitsContext.xCoords,
+        this->enemyUnitsContext.yCoords
     );
 
     Game::Gameplay::Enemies::enemiesUpdate(
         dt, 
-        this->batchContext.batchMoveTimeleft,
-        this->batchContext.direction,
-        this->batchContext.batchTargetX,
-        this->batchContext.batchCoordX,
-        this->batchContext.batchCoordY,
-        this->unitsContext.xCoords,
-        this->unitsContext.yCoords
+        this->enemyBatchContext.batchMoveTimeleft,
+        this->enemyBatchContext.direction,
+        this->enemyBatchContext.batchTargetX,
+        this->enemyBatchContext.batchCoordX,
+        this->enemyBatchContext.batchCoordY,
+        this->enemyUnitsContext.xCoords,
+        this->enemyUnitsContext.yCoords
     );
 
     Game::Gameplay::Enemies::generateEnemyBullets(
         dt,
-        this->weaponContext.enemyWeaponCooldownTimeLeft,
+        this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
         this->enemyBulletsContext.xCoords,
         this->enemyBulletsContext.yCoords,
-        this->weaponContext.rand,
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords)
+        this->enemyWeaponContext.rand,
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords)
     );
 
     Game::Core::Bullets::updateMovement(
         this->enemyBulletsContext.yCoords,
-        120.f,
+        this->enemyBulletsParameters.velocity,
         dt
     );
 
     Game::Core::Collision::pointsPlaneIntersection(
         this->enemyBulletsContext.toRemove,
         Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.yCoords),
-        875.f, 
-        -1.f
+        this->sceneParameters.bottomPlaneY, 
+        this->sceneParameters.bottomPlaneDir
     );
 
     Game::Gameplay::Player::testWithBullets(
@@ -251,8 +442,8 @@ bool Game::ExecutionBlock::Main::update(float dt)
         this->playerLifetimeContext.lifes,
         this->playerPositionContext.xCoord,
         this->playerPositionContext.yCoord,
-        50.f,
-        25.f
+        this->playerParameters.width,
+        this->playerParameters.height
     );
 
     Game::Gameplay::Bullets::testWithObstacles(
@@ -287,8 +478,8 @@ bool Game::ExecutionBlock::Main::update(float dt)
 
     Game::SceneRenderer::drawEnemies(
         *this->gameRenderer, 
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords)
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords)
     );
 
     Game::SceneRenderer::drawObstacles(
@@ -300,7 +491,9 @@ bool Game::ExecutionBlock::Main::update(float dt)
     Game::SceneRenderer::drawField(*this->gameRenderer);
     Game::SceneRenderer::drawPlayer(
         *this->gameRenderer, 
-        { this->playerPositionContext.xCoord, this->playerPositionContext.yCoord }, 
+        { this->playerPositionContext.xCoord, this->playerPositionContext.yCoord },
+        this->playerParameters.width,
+        this->playerParameters.height,
         this->playerLifetimeContext.lifes > 0
     );
 

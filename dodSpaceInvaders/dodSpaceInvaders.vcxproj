@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)thirdparty;$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>5045; 4711; 4710</DisableSpecificWarnings>
@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)thirdparty;$(ProjectDir)src;D:\Projects\sfml\SFML;D:\Projects\sfml\SFML\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <DisableSpecificWarnings>5045; 4711; 4710</DisableSpecificWarnings>
@@ -188,6 +188,7 @@
     <ClInclude Include="src\game\PlayerGameplay.h" />
     <ClInclude Include="src\game\Renderer.h" />
     <ClInclude Include="src\game\renderer\instantRenderer.h" />
+    <ClInclude Include="src\game\SceneContext.h" />
     <ClInclude Include="src\game\SceneRenderer.h" />
     <ClInclude Include="src\utils\randomGenerator.h" />
   </ItemGroup>
@@ -195,6 +196,9 @@
     <ClInclude Include="src\dod\Buffers.h" />
     <ClInclude Include="src\dod\MemPool.h" />
     <ClInclude Include="src\game\game.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\contexts\mainContext.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

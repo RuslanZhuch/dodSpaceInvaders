@@ -135,6 +135,9 @@
     <ClInclude Include="src\game\ObstaclesGameplay.h">
       <Filter>game\Gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\SceneContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
@@ -167,5 +170,16 @@
     <Filter Include="game\GameRender">
       <UniqueIdentifier>{e76f1b46-286c-4572-b434-e918c10b1456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{bae64353-dec4-40c8-89c2-52b7a6facef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\contexts">
+      <UniqueIdentifier>{58bbf531-7b44-4eed-885a-0b8944452501}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\contexts\mainContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "BulletsContext.h"
 #include "ObstaclesContext.h"
 #include "CommonContext.h"
+#include "SceneContext.h"
 
 #include "GameRender.h"
 
@@ -31,16 +32,22 @@ namespace Game::ExecutionBlock
     private:
         Dod::MemPool memory;
 
-        Game::Context::Enemy::Parameters parameters;
-        Game::Context::Enemy::BatchContext batchContext;
-        Game::Context::Enemy::UnitsContext unitsContext;
-        Game::Context::Enemy::WeaponContext weaponContext;
+        Game::Context::Scene::Parameters sceneParameters;
 
+        Game::Context::Enemy::Parameters enemiesParameters;
+        Game::Context::Enemy::BatchContext enemyBatchContext;
+        Game::Context::Enemy::UnitsContext enemyUnitsContext;
+        Game::Context::Enemy::WeaponContext enemyWeaponContext;
+
+        Game::Context::Player::Parameters playerParameters;
         Game::Context::Player::Position playerPositionContext;
         Game::Context::Player::Inputs playerInputsContext;
         Game::Context::Player::Movement playerMovementContext;
         Game::Context::Player::Fire playerFireContext;
         Game::Context::Player::Lifetime playerLifetimeContext;
+
+        Game::Context::Bullets::Parameters playerBulletsParameters;
+        Game::Context::Bullets::Parameters enemyBulletsParameters;
 
         Game::Context::Bullets::UnitsContext playerBulletsContext;
         Game::Context::Bullets::UnitsContext enemyBulletsContext;

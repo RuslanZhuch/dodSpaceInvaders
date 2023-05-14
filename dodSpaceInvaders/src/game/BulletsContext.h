@@ -5,6 +5,11 @@
 namespace Game::Context::Bullets
 {
 
+    struct Parameters
+    {
+        float velocity{};
+    };
+
     struct UnitsContext
     {
         Dod::DBBuffer<float> xCoords;

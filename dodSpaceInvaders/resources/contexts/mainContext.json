@@ -1,0 +1,147 @@
+{
+
+  "contextName": "mainContext",
+  "data": {
+    "applicationContext": {
+      "totalMemoryBytes": 10485760,
+      "windowWidth": 800,
+      "windowHeight": 900,
+      "title": "dod invaders"
+    },
+    "sceneParameters": {
+      "topPlaneY": 100,
+      "topPlaneDire": 1,
+      "bottomPlaneY": 875,
+      "bottomPlaneDir": -1
+    },
+    "enemiesParameters": {
+      "numOfEnemiesPerRow": 10,
+      "numOfEnemiesPerCol": 4,
+      "enemiesXStride": 50,
+      "enemiesYStride": 50,
+      "width": 25,
+      "height": 30,
+      "weaponCooldownTime": 0.5,
+      "startCoordX": 100,
+      "startCoordY": 200
+    },
+    "enemiesWeaponContext": {
+      "cooldownTimeLeft": 0
+    },
+    "enemiesUnitsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 41
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 41
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 41
+      }
+    },
+    "enemyBulletsParameters": {
+      "velocity": 120
+    },
+    "enemyBulletsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 256
+      }
+    },
+    "playerParameters": {
+      "width": 50,
+      "height": 25
+    },
+    "playerPositionContext": {
+      "positionX": 400,
+      "positionY": 850
+    },
+    "playerLifetimeContext": {
+      "lifes": 1
+    },
+    "playerInputsContext": {
+      "inputs": 0,
+      "prevInputs": 0
+    },
+    "playerMovement": {
+      "move": 0
+    },
+    "playerFire": {
+      "fire": 0
+    },
+    "playerBulletsParameters": {
+      "velocity": -220
+    },
+    "playerBulletsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 256
+      }
+    },
+    "obstaclesParameters": {
+      "stride": 30,
+      "perRow": 5,
+      "perCol": 2,
+      "numOfClusters": 3,
+      "clustersTotalAreaWidth": 700,
+      "clusterY": 650,
+      "initialLifes": 1
+    },
+    "obstaclesUnitsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 31
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 31
+      },
+      "lifes": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      },
+      "toHit": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      }
+    }
+  }
+ 
+}

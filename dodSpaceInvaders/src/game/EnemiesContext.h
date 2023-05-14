@@ -9,12 +9,13 @@ namespace Game::Context::Enemy
 
     struct Parameters
     {
-        float numOfEnemiesPerRow{};
-        float numOfEnemiesCols{};
+        int32_t numOfEnemiesPerRow{};
+        int32_t numOfEnemiesCols{};
         float enemiesXStride{};
         float enemiesYStride{};
         float width{};
         float height{};
+        float weaponCooldownTime{};
     };
 
     struct BatchContext
@@ -31,12 +32,6 @@ namespace Game::Context::Enemy
         Dod::DBBuffer<float> xCoords;
         Dod::DBBuffer<float> yCoords;
         Dod::DBBuffer<int32_t> toRemove;
-    };
-
-    struct BulletsContext
-    {
-        Dod::DBBuffer<float> xCoords;
-        Dod::DBBuffer<float> yCoords;
     };
 
     struct WeaponContext
