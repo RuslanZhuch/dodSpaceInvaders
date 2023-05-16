@@ -19,14 +19,23 @@ namespace Game::Gameplay::Player
         float dt
     ) noexcept;
 
+    int32_t updateFireComponent(
+        int32_t playerLifes,
+        uint32_t inputBits, 
+        uint32_t prevInputBits
+    ) noexcept;
+
+    void createBulletsSFx(
+        Dod::DBBuffer<int32_t>& soundIds,
+        int32_t numOfBulletsCreated
+    ) noexcept;
+
 	void createBullets(
+        int32_t numOfBulletsToCreate,
         Dod::DBBuffer<float>& bulletsXCoords,
         Dod::DBBuffer<float>& bulletsYCoords,
         float playerPositionX,
-        float playerPositionY,
-        int32_t playerLifes,
-        uint32_t inputBits,
-        uint32_t prevInputBits
+        float playerPositionY
     ) noexcept;
 
     void testWithBullets(

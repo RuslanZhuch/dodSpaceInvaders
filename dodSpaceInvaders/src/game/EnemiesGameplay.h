@@ -30,9 +30,20 @@ namespace Game::Gameplay::Enemies
         Dod::DBBuffer<float>& enemiesYCoords
     );
 
-    void generateEnemyBullets(
+    int32_t updateEnemyBulletsCreation(
         float dt,
         float& enemyWeaponCooldownTimeLeft,
+        int32_t numOfEnemiesAlive
+    ) noexcept;
+
+    void createBulletsSFx(
+        Dod::DBBuffer<int32_t>& soundIds,
+        int32_t numOfBulletsToCreate
+    ) noexcept;
+
+    void generateEnemyBullets(
+        int32_t numOfBulletsToCreate,
+
         Dod::DBBuffer<float>& bulletsXCoords,
         Dod::DBBuffer<float>& bulletsYCoords,
 

@@ -50,20 +50,36 @@ void Game::Gameplay::Player::updateMovement(
 
 }
 
-void Game::Gameplay::Player::createBullets(
-    Dod::DBBuffer<float>& bulletsXCoords,
-    Dod::DBBuffer<float>& bulletsYCoords,
-    float playerPositionX,
-    float playerPositionY,
+int32_t Game::Gameplay::Player::updateFireComponent(
     int32_t playerLifes,
-    uint32_t inputBits,
+    uint32_t inputBits, 
     uint32_t prevInputBits
 ) noexcept
 {
-
     const auto fireComponent{ Game::Inputs::computeFireComponent(inputBits, prevInputBits) };
     const auto bNeedCreateBullet{ (fireComponent > 0) && (playerLifes > 0) };
 
+    return static_cast<int32_t>(bNeedCreateBullet);
+}
+
+void Game::Gameplay::Player::createBulletsSFx(
+    Dod::DBBuffer<int32_t>& soundIds, 
+    int32_t numOfBulletsCreated
+) noexcept
+{
+    Dod::BufferUtils::populate(soundIds, 0, numOfBulletsCreated > 0);
+}
+
+void Game::Gameplay::Player::createBullets(
+    int32_t numOfBulletsToCreate,
+    Dod::DBBuffer<float>& bulletsXCoords,
+    Dod::DBBuffer<float>& bulletsYCoords,
+    float playerPositionX,
+    float playerPositionY
+) noexcept
+{
+
+    const auto bNeedCreateBullet{ numOfBulletsToCreate > 0 };
     Dod::BufferUtils::populate(bulletsXCoords, playerPositionX, bNeedCreateBullet);
     Dod::BufferUtils::populate(bulletsYCoords, playerPositionY, bNeedCreateBullet);
 

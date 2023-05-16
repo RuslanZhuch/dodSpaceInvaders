@@ -19,6 +19,8 @@
 #include <iostream>
 #include <fstream>
 
+#undef GetObject;
+
 void Game::ExecutionBlock::Main::loadContext()
 {
 
@@ -279,6 +281,8 @@ void Game::ExecutionBlock::Main::loadContext()
             }
         }
     }
+    
+    Dod::BufferUtils::initFromMemory(this->soundIdsToPlay, Dod::MemUtils::stackAquire(this->memory, 1024, header));
 
 }
 
@@ -313,6 +317,10 @@ void Game::ExecutionBlock::Main::initiate()
 
     this->gameRenderer = std::make_unique<GameRenderer>(commonContext.width, commonContext.height, commonContext.title.data());
 
+    this->soundsCore.init();
+    this->sounds[0].load("resources/sounds/weapons/shoot1.wav");   
+    this->sounds[1].load("resources/sounds/weapons/shoot2.wav");   
+
 }
 
 bool Game::ExecutionBlock::Main::update(float dt)
@@ -329,6 +337,8 @@ bool Game::ExecutionBlock::Main::update(float dt)
 
     window.clear();
 
+    this->soundIdsToPlay.numOfFilledEls = 0;
+
     Game::Gameplay::Player::updateInputs(
         this->playerInputsContext.inputs,
         this->playerInputsContext.prevInputs
@@ -342,14 +352,23 @@ bool Game::ExecutionBlock::Main::update(float dt)
         dt
     );
 
-    Game::Gameplay::Player::createBullets(
-        this->playerBulletsContext.xCoords, 
-        this->playerBulletsContext.yCoords,
-        this->playerPositionContext.xCoord,
-        this->playerPositionContext.yCoord,
+    const auto numOfPlayerBulletsToCreate{ Game::Gameplay::Player::updateFireComponent(
         this->playerLifetimeContext.lifes,
         this->playerInputsContext.inputs,
         this->playerInputsContext.prevInputs
+    ) };
+
+    Game::Gameplay::Player::createBulletsSFx(
+        this->soundIdsToPlay,
+        numOfPlayerBulletsToCreate
+    );
+
+    Game::Gameplay::Player::createBullets(
+        numOfPlayerBulletsToCreate,
+        this->playerBulletsContext.xCoords, 
+        this->playerBulletsContext.yCoords,
+        this->playerPositionContext.xCoord,
+        this->playerPositionContext.yCoord
     );
         
     Game::Core::Bullets::updateMovement(
@@ -412,9 +431,19 @@ bool Game::ExecutionBlock::Main::update(float dt)
         this->enemyUnitsContext.yCoords
     );
 
-    Game::Gameplay::Enemies::generateEnemyBullets(
+    const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Enemies::updateEnemyBulletsCreation(
         dt,
         this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
+        Dod::BufferUtils::getNumFilledElements(this->enemyUnitsContext.xCoords)
+    ) };
+
+    Game::Gameplay::Enemies::createBulletsSFx(
+        this->soundIdsToPlay,
+        numOfEnemyBulletsToCreate
+    );
+
+    Game::Gameplay::Enemies::generateEnemyBullets(
+        numOfEnemyBulletsToCreate,
         this->enemyBulletsContext.xCoords,
         this->enemyBulletsContext.yCoords,
         this->enemyWeaponContext.rand,
@@ -475,6 +504,10 @@ bool Game::ExecutionBlock::Main::update(float dt)
         this->obstaclesContext.xCoords,
         this->obstaclesContext.yCoords
     );
+
+    for (int32_t sfxId{}; sfxId < Dod::BufferUtils::getNumFilledElements(this->soundIdsToPlay); ++sfxId) {
+        this->soundsCore.play(this->sounds[Dod::BufferUtils::get(this->soundIdsToPlay, sfxId)]);
+    }
 
     Game::SceneRenderer::drawEnemies(
         *this->gameRenderer, 

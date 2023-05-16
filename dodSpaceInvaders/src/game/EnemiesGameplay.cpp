@@ -81,9 +81,36 @@ void Game::Gameplay::Enemies::enemiesUpdate(
 
 }
 
-void Game::Gameplay::Enemies::generateEnemyBullets(
-    float dt,
+int32_t Game::Gameplay::Enemies::updateEnemyBulletsCreation(
+    float dt, 
     float& enemyWeaponCooldownTimeLeft,
+    int32_t numOfEnemiesAlive
+) noexcept
+{
+
+    const auto newCooldownTimeLeft{ Game::Core::Enemies::updateStrobeCountdown(dt, enemyWeaponCooldownTimeLeft, 0.5f) };
+    const auto bNeedCreateBullet{ Game::Core::Enemies::updateStrobe(enemyWeaponCooldownTimeLeft, newCooldownTimeLeft) };
+    enemyWeaponCooldownTimeLeft = newCooldownTimeLeft;
+
+    return static_cast<int32_t>(bNeedCreateBullet && numOfEnemiesAlive > 0);
+
+}
+
+void Game::Gameplay::Enemies::createBulletsSFx(
+    Dod::DBBuffer<int32_t>& soundIds, 
+    int32_t numOfBulletsToCreate
+) noexcept
+{
+
+    while (numOfBulletsToCreate-- > 0) {
+        Dod::BufferUtils::populate(soundIds, 1, true);
+    }
+
+}
+
+void Game::Gameplay::Enemies::generateEnemyBullets(
+    int32_t numOfBulletsToCreate,
+
     Dod::DBBuffer<float>& bulletsXCoords,
     Dod::DBBuffer<float>& bulletsYCoords,
     
@@ -94,12 +121,8 @@ void Game::Gameplay::Enemies::generateEnemyBullets(
 )
 {
 
-    const auto newCooldownTimeLeft{ Game::Core::Enemies::updateStrobeCountdown(dt, enemyWeaponCooldownTimeLeft, 0.5f) };
-    const auto bNeedCreateBullet{ Game::Core::Enemies::updateStrobe(enemyWeaponCooldownTimeLeft, newCooldownTimeLeft) };
-    enemyWeaponCooldownTimeLeft = newCooldownTimeLeft;
-
-    Game::Core::Enemies::generateBullet(bulletsXCoords, enemiesXCoords, rand, bNeedCreateBullet);
-    Game::Core::Enemies::generateBullet(bulletsYCoords, enemiesYCoords, rand, bNeedCreateBullet);
+    Game::Core::Enemies::generateBullet(bulletsXCoords, enemiesXCoords, rand, numOfBulletsToCreate > 0);
+    Game::Core::Enemies::generateBullet(bulletsYCoords, enemiesYCoords, rand, numOfBulletsToCreate > 0);
 
 }
 

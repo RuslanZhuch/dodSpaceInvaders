@@ -11,6 +11,10 @@
 
 #include <dod/MemPool.h>
 
+#include <Soloud/include/soloud.h>
+#include <Soloud/include/soloud_wav.h>
+
+#include <array>
 #include <memory>
 
 namespace Game::ExecutionBlock
@@ -56,6 +60,11 @@ namespace Game::ExecutionBlock
         Game::Context::Obstacles::UnitsContext obstaclesContext;
 
         Game::Context::Common::Parameters commonContext;
+
+        Dod::DBBuffer<int32_t> soundIdsToPlay;
+
+        SoLoud::Soloud soundsCore;
+        std::array<SoLoud::Wav, 16> sounds;
 
         std::unique_ptr<GameRenderer> gameRenderer;
 
