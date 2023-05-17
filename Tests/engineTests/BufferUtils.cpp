@@ -769,3 +769,154 @@ TEST(DBBufferUtils, RemoveElements)
 	}
 
 }
+
+TEST(DBBufferUtils, Flush)
+{
+
+	using type_t = int32_t;
+
+	constexpr size_t totalValues{ 128 };
+	constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+	std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+	Dod::DBBuffer<int32_t> bufferDst;
+	Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+	for (int32_t elId{}; elId < 32; ++elId)
+		Dod::BufferUtils::populate(bufferDst, elId + 1, true);
+
+	Dod::BufferUtils::flush(bufferDst);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 0);
+
+	Dod::BufferUtils::flush(bufferDst);
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 0);
+
+}
+
+TEST(DBBufferUtils, GetCapacity)
+{
+	using type_t = int32_t;
+
+	{
+		constexpr size_t totalValues{ 128 };
+		constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+		Dod::DBBuffer<int32_t> bufferDst;
+		Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memorySrc;
+		Dod::DBBuffer<int32_t> bufferSrc;
+		Dod::BufferUtils::initFromArray(bufferSrc, memorySrc);
+
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(bufferSrc), totalValues);
+	}
+	{
+		constexpr size_t totalValues{ 64 };
+		constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+		Dod::DBBuffer<int32_t> bufferDst;
+		Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memorySrc;
+		Dod::DBBuffer<int32_t> bufferSrc;
+		Dod::BufferUtils::initFromArray(bufferSrc, memorySrc);
+
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(bufferSrc), totalValues);
+	}
+	{
+		constexpr size_t totalValues{ 64 };
+		constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+		Dod::DBBuffer<int32_t> bufferDst;
+		Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memorySrc;
+		Dod::DBBuffer<int32_t> bufferSrc;
+		Dod::BufferUtils::initFromArray(bufferSrc, memorySrc);
+		bufferSrc.numOfFilledEls = 32;
+
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(bufferSrc), totalValues);
+	}
+	{
+		constexpr size_t totalValues{ 0 };
+		constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+		Dod::DBBuffer<int32_t> bufferDst;
+		Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+		std::array<Dod::MemTypes::data_t, totalMemory> memorySrc;
+		Dod::DBBuffer<int32_t> bufferSrc;
+		Dod::BufferUtils::initFromArray(bufferSrc, memorySrc);
+		bufferSrc.numOfFilledEls = 32;
+
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(bufferSrc), totalValues);
+	}
+
+}
+
+TEST(DBBufferUtils, Append)
+{
+
+	using type_t = int32_t;
+
+	constexpr size_t totalValues{ 128 };
+	constexpr size_t totalMemory{ (totalValues + 1) * sizeof(type_t) };
+
+	std::array<Dod::MemTypes::data_t, totalMemory> memoryDst;
+	Dod::DBBuffer<int32_t> bufferDst;
+	Dod::BufferUtils::initFromArray(bufferDst, memoryDst);
+
+	std::array<Dod::MemTypes::data_t, totalMemory> memorySrc;
+	Dod::DBBuffer<int32_t> bufferSrc;
+	Dod::BufferUtils::initFromArray(bufferSrc, memorySrc);
+
+	for (int32_t elId{}; elId < 32; ++elId)
+		Dod::BufferUtils::populate(bufferSrc, elId + 1, true);
+
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 32);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+	bufferSrc.numOfFilledEls = 0;
+	for (int32_t elId{32}; elId < 64; ++elId)
+		Dod::BufferUtils::populate(bufferSrc, elId + 1, true);
+
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 64);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+	bufferSrc.numOfFilledEls = 0;
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 64);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+	bufferSrc.numOfFilledEls = 0;
+	for (int32_t elId{ 64 }; elId < 192; ++elId)
+		Dod::BufferUtils::populate(bufferSrc, elId + 1, true);
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 128);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+	bufferSrc.numOfFilledEls = 0;
+	for (int32_t elId{ 192 }; elId < 256; ++elId)
+		Dod::BufferUtils::populate(bufferSrc, elId + 1, true);
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 128);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+	bufferSrc.numOfFilledEls = 0;
+	Dod::BufferUtils::append(bufferDst, Dod::BufferUtils::createImFromBuffer(bufferSrc));
+	ASSERT_EQ(Dod::BufferUtils::getNumFilledElements(bufferDst), 128);
+	for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(bufferDst); ++elId)
+		EXPECT_EQ(Dod::BufferUtils::get(bufferDst, elId), elId + 1);
+
+}

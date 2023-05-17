@@ -138,6 +138,9 @@
     <ClInclude Include="src\game\SceneContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
+    <ClInclude Include="src\dod\SharedContext.h">
+      <Filter>dod</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">

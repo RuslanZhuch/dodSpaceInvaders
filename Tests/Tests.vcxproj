@@ -50,6 +50,7 @@
     <ClCompile Include="engineTests\BufferUtils.cpp" />
     <ClCompile Include="engineTests\MemPool.cpp" />
     <ClCompile Include="engineTests\MemUtils.cpp" />
+    <ClCompile Include="engineTests\SharedContext.cpp" />
     <ClCompile Include="gameTests\Bullets.cpp" />
     <ClCompile Include="gameTests\Collision.cpp" />
     <ClCompile Include="gameTests\Enemies.cpp" />

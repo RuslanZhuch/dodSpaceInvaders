@@ -184,4 +184,29 @@ namespace Dod::BufferUtils
 
 	}
 
+	template<typename T>
+	void flush(DBBuffer<T>& dest) noexcept
+	{
+		dest.numOfFilledEls = 0;
+		//		const auto numOfElements{ std::min(Dod::BufferUtils::getNumFilledElements(dest), Dod::BufferUtils::getNumFilledElements(src)) };
+		//		std::memcpy(dest.dataBegin, src.dataBegin, sizeof(BufferType::type_t) * numOfElements)
+	}
+
+	template<typename T>
+	[[nodiscard]] auto getCapacity(const DBBuffer<T>& dest) noexcept
+	{
+		return static_cast<int32_t>(dest.dataEnd - dest.dataBegin - 1);
+	}
+
+	template<typename T>
+	void append(DBBuffer<T>& dest, Dod::ImBuffer<T> src) noexcept
+	{
+		const auto spaceLeft{ Dod::BufferUtils::getCapacity(dest) - Dod::BufferUtils::getNumFilledElements(dest) };
+		const auto allowToFill{ std::max(spaceLeft, 0) };
+		const auto numOfElements{ std::min(allowToFill, Dod::BufferUtils::getNumFilledElements(src)) };
+		const auto begin{ dest.dataBegin + 1 + Dod::BufferUtils::getNumFilledElements(dest) };
+		std::memcpy(begin, src.dataBegin, sizeof(T) * numOfElements);
+		dest.numOfFilledEls += numOfElements;
+	}
+
 };

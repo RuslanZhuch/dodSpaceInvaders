@@ -37,7 +37,7 @@ TEST(SceneRender, DrawPlayer)
 
 	Game::GameRenderer renderer(100, 200, "Test name");
 
-	Game::SceneRenderer::drawPlayer(renderer, {10.f, 20.f}, 1);
+	Game::SceneRenderer::drawPlayer(renderer, {10.f, 20.f}, 50.f, 25.f, 1);
 
 	const auto totalCtxs{ GameTests::ctx.ctxs.size() };
 	EXPECT_GE(totalCtxs, 3);
