@@ -103,6 +103,18 @@ namespace Dod::BufferUtils
 	}
 
 	template<typename T>
+	void constructBack(DBBuffer<T>& buffer, bool strobe = true) noexcept
+	{
+
+		const auto capacity{ buffer.dataEnd - buffer.dataBegin };
+		const auto bCanAddValue{ (Dod::BufferUtils::getNumFilledElements(buffer) + 1 < capacity) && strobe };
+
+		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
+		std::construct_at<T>(buffer.dataBegin + Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue);
+
+	}
+
+	template<typename T>
 	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept
 	{
 
@@ -110,7 +122,7 @@ namespace Dod::BufferUtils
 		const auto bCanAddValue{ (Dod::BufferUtils::getNumFilledElements(buffer) + 1 < capacity) && strobe };
 
 		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
-		buffer.dataBegin[Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue] = value;
+		buffer.dataBegin[Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue] = std::move(value);
 
 	}
 

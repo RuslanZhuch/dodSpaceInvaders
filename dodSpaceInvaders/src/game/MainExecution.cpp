@@ -21,6 +21,12 @@
 
 #undef GetObject;
 
+template <>
+const Game::Context::Sounds::Shared& Game::ExecutionBlock::Main::getSharedLocalContext<Game::Context::Sounds::Shared>()
+{
+    return this->soundsContext;
+}
+
 void Game::ExecutionBlock::Main::loadContext()
 {
 
@@ -282,8 +288,6 @@ void Game::ExecutionBlock::Main::loadContext()
         }
     }
     
-    Dod::BufferUtils::initFromMemory(this->soundIdsToPlay, Dod::MemUtils::stackAquire(this->memory, 1024, header));
-
 }
 
 void Game::ExecutionBlock::Main::initiate()
@@ -317,9 +321,7 @@ void Game::ExecutionBlock::Main::initiate()
 
     this->gameRenderer = std::make_unique<GameRenderer>(commonContext.width, commonContext.height, commonContext.title.data());
 
-    this->soundsCore.init();
-    this->sounds[0].load("resources/sounds/weapons/shoot1.wav");   
-    this->sounds[1].load("resources/sounds/weapons/shoot2.wav");   
+    this->soundsContext.init(); 
 
 }
 
@@ -336,8 +338,6 @@ bool Game::ExecutionBlock::Main::update(float dt)
     }
 
     window.clear();
-
-    this->soundIdsToPlay.numOfFilledEls = 0;
 
     Game::Gameplay::Player::updateInputs(
         this->playerInputsContext.inputs,
@@ -359,7 +359,7 @@ bool Game::ExecutionBlock::Main::update(float dt)
     ) };
 
     Game::Gameplay::Player::createBulletsSFx(
-        this->soundIdsToPlay,
+        this->soundsContext.soundIdsToPlay,
         numOfPlayerBulletsToCreate
     );
 
@@ -438,7 +438,7 @@ bool Game::ExecutionBlock::Main::update(float dt)
     ) };
 
     Game::Gameplay::Enemies::createBulletsSFx(
-        this->soundIdsToPlay,
+        this->soundsContext.soundIdsToPlay,
         numOfEnemyBulletsToCreate
     );
 
@@ -505,10 +505,6 @@ bool Game::ExecutionBlock::Main::update(float dt)
         this->obstaclesContext.yCoords
     );
 
-    for (int32_t sfxId{}; sfxId < Dod::BufferUtils::getNumFilledElements(this->soundIdsToPlay); ++sfxId) {
-        this->soundsCore.play(this->sounds[Dod::BufferUtils::get(this->soundIdsToPlay, sfxId)]);
-    }
-
     Game::SceneRenderer::drawEnemies(
         *this->gameRenderer, 
         Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
@@ -546,4 +542,9 @@ bool Game::ExecutionBlock::Main::update(float dt)
 
     return window.isOpen();
 
+}
+
+void Game::ExecutionBlock::Main::flushSharedLocalContexts()
+{
+    this->soundsContext.reset();
 }

@@ -28,9 +28,9 @@ namespace Dod::SharedContext
 	}
 
 	template <typename Ctx>
-	void merge(Controller<Ctx>* target, const Controller<Ctx>* src) noexcept
+	void merge(Controller<Ctx>* target, const Ctx& src) noexcept
 	{
-		target->context.merge(src->context);
+		target->context.merge(src);
 	}
 
 };

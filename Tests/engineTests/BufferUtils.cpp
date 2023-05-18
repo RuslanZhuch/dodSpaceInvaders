@@ -296,6 +296,76 @@ TEST(DBBufferUtils, Population)
 
 }
 
+TEST(DBBufferUtils, ConstructBack)
+{
+
+	class Type
+	{
+	public:
+		Type()
+			: value(42)
+		{}
+
+		int32_t value{};
+	};
+	using type_t = Type;
+
+	std::array<Dod::MemTypes::data_t, sizeof(type_t) * 5> memory{};
+	Dod::DBBuffer<type_t> buffer;
+
+	Dod::BufferUtils::initFromArray(buffer, memory);
+
+	{
+		Dod::BufferUtils::constructBack(buffer, true);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 1);
+	}
+	{
+		Dod::BufferUtils::constructBack(buffer, true);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 2);
+	}
+	{
+		Dod::BufferUtils::constructBack(buffer, true);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 3);
+	}
+	{
+		Dod::BufferUtils::constructBack(buffer, false);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 0);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 3);
+	}
+	{
+		Dod::BufferUtils::constructBack(buffer, true);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 4);
+	}
+	{
+		Dod::BufferUtils::constructBack(buffer, true);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 0).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 1).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 2).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::get(buffer, 3).value, 42);
+		EXPECT_EQ(Dod::BufferUtils::getNumFilledElements(buffer), 4);
+	}
+
+}
+
 TEST(BufferUtils, DBBufferBound)
 {
 

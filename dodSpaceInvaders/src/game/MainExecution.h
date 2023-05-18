@@ -8,8 +8,10 @@
 #include "SceneContext.h"
 
 #include "GameRender.h"
+#include "game/SoundsSContext.h"
 
 #include <dod/MemPool.h>
+#include <dod/SharedContext.h>
 
 #include <Soloud/include/soloud.h>
 #include <Soloud/include/soloud_wav.h>
@@ -30,6 +32,10 @@ namespace Game::ExecutionBlock
         [[nodiscard]] bool update(float dt);
 
         [[nodiscard]] auto& getWindow() { return this->gameRenderer->getWindow(); }
+
+        template<typename TContext>
+        [[nodiscard]] const TContext& getSharedLocalContext();
+        void flushSharedLocalContexts();
 
     private:
 
@@ -61,13 +67,9 @@ namespace Game::ExecutionBlock
 
         Game::Context::Common::Parameters commonContext;
 
-        Dod::DBBuffer<int32_t> soundIdsToPlay;
-
-        SoLoud::Soloud soundsCore;
-        std::array<SoLoud::Wav, 16> sounds;
-
         std::unique_ptr<GameRenderer> gameRenderer;
 
+        Context::Sounds::Shared soundsContext;
     };
 
 };

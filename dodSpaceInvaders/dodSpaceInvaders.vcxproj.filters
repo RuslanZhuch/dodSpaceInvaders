@@ -51,6 +51,9 @@
     <ClCompile Include="src\game\ObstaclesGameplay.cpp">
       <Filter>game\Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\SoundsExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -140,6 +143,12 @@
     </ClInclude>
     <ClInclude Include="src\dod\SharedContext.h">
       <Filter>dod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\SoundsExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\SoundsSContext.h">
+      <Filter>game\Context</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

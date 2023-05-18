@@ -161,6 +161,7 @@
     <ClCompile Include="src\game\Renderer.cpp" />
     <ClCompile Include="src\game\renderer\instantRenderer.cpp" />
     <ClCompile Include="src\game\SceneRenderer.cpp" />
+    <ClCompile Include="src\game\SoundsExecutor.cpp" />
     <ClCompile Include="src\utils\randomGenerator.cpp" />
     <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
@@ -191,6 +192,8 @@
     <ClInclude Include="src\game\renderer\instantRenderer.h" />
     <ClInclude Include="src\game\SceneContext.h" />
     <ClInclude Include="src\game\SceneRenderer.h" />
+    <ClInclude Include="src\game\SoundsExecutor.h" />
+    <ClInclude Include="src\game\SoundsSContext.h" />
     <ClInclude Include="src\utils\randomGenerator.h" />
   </ItemGroup>
   <ItemGroup>
