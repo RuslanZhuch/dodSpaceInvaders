@@ -16,7 +16,7 @@ void Renderer::Instant::drawRectangle(
 	shape.setFillColor(fillColor);
 	shape.setOutlineColor(outlineColor);
 	shape.setOutlineThickness(outlineWidth);
-
+	
 	window.draw(shape);
 
 }

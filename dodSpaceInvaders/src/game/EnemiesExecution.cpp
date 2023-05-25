@@ -1,14 +1,7 @@
-#include "MainExecution.h"
+#include "EnemiesExecution.h"
 
-#include "EnemiesGameplay.h"
-#include "BulletsCore.h"
-#include "BulletsGameplay.h"
-#include "CollisionCore.h"
-#include "ObstaclesCore.h"
-#include "ObstaclesGameplay.h"
-#include "PlayerGameplay.h"
-
-#include "GameRender.h"
+#include <fstream>
+#include <iostream>
 
 #include <dod/MemUtils.h>
 #include <dod/BufferUtils.h>
@@ -16,21 +9,10 @@
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 
-#include <iostream>
-#include <fstream>
-
-#undef GetObject;
-
-template <>
-const Game::Context::Sounds::Shared& Game::ExecutionBlock::Main::getSharedLocalContext<Game::Context::Sounds::Shared>()
-{
-    return this->soundsContext;
-}
-
-void Game::ExecutionBlock::Main::loadContext()
+void Game::ExecutionBlock::Enemies::loadContext()
 {
 
-    std::ifstream contextFile("resources/contexts/mainContext.json");
+    std::ifstream contextFile("resources/contexts/enemiesContext.json");
     assert(contextFile.is_open());
     const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
 
@@ -40,7 +22,7 @@ void Game::ExecutionBlock::Main::loadContext()
 
     int32_t header{ 0 };
 
-    for (const auto& element : root) 
+    for (const auto& element : root)
     {
         if (element.name == "contextName")
         {
@@ -125,7 +107,7 @@ void Game::ExecutionBlock::Main::loadContext()
                     const auto toRemoveType{ toRemove["type"].GetString() };
                     const auto toRemoveDataType{ toRemove["dataType"].GetString() };
                     const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
-                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t)};
+                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
                     Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
                 }
                 else if (dataElement.name == "enemyBulletsParameters" && dataElement.value.IsObject())
@@ -287,262 +269,14 @@ void Game::ExecutionBlock::Main::loadContext()
             }
         }
     }
-    
-}
-
-void Game::ExecutionBlock::Main::initiate()
-{
-
-    Game::Gameplay::Enemies::generateEnemies(
-        this->enemiesParameters.numOfEnemiesPerRow,
-        this->enemiesParameters.numOfEnemiesCols,
-        this->enemiesParameters.enemiesXStride,
-        this->enemiesParameters.enemiesYStride,
-        this->enemyBatchContext.batchCoordX,
-        this->enemyBatchContext.batchCoordY,
-        this->enemyUnitsContext.xCoords,
-        this->enemyUnitsContext.yCoords
-    );
-
-
-    Game::Gameplay::Obstacles::create(
-        this->obstaclesContext.xCoords,
-        this->obstaclesContext.yCoords,
-        this->obstaclesContext.lifes,
-        this->obstaclesParameters.obstaclesPerRow,
-        this->obstaclesParameters.obstaclesPerCol,
-        this->obstaclesParameters.obstaclesStride,
-        this->obstaclesParameters.obstaclesClusters,
-        this->obstaclesParameters.obstaclesClustersTotalAreaWidth,
-        this->obstaclesParameters.obstaclesClusterY,
-        this->obstaclesParameters.initialLifes,
-        this->commonContext.width
-    );
-
-    this->soundsContext.init(); 
 
 }
 
-bool Game::ExecutionBlock::Main::update(float dt)
+void Game::ExecutionBlock::Enemies::initiate()
 {
-
-    sf::Event event;
-
-    auto& window{ this->gameRenderer->getWindow() };
-    while (window.pollEvent(event))
-    {
-        if (event.type == sf::Event::Closed)
-            window.close();
-    }
-
-    window.clear();
-
-    Game::Gameplay::Player::updateInputs(
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs
-    );
-
-    Game::Gameplay::Player::updateMovement(
-        this->playerMovementContext.move, 
-        this->playerPositionContext.xCoord,
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs,
-        dt
-    );
-
-    const auto numOfPlayerBulletsToCreate{ Game::Gameplay::Player::updateFireComponent(
-        this->playerLifetimeContext.lifes,
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs
-    ) };
-
-    Game::Gameplay::Player::createBulletsSFx(
-        this->soundsContext.soundIdsToPlay,
-        numOfPlayerBulletsToCreate
-    );
-
-    Game::Gameplay::Player::createBullets(
-        numOfPlayerBulletsToCreate,
-        this->playerBulletsContext.xCoords, 
-        this->playerBulletsContext.yCoords,
-        this->playerPositionContext.xCoord,
-        this->playerPositionContext.yCoord
-    );
-        
-    Game::Core::Bullets::updateMovement(
-        this->playerBulletsContext.yCoords, 
-        this->playerBulletsParameters.velocity, 
-        dt
-    );
-    Game::Gameplay::Bullets::collisionUpdate(
-        this->enemyUnitsContext.toRemove,
-        this->playerBulletsContext.toRemove, 
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords),
-        this->enemiesParameters.width,
-        this->enemiesParameters.height
-    );
-
-    Game::Core::Collision::pointsPlaneIntersection(
-        this->playerBulletsContext.toRemove,
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords),
-        this->sceneParameters.topPlaneY,
-        this->sceneParameters.topPlaneDir
-    );
-
-    Game::Gameplay::Bullets::testWithObstacles(
-        this->playerBulletsContext.toRemove,
-        this->obstaclesContext.toHit,
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords),
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.yCoords),
-        this->obstaclesParameters.obstaclesStride * 0.5f,
-        this->obstaclesParameters.obstaclesStride * 0.5f
-    );
-
-    if (Dod::BufferUtils::getNumFilledElements(this->obstaclesContext.toHit) > 0)
-        std::cout << Dod::BufferUtils::getNumFilledElements(this->obstaclesContext.toHit) << '\n';
-
-    Game::Core::Bullets::updateLifetime(
-        this->playerBulletsContext.toRemove,
-        this->playerBulletsContext.xCoords,
-        this->playerBulletsContext.yCoords
-    );
-
-    Game::Gameplay::Enemies::enemiesLifetimeUpdate(
-        this->enemyUnitsContext.toRemove,
-        this->enemyUnitsContext.xCoords,
-        this->enemyUnitsContext.yCoords
-    );
-
-    Game::Gameplay::Enemies::enemiesUpdate(
-        dt, 
-        this->enemyBatchContext.batchMoveTimeleft,
-        this->enemyBatchContext.direction,
-        this->enemyBatchContext.batchTargetX,
-        this->enemyBatchContext.batchCoordX,
-        this->enemyBatchContext.batchCoordY,
-        this->enemyUnitsContext.xCoords,
-        this->enemyUnitsContext.yCoords
-    );
-
-    const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Enemies::updateEnemyBulletsCreation(
-        dt,
-        this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
-        Dod::BufferUtils::getNumFilledElements(this->enemyUnitsContext.xCoords)
-    ) };
-
-    Game::Gameplay::Enemies::createBulletsSFx(
-        this->soundsContext.soundIdsToPlay,
-        numOfEnemyBulletsToCreate
-    );
-
-    Game::Gameplay::Enemies::generateEnemyBullets(
-        numOfEnemyBulletsToCreate,
-        this->enemyBulletsContext.xCoords,
-        this->enemyBulletsContext.yCoords,
-        this->enemyWeaponContext.rand,
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords)
-    );
-
-    Game::Core::Bullets::updateMovement(
-        this->enemyBulletsContext.yCoords,
-        this->enemyBulletsParameters.velocity,
-        dt
-    );
-
-    Game::Core::Collision::pointsPlaneIntersection(
-        this->enemyBulletsContext.toRemove,
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.yCoords),
-        this->sceneParameters.bottomPlaneY, 
-        this->sceneParameters.bottomPlaneDir
-    );
-
-    Game::Gameplay::Player::testWithBullets(
-        this->enemyBulletsContext.toRemove,
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.yCoords),
-        this->playerLifetimeContext.lifes,
-        this->playerPositionContext.xCoord,
-        this->playerPositionContext.yCoord,
-        this->playerParameters.width,
-        this->playerParameters.height
-    );
-
-    Game::Gameplay::Bullets::testWithObstacles(
-        this->enemyBulletsContext.toRemove,
-        this->obstaclesContext.toHit,
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.yCoords),
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.yCoords),
-        this->obstaclesParameters.obstaclesStride * 0.5f,
-        this->obstaclesParameters.obstaclesStride * 0.5f
-    );
-
-    Game::Core::Bullets::updateLifetime(
-        this->enemyBulletsContext.toRemove,
-        this->enemyBulletsContext.xCoords,
-        this->enemyBulletsContext.yCoords
-    );
-
-    Game::Core::Obstacles::updateLifetime(
-        this->obstaclesContext.toRemove,
-        this->obstaclesContext.toHit,
-        this->obstaclesContext.lifes
-    );
-
-    Game::Core::Obstacles::remove(
-        this->obstaclesContext.toRemove,
-        this->obstaclesContext.lifes,
-        this->obstaclesContext.xCoords,
-        this->obstaclesContext.yCoords
-    );
-
-    Game::SceneRenderer::drawEnemies(
-        *this->gameRenderer, 
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyUnitsContext.yCoords)
-    );
-
-    Game::SceneRenderer::drawObstacles(
-        *this->gameRenderer, 
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->obstaclesContext.yCoords)
-    );
-
-    Game::SceneRenderer::drawField(*this->gameRenderer);
-    Game::SceneRenderer::drawPlayer(
-        *this->gameRenderer, 
-        { this->playerPositionContext.xCoord, this->playerPositionContext.yCoord },
-        this->playerParameters.width,
-        this->playerParameters.height,
-        this->playerLifetimeContext.lifes > 0
-    );
-
-    Game::SceneRenderer::drawBullets(
-        *this->gameRenderer,
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->playerBulletsContext.yCoords)
-    );
-
-    Game::SceneRenderer::drawBullets(
-        *this->gameRenderer,
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->enemyBulletsContext.yCoords)
-    );
-
-    window.display();
-
-    return window.isOpen();
-
 }
 
-void Game::ExecutionBlock::Main::flushSharedLocalContexts()
+bool Game::ExecutionBlock::Enemies::update(float dt)
 {
-    this->soundsContext.reset();
+	return false;
 }

@@ -1,13 +1,11 @@
 #pragma once
 
-#include "EnemiesContext.h"
 #include "PlayerContext.h"
 #include "BulletsContext.h"
 #include "ObstaclesContext.h"
 #include "CommonContext.h"
 #include "SceneContext.h"
 
-#include "GameRender.h"
 #include "game/SoundsSContext.h"
 
 #include <dod/MemPool.h>
@@ -44,11 +42,6 @@ namespace Game::ExecutionBlock
 
         Game::Context::Scene::Parameters sceneParameters;
 
-        Game::Context::Enemy::Parameters enemiesParameters;
-        Game::Context::Enemy::BatchContext enemyBatchContext;
-        Game::Context::Enemy::UnitsContext enemyUnitsContext;
-        Game::Context::Enemy::WeaponContext enemyWeaponContext;
-
         Game::Context::Player::Parameters playerParameters;
         Game::Context::Player::Position playerPositionContext;
         Game::Context::Player::Inputs playerInputsContext;
@@ -65,9 +58,6 @@ namespace Game::ExecutionBlock
         Game::Context::Obstacles::Parameters obstaclesParameters;
         Game::Context::Obstacles::UnitsContext obstaclesContext;
 
-        Game::Context::Common::Parameters commonContext;
-
-        std::unique_ptr<GameRenderer> gameRenderer;
 
         Context::Sounds::Shared soundsContext;
     };

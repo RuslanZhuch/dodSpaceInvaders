@@ -54,6 +54,15 @@
     <ClCompile Include="src\game\SoundsExecutor.cpp">
       <Filter>game\ExecutionBlocks</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\EnemiesExecution.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\RenderExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ModelsExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -150,6 +159,24 @@
     <ClInclude Include="src\game\SoundsSContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\EnemiesExecution.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\RenderExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\RenderSharedContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\RenderContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ModelsSharedContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ModelsExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
@@ -191,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\contexts\mainContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\enemiesContext.json">
       <Filter>resources\contexts</Filter>
     </None>
   </ItemGroup>
