@@ -31,6 +31,7 @@ namespace Game::ExecutionBlock
         [[nodiscard]] bool update(float dt);
 
         void setSharedContext(const Dod::SharedContext::Controller<Context::Models::Shared>* sContext) { this->sModelsContext = sContext; };
+        void setSharedContext(const Dod::SharedContext::Controller<Context::Render::Shared>* sContext) { this->sRenderContext = sContext; };
 
     private:
 

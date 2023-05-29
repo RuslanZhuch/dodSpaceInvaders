@@ -9,6 +9,7 @@
 
 #include "GameRender.h"
 #include "SoundsSContext.h"
+#include "RenderSharedContext.h"
 #include "EnemiesContext.h"
 
 #include <dod/MemPool.h>
@@ -26,8 +27,9 @@ namespace Game::ExecutionBlock
         void initiate();
         [[nodiscard]] bool update(float dt);
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::Sounds::Shared>* sContext) { this->soundsContext = sContext; };
-
+        template<typename TContext>
+        [[nodiscard]] const TContext& getSharedLocalContext();
+        void flushSharedLocalContexts();
     private:
 
     private:
@@ -38,7 +40,8 @@ namespace Game::ExecutionBlock
         Game::Context::Enemy::UnitsContext enemyUnitsContext;
         Game::Context::Enemy::WeaponContext enemyWeaponContext;
 
-        const Dod::SharedContext::Controller<Context::Sounds::Shared>* soundsContext{ nullptr };
+        Context::Sounds::Shared soundsContext;
+        Context::Render::Shared renderContext;
 
     };
 

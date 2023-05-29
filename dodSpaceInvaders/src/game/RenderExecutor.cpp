@@ -116,30 +116,40 @@ bool Game::ExecutionBlock::Render::update(float dt)
 
     window.clear();
 
-    const auto centers{ Dod::SharedContext::get(this->sRenderContext).centers };
-    const auto modelIds{ Dod::SharedContext::get(this->sRenderContext).modelIds };
+    const auto xCoords{ Dod::SharedContext::get(this->sRenderContext).xCoords };
+    const auto yCoords{ Dod::SharedContext::get(this->sRenderContext).yCoords };
+    const auto modelsMeta{ Dod::SharedContext::get(this->sRenderContext).modelsMeta };
 
     const auto modelsData{ Dod::SharedContext::get(this->sModelsContext).loadedModels };
     const auto modelsDataIds{ Dod::SharedContext::get(this->sModelsContext).modelIds };
 
     Dod::DBBuffer<int32_t> idsToRender;
 
+    int32_t modelElId{};
     sf::Transform transform;
-    for (int32_t elId{}; elId < Dod::BufferUtils::getNumFilledElements(modelIds); ++elId)
+    for (int32_t metaElId{}; metaElId < Dod::BufferUtils::getNumFilledElements(modelsMeta); ++metaElId)
     {
+
         Dod::BufferUtils::flush(idsToRender);
-        const auto modelIdToRender{ Dod::BufferUtils::get(modelIds, elId) };
+        const auto modelIdToRender{ Dod::BufferUtils::get(modelsMeta, metaElId).modelId };
         for (int32_t existElId{}; existElId < Dod::BufferUtils::getNumFilledElements(modelsDataIds); ++existElId)
         {
             Dod::BufferUtils::populate(idsToRender, existElId,
                 Dod::BufferUtils::get(modelsDataIds, existElId) == modelIdToRender);
         }
-        const auto center{ Dod::BufferUtils::get(centers, elId) };
-        transform.translate({ center.x, center.y });
-        for (int32_t renderElId{}; renderElId < Dod::BufferUtils::getNumFilledElements(idsToRender); ++renderElId)
+
+        const auto numOfInstances{ Dod::BufferUtils::get(modelsMeta, metaElId).numOfElements };
+        for (; modelElId < numOfInstances; ++modelElId)
         {
-            window.draw(Dod::BufferUtils::get(modelsData, renderElId), transform);
+            const auto x{ Dod::BufferUtils::get(xCoords, modelElId) };
+            const auto y{ Dod::BufferUtils::get(yCoords, modelElId) };
+            transform.translate({ x, y });
+            for (int32_t renderElId{}; renderElId < Dod::BufferUtils::getNumFilledElements(idsToRender); ++renderElId)
+            {
+                window.draw(Dod::BufferUtils::get(modelsData, renderElId), transform);
+            }
         }
+
     }
 
     window.display();

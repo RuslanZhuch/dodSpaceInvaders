@@ -6,6 +6,7 @@
 #include "Buffers.h"
 
 #include <type_traits>
+#include <concepts>
 
 namespace Dod::BufferUtils
 {
@@ -115,7 +116,20 @@ namespace Dod::BufferUtils
 	}
 
 	template<typename T>
-	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept
+	void constructBack(DBBuffer<T>& buffer, const T& copy, bool strobe = true) noexcept
+	{
+
+		const auto capacity{ buffer.dataEnd - buffer.dataBegin };
+		const auto bCanAddValue{ (Dod::BufferUtils::getNumFilledElements(buffer) + 1 < capacity) && strobe };
+
+		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
+		buffer.dataBegin[Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue] = copy;
+
+	}
+
+	template<typename T>
+	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept 
+		requires requires() { requires std::is_trivially_constructible_v<T>; }
 	{
 
 		const auto capacity{ buffer.dataEnd - buffer.dataBegin };
@@ -123,6 +137,20 @@ namespace Dod::BufferUtils
 
 		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
 		buffer.dataBegin[Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue] = std::move(value);
+
+	}
+
+	template<typename T>
+	void populate(DBBuffer<T>& buffer, T value, bool strobe) noexcept
+	{
+
+		const auto capacity{ buffer.dataEnd - buffer.dataBegin };
+		const auto bCanAddValue{ (Dod::BufferUtils::getNumFilledElements(buffer) + 1 < capacity) && strobe };
+
+		buffer.numOfFilledEls += size_t(1) * bCanAddValue;
+		const auto position{ Dod::BufferUtils::getNumFilledElements(buffer) * bCanAddValue };
+		std::construct_at<T>(buffer.dataBegin + position);
+		buffer.dataBegin[position] = std::move(value);
 
 	}
 
@@ -211,7 +239,8 @@ namespace Dod::BufferUtils
 	}
 
 	template<typename T>
-	void append(DBBuffer<T>& dest, Dod::ImBuffer<T> src) noexcept
+	void append(DBBuffer<T>& dest, Dod::ImBuffer<T> src) noexcept 
+		requires requires() { requires std::is_trivially_copyable_v<T>; }
 	{
 		const auto spaceLeft{ Dod::BufferUtils::getCapacity(dest) - Dod::BufferUtils::getNumFilledElements(dest) };
 		const auto allowToFill{ std::max(spaceLeft, 0) };
@@ -220,5 +249,19 @@ namespace Dod::BufferUtils
 		std::memcpy(begin, src.dataBegin, sizeof(T) * numOfElements);
 		dest.numOfFilledEls += numOfElements;
 	}
+	template<typename T>
+	void append(DBBuffer<T>& dest, Dod::ImBuffer<T> src) noexcept
+	{
+		const auto srcNumOfElements{ Dod::BufferUtils::getNumFilledElements(src) };
+		for (int32_t elId{}; elId < srcNumOfElements; ++elId)
+		{
+			Dod::BufferUtils::populate(dest, Dod::BufferUtils::get(src, elId), true);
+		}
+	}
+
+//	void f()
+//	{
+//		static_assert(std::is_trivially_copyable_v<int>);
+//	}
 
 };

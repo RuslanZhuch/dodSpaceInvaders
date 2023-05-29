@@ -7,6 +7,7 @@
 #include "SceneContext.h"
 
 #include "game/SoundsSContext.h"
+#include "game/ModelsSharedContext.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -29,10 +30,10 @@ namespace Game::ExecutionBlock
         void initiate();
         [[nodiscard]] bool update(float dt);
 
-        [[nodiscard]] auto& getWindow() { return this->gameRenderer->getWindow(); }
+//        [[nodiscard]] auto& getWindow() { return this->gameRenderer->getWindow(); }
 
-        template<typename TContext>
-        [[nodiscard]] const TContext& getSharedLocalContext();
+//        template<typename TContext>
+//        [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
 
     private:
@@ -40,26 +41,26 @@ namespace Game::ExecutionBlock
     private:
         Dod::MemPool memory;
 
-        Game::Context::Scene::Parameters sceneParameters;
+//        Game::Context::Scene::Parameters sceneParameters;
 
-        Game::Context::Player::Parameters playerParameters;
-        Game::Context::Player::Position playerPositionContext;
-        Game::Context::Player::Inputs playerInputsContext;
-        Game::Context::Player::Movement playerMovementContext;
-        Game::Context::Player::Fire playerFireContext;
-        Game::Context::Player::Lifetime playerLifetimeContext;
+//        Game::Context::Player::Parameters playerParameters;
+//        Game::Context::Player::Position playerPositionContext;
+//        Game::Context::Player::Inputs playerInputsContext;
+//        Game::Context::Player::Movement playerMovementContext;
+//        Game::Context::Player::Fire playerFireContext;
+//        Game::Context::Player::Lifetime playerLifetimeContext;
 
-        Game::Context::Bullets::Parameters playerBulletsParameters;
-        Game::Context::Bullets::Parameters enemyBulletsParameters;
+//        Game::Context::Bullets::Parameters playerBulletsParameters;
+//        Game::Context::Bullets::Parameters enemyBulletsParameters;
+//
+//        Game::Context::Bullets::UnitsContext playerBulletsContext;
+//        Game::Context::Bullets::UnitsContext enemyBulletsContext;
+//
+//        Game::Context::Obstacles::Parameters obstaclesParameters;
+//        Game::Context::Obstacles::UnitsContext obstaclesContext;
 
-        Game::Context::Bullets::UnitsContext playerBulletsContext;
-        Game::Context::Bullets::UnitsContext enemyBulletsContext;
 
-        Game::Context::Obstacles::Parameters obstaclesParameters;
-        Game::Context::Obstacles::UnitsContext obstaclesContext;
-
-
-        Context::Sounds::Shared soundsContext;
+//        Context::Sounds::Shared soundsContext;
     };
 
 };

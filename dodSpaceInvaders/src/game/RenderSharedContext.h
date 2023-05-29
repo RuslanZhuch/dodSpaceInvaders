@@ -8,10 +8,10 @@ namespace Game::Context::Render
 	struct Shared
 	{
 
-		struct Vec2
+		struct ModelMeta
 		{
-			float x{};
-			float y{};
+			int32_t modelId{};
+			int32_t numOfElements{};
 		};
 
 		void init()
@@ -19,26 +19,30 @@ namespace Game::Context::Render
 			this->memory.allocate(1024);
 			int32_t header{};
 			constexpr int32_t totalElements{ 512 };
-			Dod::BufferUtils::initFromMemory(this->centers, Dod::MemUtils::stackAquire(this->memory, totalElements * sizeof(Vec2), header));
-			Dod::BufferUtils::initFromMemory(this->modelIds, Dod::MemUtils::stackAquire(this->memory, totalElements * sizeof(int32_t), header));
+			Dod::BufferUtils::initFromMemory(this->xCoords, Dod::MemUtils::stackAquire(this->memory, totalElements * sizeof(float), header));
+			Dod::BufferUtils::initFromMemory(this->yCoords, Dod::MemUtils::stackAquire(this->memory, totalElements * sizeof(float), header));
+			Dod::BufferUtils::initFromMemory(this->modelsMeta, Dod::MemUtils::stackAquire(this->memory, totalElements * sizeof(ModelMeta), header));
 		}
 
 		void reset()
 		{
-			Dod::BufferUtils::flush(this->centers);
-			Dod::BufferUtils::flush(this->modelIds);
+			Dod::BufferUtils::flush(this->xCoords);
+			Dod::BufferUtils::flush(this->yCoords);
+			Dod::BufferUtils::flush(this->modelsMeta);
 		}
 
 		void merge(const Shared& other)
 		{
-			Dod::BufferUtils::append(this->centers, Dod::BufferUtils::createImFromBuffer(other.centers));
-			Dod::BufferUtils::append(this->modelIds, Dod::BufferUtils::createImFromBuffer(other.modelIds));
+			Dod::BufferUtils::append(this->xCoords, Dod::BufferUtils::createImFromBuffer(other.xCoords));
+			Dod::BufferUtils::append(this->yCoords, Dod::BufferUtils::createImFromBuffer(other.yCoords));
+			Dod::BufferUtils::append(this->modelsMeta, Dod::BufferUtils::createImFromBuffer(other.modelsMeta));
 		}
 
 		Dod::MemPool memory;
 
-		Dod::DBBuffer<Vec2> centers;
-		Dod::DBBuffer<int32_t> modelIds;
+		Dod::DBBuffer<float> xCoords;
+		Dod::DBBuffer<float> yCoords;
+		Dod::DBBuffer<ModelMeta> modelsMeta;
 
 	};
 

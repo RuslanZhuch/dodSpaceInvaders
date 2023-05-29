@@ -2,18 +2,6 @@
 
   "contextName": "enemiesContext",
   "data": {
-    "applicationContext": {
-      "totalMemoryBytes": 10485760,
-      "windowWidth": 800,
-      "windowHeight": 900,
-      "title": "dod invaders"
-    },
-    "sceneParameters": {
-      "topPlaneY": 100,
-      "topPlaneDire": 1,
-      "bottomPlaneY": 875,
-      "bottomPlaneDir": -1
-    },
     "enemiesParameters": {
       "numOfEnemiesPerRow": 10,
       "numOfEnemiesPerCol": 4,
@@ -24,9 +12,6 @@
       "weaponCooldownTime": 0.5,
       "startCoordX": 100,
       "startCoordY": 200
-    },
-    "enemiesWeaponContext": {
-      "cooldownTimeLeft": 0
     },
     "enemiesUnitsContext": {
       "xCoords": {
@@ -43,26 +28,6 @@
         "type": "dbbuffer",
         "dataType": "int32_t",
         "capacity": 41
-      }
-    },
-    "enemyBulletsParameters": {
-      "velocity": 120
-    },
-    "enemyBulletsContext": {
-      "xCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 512
-      },
-      "yCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 512
-      },
-      "toRemove": {
-        "type": "dbbuffer",
-        "dataType": "int32_t",
-        "capacity": 256
       }
     }
   }
