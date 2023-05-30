@@ -1,0 +1,13 @@
+{
+
+  "contextName": "sceneContext",
+  "data": {
+    "sceneParameters": {
+      "topPlaneY": 100,
+      "topPlaneDire": 1,
+      "bottomPlaneY": 875,
+      "bottomPlaneDir": -1
+    }
+  }
+ 
+}

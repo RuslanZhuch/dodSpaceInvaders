@@ -32,6 +32,9 @@ namespace Game::ExecutionBlock
         [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
     private:
+        void createEnemyModel();
+        void createEnemyBulletModel();
+        void createObstacleModel();
 
     private:
         Dod::MemPool memory;

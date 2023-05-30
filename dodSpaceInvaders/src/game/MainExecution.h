@@ -41,7 +41,7 @@ namespace Game::ExecutionBlock
     private:
         Dod::MemPool memory;
 
-//        Game::Context::Scene::Parameters sceneParameters;
+//        
 
 //        Game::Context::Player::Parameters playerParameters;
 //        Game::Context::Player::Position playerPositionContext;
@@ -51,10 +51,9 @@ namespace Game::ExecutionBlock
 //        Game::Context::Player::Lifetime playerLifetimeContext;
 
 //        Game::Context::Bullets::Parameters playerBulletsParameters;
-//        Game::Context::Bullets::Parameters enemyBulletsParameters;
 //
 //        Game::Context::Bullets::UnitsContext playerBulletsContext;
-//        Game::Context::Bullets::UnitsContext enemyBulletsContext;
+//        
 //
 //        Game::Context::Obstacles::Parameters obstaclesParameters;
 //        Game::Context::Obstacles::UnitsContext obstaclesContext;

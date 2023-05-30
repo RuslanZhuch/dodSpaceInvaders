@@ -1,0 +1,44 @@
+{
+
+  "contextName": "obstaclesContext",
+  "data": {
+    "obstaclesParameters": {
+      "stride": 30,
+      "perRow": 5,
+      "perCol": 2,
+      "numOfClusters": 3,
+      "clustersTotalAreaWidth": 700,
+      "clusterY": 650,
+      "initialLifes": 1,
+      "width": 800
+    },
+    "obstaclesUnitsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 31
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 31
+      },
+      "lifes": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      },
+      "toHit": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 31
+      }
+    }
+  }
+ 
+}

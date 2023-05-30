@@ -63,6 +63,12 @@
     <ClCompile Include="src\game\ModelsExecutor.cpp">
       <Filter>game\ExecutionBlocks</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\EnemiesBulletsExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObstaclesExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -177,6 +183,18 @@
     <ClInclude Include="src\game\ModelsExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\EnemiesBulletsExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\BulletsToSpawnSContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstaclesExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObjectsToHitSContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
@@ -221,6 +239,21 @@
       <Filter>resources\contexts</Filter>
     </None>
     <None Include="resources\contexts\enemiesContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\commonContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\rendererContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\sceneContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\enemyBulletsContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\obstaclesContext.json">
       <Filter>resources\contexts</Filter>
     </None>
   </ItemGroup>

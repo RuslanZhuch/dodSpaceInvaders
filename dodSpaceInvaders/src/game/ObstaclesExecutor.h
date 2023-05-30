@@ -6,6 +6,7 @@
 #include "ObstaclesContext.h"
 #include "CommonContext.h"
 #include "SceneContext.h"
+#include "ObjectsToHitSContext.h"
 
 #include "GameRender.h"
 #include "SoundsSContext.h"
@@ -19,7 +20,7 @@
 namespace Game::ExecutionBlock
 {
 
-    class Enemies
+    class Obstacles
     {
 
     public:
@@ -31,20 +32,21 @@ namespace Game::ExecutionBlock
         template<typename TContext>
         [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
+
+        void setSharedContext(const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext) { this->sContext = sContext; };
+
     private:
 
     private:
         Dod::MemPool memory;
 
-        Game::Context::Enemy::Parameters enemiesParameters;
-        Game::Context::Enemy::BatchContext enemyBatchContext;
-        Game::Context::Enemy::UnitsContext enemyUnitsContext;
-        Game::Context::Enemy::WeaponContext enemyWeaponContext;
+        Game::Context::Obstacles::Parameters obstaclesParameters;
+        Game::Context::Obstacles::UnitsContext obstaclesContext;
 
         Context::Sounds::Shared soundsContext;
         Context::Render::Shared renderContext;
-        Context::BulletsToSpawn::Shared bulletsToSpawnContext;
 
+        const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext{ nullptr };
     };
 
 };

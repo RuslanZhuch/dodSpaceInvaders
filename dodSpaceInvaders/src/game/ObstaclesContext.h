@@ -14,14 +14,12 @@ namespace Game::Context::Obstacles
         int32_t obstaclesClustersTotalAreaWidth{ };
         int32_t obstaclesClusterY{ };
         int32_t initialLifes{ };
+        float width{};
     };
 
     struct UnitsContext
     {
-        Dod::DBBuffer<float> xCoords;
-        Dod::DBBuffer<float> yCoords;
         Dod::DBBuffer<int32_t> lifes;
-        Dod::DBBuffer<int32_t> toHit;
         Dod::DBBuffer<int32_t> toRemove;
     };
 

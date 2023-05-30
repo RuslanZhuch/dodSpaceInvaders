@@ -123,30 +123,28 @@ bool Game::ExecutionBlock::Render::update(float dt)
     const auto modelsData{ Dod::SharedContext::get(this->sModelsContext).loadedModels };
     const auto modelsDataIds{ Dod::SharedContext::get(this->sModelsContext).modelIds };
 
-    Dod::DBBuffer<int32_t> idsToRender;
-
     int32_t modelElId{};
-    sf::Transform transform;
     for (int32_t metaElId{}; metaElId < Dod::BufferUtils::getNumFilledElements(modelsMeta); ++metaElId)
     {
 
-        Dod::BufferUtils::flush(idsToRender);
+        Dod::BufferUtils::flush(this->renderBufferContext.idsToRender);
         const auto modelIdToRender{ Dod::BufferUtils::get(modelsMeta, metaElId).modelId };
         for (int32_t existElId{}; existElId < Dod::BufferUtils::getNumFilledElements(modelsDataIds); ++existElId)
         {
-            Dod::BufferUtils::populate(idsToRender, existElId,
+            Dod::BufferUtils::populate(this->renderBufferContext.idsToRender, existElId,
                 Dod::BufferUtils::get(modelsDataIds, existElId) == modelIdToRender);
         }
 
         const auto numOfInstances{ Dod::BufferUtils::get(modelsMeta, metaElId).numOfElements };
-        for (; modelElId < numOfInstances; ++modelElId)
+        for (int32_t instanceId{}; instanceId < numOfInstances; ++instanceId, ++modelElId)
         {
             const auto x{ Dod::BufferUtils::get(xCoords, modelElId) };
             const auto y{ Dod::BufferUtils::get(yCoords, modelElId) };
+            sf::Transform transform;
             transform.translate({ x, y });
-            for (int32_t renderElId{}; renderElId < Dod::BufferUtils::getNumFilledElements(idsToRender); ++renderElId)
+            for (int32_t renderElId{}; renderElId < Dod::BufferUtils::getNumFilledElements(this->renderBufferContext.idsToRender); ++renderElId)
             {
-                window.draw(Dod::BufferUtils::get(modelsData, renderElId), transform);
+                window.draw(Dod::BufferUtils::get(modelsData, Dod::BufferUtils::get(this->renderBufferContext.idsToRender, renderElId)), transform);
             }
         }
 

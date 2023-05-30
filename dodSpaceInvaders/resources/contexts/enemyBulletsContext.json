@@ -1,0 +1,27 @@
+{
+
+  "contextName": "enemyBulletsContext",
+  "data": {
+    "enemyBulletsParameters": {
+      "velocity": 120
+    },
+    "enemyBulletsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 256
+      }
+    }
+  }
+ 
+}

@@ -4,8 +4,8 @@
 
 void Game::Core::Obstacles::updateLifetime(
 	Dod::DBBuffer<int32_t>& obstaclesToRemove, 
-	Dod::DBBuffer<int32_t>& obstaclesToHit, 
-    Dod::DBBuffer<int32_t>& obstaclesLifes
+    Dod::DBBuffer<int32_t>& obstaclesLifes,
+    Dod::ImBuffer<int32_t> obstaclesToHit
 ) noexcept
 {
 
@@ -17,8 +17,6 @@ void Game::Core::Obstacles::updateLifetime(
 
         Dod::BufferUtils::populate(obstaclesToRemove, obstacleToHitId, bNeedToRemove);
     }
-
-    obstaclesToHit.numOfFilledEls = 0;
 
 }
 

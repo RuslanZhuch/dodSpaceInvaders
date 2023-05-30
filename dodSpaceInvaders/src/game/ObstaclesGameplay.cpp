@@ -13,7 +13,7 @@ void Game::Gameplay::Obstacles::create(
     float obstaclesClustersTotalAreaWidth,
     float obstaclesClusterY,
     int32_t initialLifes,
-    float windowWidth
+    float width
 ) noexcept
 {
 
@@ -30,7 +30,7 @@ void Game::Gameplay::Obstacles::create(
 
 //    const auto obstaclesClusterY{ 650.f };
 
-    const auto initialClusterX{ windowWidth * 0.5f - needObstaclesWidth * 0.5f };
+    const auto initialClusterX{ width * 0.5f - needObstaclesWidth * 0.5f };
 
     for (int32_t clusterId{ 0 }; clusterId < obstaclesClusters; ++clusterId)
     {

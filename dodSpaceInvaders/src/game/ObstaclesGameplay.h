@@ -16,7 +16,7 @@ namespace Game::Gameplay::Obstacles
         float obstaclesClustersTotalAreaWidth,
         float obstaclesClusterY,
         int32_t initialLifes,
-        float windowWidth
+        float width
 	) noexcept;
 
 };

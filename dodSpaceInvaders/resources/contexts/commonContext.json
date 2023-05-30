@@ -1,0 +1,19 @@
+{
+
+  "contextName": "commonContext",
+  "data": {
+    "applicationContext": {
+      "totalMemoryBytes": 10485760,
+      "windowWidth": 800,
+      "windowHeight": 900,
+      "title": "dod invaders"
+    },
+    "sceneParameters": {
+      "topPlaneY": 100,
+      "topPlaneDire": 1,
+      "bottomPlaneY": 875,
+      "bottomPlaneDir": -1
+    }
+  }
+ 
+}

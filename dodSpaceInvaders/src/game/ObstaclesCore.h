@@ -7,8 +7,8 @@ namespace Game::Core::Obstacles
 
 	void updateLifetime(
 		Dod::DBBuffer<int32_t>& obstaclesToRemove,
-		Dod::DBBuffer<int32_t>& obstaclesToHit,
-		Dod::DBBuffer<int32_t>& obstaclesLifes
+		Dod::DBBuffer<int32_t>& obstaclesLifes,
+		Dod::ImBuffer<int32_t> obstaclesToHit
 	) noexcept;
 
 	void remove(

@@ -10,8 +10,9 @@
 #include "GameRender.h"
 #include "SoundsSContext.h"
 #include "RenderSharedContext.h"
-#include "EnemiesContext.h"
 #include "BulletsToSpawnSContext.h"
+#include "EnemiesContext.h"
+#include "ObjectsToHitSContext.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -19,7 +20,7 @@
 namespace Game::ExecutionBlock
 {
 
-    class Enemies
+    class EnemiesBullets
     {
 
     public:
@@ -31,20 +32,23 @@ namespace Game::ExecutionBlock
         template<typename TContext>
         [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
+
+        void setSharedContext(const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* sContext) { this->bulletsSContext = sContext; };
+
     private:
 
     private:
         Dod::MemPool memory;
 
-        Game::Context::Enemy::Parameters enemiesParameters;
-        Game::Context::Enemy::BatchContext enemyBatchContext;
-        Game::Context::Enemy::UnitsContext enemyUnitsContext;
-        Game::Context::Enemy::WeaponContext enemyWeaponContext;
+        Game::Context::Scene::Parameters sceneParameters;
+        Game::Context::Bullets::Parameters enemyBulletsParameters;
+        Game::Context::Bullets::UnitsContext enemyBulletsContext;
 
         Context::Sounds::Shared soundsContext;
         Context::Render::Shared renderContext;
-        Context::BulletsToSpawn::Shared bulletsToSpawnContext;
+        Context::ObjectsToHit::Shared obstaclesToHitContext;
 
+        const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* bulletsSContext{ nullptr };
     };
 
 };

@@ -29,6 +29,9 @@
         "dataType": "int32_t",
         "capacity": 41
       }
+    },
+    "enemiesWeaponContext": {
+      "cooldownTimeLeft":  2
     }
   }
  

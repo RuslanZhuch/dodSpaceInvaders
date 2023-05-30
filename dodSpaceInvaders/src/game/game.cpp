@@ -7,6 +7,8 @@
 #include "RenderExecutor.h"
 #include <game/EnemiesExecution.h>
 #include <game/ModelsExecutor.h>
+#include <game/EnemiesBulletsExecutor.h>
+#include <game/ObstaclesExecutor.h>
 
 #include <dod/SharedContext.h>
 #include <game/SoundsSContext.h>
@@ -20,8 +22,11 @@ bool msgLoop(
     Game::ExecutionBlock::Enemies& enemies, 
     Game::ExecutionBlock::Models& models, 
     Game::ExecutionBlock::Render& render, 
+    Game::ExecutionBlock::EnemiesBullets& enemyBullets,
+    Game::ExecutionBlock::Obstacles& obstacles,
     Dod::SharedContext::Controller<Game::Context::Sounds::Shared>& soundsContext,
     Dod::SharedContext::Controller<Game::Context::Models::Shared>& modelsContext,
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& bulletsToSpawnContext,
     Dod::SharedContext::Controller<Game::Context::Render::Shared>& renderContext
 )
 {
@@ -29,17 +34,25 @@ bool msgLoop(
     sounds.update(dt);
     enemies.update(dt);
     models.update(dt);
+    enemyBullets.update(dt);
+    obstacles.update(dt);
     const auto bContinue{ render.update(dt) };
     
     Dod::SharedContext::flush(&soundsContext);
     Dod::SharedContext::flush(&renderContext);
+    Dod::SharedContext::flush(&bulletsToSpawnContext);
 //    Dod::SharedContext::flush(&modelsContext);
 
     Dod::SharedContext::merge(&renderContext, enemies.getSharedLocalContext<Game::Context::Render::Shared>());
+    Dod::SharedContext::merge(&renderContext, enemyBullets.getSharedLocalContext<Game::Context::Render::Shared>());
+    Dod::SharedContext::merge(&renderContext, obstacles.getSharedLocalContext<Game::Context::Render::Shared>());
+    Dod::SharedContext::merge(&soundsContext, enemyBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
     Dod::SharedContext::merge(&modelsContext, models.getSharedLocalContext<Game::Context::Models::Shared>());
+    Dod::SharedContext::merge(&bulletsToSpawnContext, enemies.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
     exe.flushSharedLocalContexts();
     enemies.flushSharedLocalContexts();
     models.flushSharedLocalContexts();
+    enemyBullets.flushSharedLocalContexts();
 
     return bContinue;
 
@@ -51,6 +64,7 @@ void Game::run()
     Dod::SharedContext::Controller<Game::Context::Sounds::Shared> sContext;
     Dod::SharedContext::Controller<Game::Context::Models::Shared> sModels;
     Dod::SharedContext::Controller<Game::Context::Render::Shared> sRender;
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared> sBulletsToSpawn;
 
     Game::ExecutionBlock::Main exe;
     exe.loadContext();
@@ -63,6 +77,15 @@ void Game::run()
     Game::ExecutionBlock::Enemies enemies;
     enemies.loadContext();
     enemies.initiate();
+
+    Game::ExecutionBlock::EnemiesBullets enemyBullets;
+    enemyBullets.loadContext();
+    enemyBullets.setSharedContext(&sBulletsToSpawn);
+    enemyBullets.initiate();
+
+    Game::ExecutionBlock::Obstacles obstacles;
+    obstacles.loadContext();
+    obstacles.initiate();
 
     Game::ExecutionBlock::Render render;
     render.loadContext();
@@ -87,8 +110,12 @@ void Game::run()
             enemies,
             models,
             render,
+            enemyBullets,
+            obstacles,
+
             sContext,
             sModels,
+            sBulletsToSpawn,
             sRender
         ))
             break;

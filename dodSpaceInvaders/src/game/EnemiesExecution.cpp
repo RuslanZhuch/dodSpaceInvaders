@@ -20,6 +20,11 @@ const Game::Context::Render::Shared& Game::ExecutionBlock::Enemies::getSharedLoc
 {
     return this->renderContext;
 }
+template <>
+const Game::Context::BulletsToSpawn::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>()
+{
+    return this->bulletsToSpawnContext;
+}
 
 void Game::ExecutionBlock::Enemies::loadContext()
 {
@@ -33,6 +38,7 @@ void Game::ExecutionBlock::Enemies::loadContext()
     const auto root{ json.GetObject() };
 
     int32_t header{ 0 };
+    this->memory.allocate(2048);
 
     for (const auto& element : root)
     {
@@ -67,28 +73,28 @@ void Game::ExecutionBlock::Enemies::loadContext()
                     const auto startCoordY{ enemiesParametersObj["startCoordY"].GetFloat() };
                     this->enemyBatchContext.batchCoordY = startCoordY;
                 }
-//                else if (dataElement.name == "enemiesWeaponContext" && dataElement.value.IsObject())
-//                {
-//                    const auto enemiesWeaponContextObj{ dataElement.value.GetObject() };
-//                    [[maybe_unused]] const auto cooldownTimeLeft{ enemiesWeaponContextObj["cooldownTimeLeft"].GetInt() };
-//                }
+                else if (dataElement.name == "enemiesWeaponContext" && dataElement.value.IsObject())
+                {
+                    const auto enemiesWeaponContextObj{ dataElement.value.GetObject() };
+                    this->enemyWeaponContext.enemyWeaponCooldownTimeLeft = enemiesWeaponContextObj["cooldownTimeLeft"].GetInt();
+                }
                 else if (dataElement.name == "enemiesUnitsContext" && dataElement.value.IsObject())
                 {
                     const auto enemiesUnitsContextObj{ dataElement.value.GetObject() };
 
-                    const auto xCoords{ enemiesUnitsContextObj["xCoords"].GetObject() };
-                    const auto xCoordsType{ xCoords["type"].GetString() };
-                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
-                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
-                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
-                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
-
-                    const auto yCoords{ enemiesUnitsContextObj["yCoords"].GetObject() };
-                    const auto yCoordsType{ yCoords["type"].GetString() };
-                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
-                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
-                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
-                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
+//                    const auto xCoords{ enemiesUnitsContextObj["xCoords"].GetObject() };
+//                    const auto xCoordsType{ xCoords["type"].GetString() };
+//                    const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+//                    const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+//                    const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+//                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
+//
+//                    const auto yCoords{ enemiesUnitsContextObj["yCoords"].GetObject() };
+//                    const auto yCoordsType{ yCoords["type"].GetString() };
+//                    const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+//                    const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+//                    const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+//                    Dod::BufferUtils::initFromMemory(this->enemyUnitsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
 
                     const auto toRemove{ enemiesUnitsContextObj["toRemove"].GetObject() };
                     const auto toRemoveType{ toRemove["type"].GetString() };
@@ -106,6 +112,11 @@ void Game::ExecutionBlock::Enemies::loadContext()
 void Game::ExecutionBlock::Enemies::initiate()
 {
 
+    this->renderContext.init();
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
+
+    this->bulletsToSpawnContext.init();
+
     Game::Gameplay::Enemies::generateEnemies(
         this->enemiesParameters.numOfEnemiesPerRow,
         this->enemiesParameters.numOfEnemiesCols,
@@ -113,8 +124,8 @@ void Game::ExecutionBlock::Enemies::initiate()
         this->enemiesParameters.enemiesYStride,
         this->enemyBatchContext.batchCoordX,
         this->enemyBatchContext.batchCoordY,
-        this->enemyUnitsContext.xCoords,
-        this->enemyUnitsContext.yCoords
+        this->renderContext.xCoords,
+        this->renderContext.yCoords
     );
 
 }
@@ -124,8 +135,8 @@ bool Game::ExecutionBlock::Enemies::update(float dt)
 
     Game::Gameplay::Enemies::enemiesLifetimeUpdate(
         this->enemyUnitsContext.toRemove,
-        this->enemyUnitsContext.xCoords,
-        this->enemyUnitsContext.yCoords
+        this->renderContext.xCoords,
+        this->renderContext.yCoords
     );
 
     Game::Gameplay::Enemies::enemiesUpdate(
@@ -139,21 +150,31 @@ bool Game::ExecutionBlock::Enemies::update(float dt)
         this->renderContext.yCoords
     );
 
-    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).modelId = 1;
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).numOfElements = Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords);
 
-//    const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Enemies::updateEnemyBulletsCreation(
-//        dt,
-//        this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
-//        Dod::BufferUtils::getNumFilledElements(this->enemyUnitsContext.xCoords)
-//    ) };
+    const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Enemies::updateEnemyBulletsCreation(
+        dt,
+        this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
+        Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords)
+    ) };
+
+    Game::Gameplay::Enemies::generateEnemyBullets(
+        numOfEnemyBulletsToCreate,
+        this->bulletsToSpawnContext.xCoords,
+        this->bulletsToSpawnContext.yCoords,
+        this->enemyWeaponContext.rand,
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords)
+    );
 
 	return true;
+
 }
 
 void Game::ExecutionBlock::Enemies::flushSharedLocalContexts()
 {
     this->soundsContext.reset();
-    this->renderContext.reset();
+    this->bulletsToSpawnContext.reset();
+//    this->renderContext.reset();
 }

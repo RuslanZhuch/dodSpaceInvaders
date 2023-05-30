@@ -150,6 +150,7 @@
     <ClCompile Include="src\game\BulletsCore.cpp" />
     <ClCompile Include="src\game\BulletsGameplay.cpp" />
     <ClCompile Include="src\game\CollisionCore.cpp" />
+    <ClCompile Include="src\game\EnemiesBulletsExecutor.cpp" />
     <ClCompile Include="src\game\EnemiesCore.cpp" />
     <ClCompile Include="src\game\EnemiesExecution.cpp" />
     <ClCompile Include="src\game\EnemiesGameplay.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\game\MainExecution.cpp" />
     <ClCompile Include="src\game\ModelsExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesCore.cpp" />
+    <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
@@ -178,8 +180,10 @@
     <ClInclude Include="src\game\BulletsContext.h" />
     <ClInclude Include="src\game\BulletsCore.h" />
     <ClInclude Include="src\game\BulletsGameplay.h" />
+    <ClInclude Include="src\game\BulletsToSpawnSContext.h" />
     <ClInclude Include="src\game\CollisionCore.h" />
     <ClInclude Include="src\game\CommonContext.h" />
+    <ClInclude Include="src\game\EnemiesBulletsExecutor.h" />
     <ClInclude Include="src\game\EnemiesContext.h" />
     <ClInclude Include="src\game\EnemiesCore.h" />
     <ClInclude Include="src\game\EnemiesExecution.h" />
@@ -189,8 +193,10 @@
     <ClInclude Include="src\game\MainExecution.h" />
     <ClInclude Include="src\game\ModelsExecutor.h" />
     <ClInclude Include="src\game\ModelsSharedContext.h" />
+    <ClInclude Include="src\game\ObjectsToHitSContext.h" />
     <ClInclude Include="src\game\ObstaclesContext.h" />
     <ClInclude Include="src\game\ObstaclesCore.h" />
+    <ClInclude Include="src\game\ObstaclesExecutor.h" />
     <ClInclude Include="src\game\ObstaclesGameplay.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
@@ -211,8 +217,13 @@
     <ClInclude Include="src\game\game.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\contexts\commonContext.json" />
     <None Include="resources\contexts\enemiesContext.json" />
+    <None Include="resources\contexts\enemyBulletsContext.json" />
     <None Include="resources\contexts\mainContext.json" />
+    <None Include="resources\contexts\obstaclesContext.json" />
+    <None Include="resources\contexts\rendererContext.json" />
+    <None Include="resources\contexts\sceneContext.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
