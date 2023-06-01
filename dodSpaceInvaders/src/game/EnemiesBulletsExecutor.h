@@ -13,6 +13,7 @@
 #include "BulletsToSpawnSContext.h"
 #include "EnemiesContext.h"
 #include "ObjectsToHitSContext.h"
+#include "ObstaclesSContext.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -34,6 +35,7 @@ namespace Game::ExecutionBlock
         void flushSharedLocalContexts();
 
         void setSharedContext(const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* sContext) { this->bulletsSContext = sContext; };
+        void setSharedContext(const Dod::SharedContext::Controller<Context::Obstacles::Shared>* sContext) { this->obstaclesSContext = sContext; };
 
     private:
 
@@ -49,6 +51,7 @@ namespace Game::ExecutionBlock
         Context::ObjectsToHit::Shared obstaclesToHitContext;
 
         const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* bulletsSContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::Obstacles::Shared>* obstaclesSContext{ nullptr };
     };
 
 };

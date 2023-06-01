@@ -18,6 +18,7 @@ void Game::ExecutionBlock::Models::initiate()
     this->createEnemyModel();
     this->createEnemyBulletModel();
     this->createObstacleModel();
+    this->createPlayerModel();
 
 }
 
@@ -136,5 +137,52 @@ void Game::ExecutionBlock::Models::createObstacleModel()
     std::memcpy(Dod::BufferUtils::get(this->modelsContext.modelNames,
         Dod::BufferUtils::getNumFilledElements(this->modelsContext.modelNames) - 1).data(),
         "Obstacle", sizeof("Obstacle"));
+
+}
+
+void Game::ExecutionBlock::Models::createPlayerModel()
+{
+
+    /*
+    
+        const auto widthHalf{ width * 0.5f * strobe };
+        const auto heightHalf{ height * 0.5f * strobe };
+        const auto leftPoint{ position - sf::Vector2f(-widthHalf, -heightHalf) };
+        const auto rightPoint{ position - sf::Vector2f(widthHalf, -heightHalf) };
+        const auto topPoint{ position - sf::Vector2f(0.f, heightHalf) };
+
+        const auto playerColor{ sf::Color(150, 200, 90) };
+        renderer.drawLine(leftPoint, rightPoint, playerColor);
+        renderer.drawLine(leftPoint, topPoint, playerColor);
+        renderer.drawLine(rightPoint, topPoint, playerColor);
+    
+    
+    */
+
+    constexpr auto width{ 50.f };
+    constexpr auto height{ 25.f };
+    const auto widthHalf{ width * 0.5f };
+    const auto heightHalf{ height * 0.5f };
+
+    const auto leftPoint{ -sf::Vector2f(-widthHalf, -heightHalf) };
+    const auto rightPoint{ -sf::Vector2f(widthHalf, -heightHalf) };
+    const auto topPoint{ -sf::Vector2f(0.f, heightHalf) };
+
+    sf::VertexArray enemyModel;
+    enemyModel.setPrimitiveType(sf::LineStrip);
+    const auto playerColor{ sf::Color(150, 200, 90) };
+    enemyModel.append(sf::Vertex(leftPoint, playerColor));
+    enemyModel.append(sf::Vertex(rightPoint, playerColor));
+    enemyModel.append(sf::Vertex(topPoint, playerColor));
+    enemyModel.append(sf::Vertex(leftPoint, playerColor));
+
+    Dod::BufferUtils::constructBack(this->modelsContext.loadedModels, enemyModel);
+
+    Dod::BufferUtils::constructBack(this->modelsContext.modelIds, 4);
+
+    Dod::BufferUtils::constructBack(this->modelsContext.modelNames);
+    std::memcpy(Dod::BufferUtils::get(this->modelsContext.modelNames,
+        Dod::BufferUtils::getNumFilledElements(this->modelsContext.modelNames) - 1).data(),
+        "Player", sizeof("Player"));
 
 }

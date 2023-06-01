@@ -161,6 +161,22 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
         dt
     );
 
+    const auto obstaclesXCorrds{ Dod::SharedContext::get(this->obstaclesSContext).xCoords };
+    const auto obstaclesYCorrds{ Dod::SharedContext::get(this->obstaclesSContext).yCoords };
+    const auto obstaclesWidth{ Dod::SharedContext::get(this->obstaclesSContext).width };
+    const auto obstaclesHeight{ Dod::SharedContext::get(this->obstaclesSContext).height };
+
+    Game::Gameplay::Bullets::testWithObstacles(
+        this->enemyBulletsContext.toRemove,
+        this->obstaclesToHitContext.objectsToHit,
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
+        Dod::BufferUtils::createImFromBuffer(obstaclesXCorrds),
+        Dod::BufferUtils::createImFromBuffer(obstaclesYCorrds),
+        obstaclesWidth,
+        obstaclesHeight
+    );
+
     Game::Core::Collision::pointsPlaneIntersection(
         this->enemyBulletsContext.toRemove,
         Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),

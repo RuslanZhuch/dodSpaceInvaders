@@ -16,6 +16,11 @@ const Game::Context::Render::Shared& Game::ExecutionBlock::Obstacles::getSharedL
 {
     return this->renderContext;
 }
+template <>
+const Game::Context::Obstacles::Shared& Game::ExecutionBlock::Obstacles::getSharedLocalContext<Game::Context::Obstacles::Shared>()
+{
+    return this->obstaclesSContext;
+}
 
 void Game::ExecutionBlock::Obstacles::loadContext()
 {
@@ -112,11 +117,11 @@ void Game::ExecutionBlock::Obstacles::initiate()
 {
 
     this->renderContext.init();
-    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
+    this->obstaclesSContext.init();
 
     Game::Gameplay::Obstacles::create(
-        this->renderContext.xCoords,
-        this->renderContext.yCoords,
+        this->obstaclesSContext.xCoords,
+        this->obstaclesSContext.yCoords,
         this->obstaclesContext.lifes,
         this->obstaclesParameters.obstaclesPerRow,
         this->obstaclesParameters.obstaclesPerCol,
@@ -128,29 +133,36 @@ void Game::ExecutionBlock::Obstacles::initiate()
         this->obstaclesParameters.width
     );
 
+    this->obstaclesSContext.width = 15.f;
+    this->obstaclesSContext.height = 15.f;
+
 }
 
 bool Game::ExecutionBlock::Obstacles::update(float dt)
 {
 
-//    const auto obstaclesToHit{ Dod::SharedContext::get(this->sContext).objectsToHit };
-//
-//    Game::Core::Obstacles::updateLifetime(
-//        this->obstaclesContext.toRemove,
-//        this->obstaclesContext.lifes,
-//        Dod::BufferUtils::createImFromBuffer(obstaclesToHit)
-//    );
-//
-//    Game::Core::Obstacles::remove(
-//        this->obstaclesContext.toRemove,
-//        this->obstaclesContext.lifes,
-//        this->renderContext.xCoords,
-//        this->renderContext.yCoords
-//    );
+    const auto obstaclesToHit{ Dod::SharedContext::get(this->sContext).objectsToHit };
 
+    Game::Core::Obstacles::updateLifetime(
+        this->obstaclesContext.toRemove,
+        this->obstaclesContext.lifes,
+        Dod::BufferUtils::createImFromBuffer(obstaclesToHit)
+    );
+
+    Game::Core::Obstacles::remove(
+        this->obstaclesContext.toRemove,
+        this->obstaclesContext.lifes,
+        this->obstaclesSContext.xCoords,
+        this->obstaclesSContext.yCoords
+    );
+
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).modelId = 3;
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).numOfElements = 
-        Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords);
+        Dod::BufferUtils::getNumFilledElements(this->obstaclesSContext.xCoords);
+
+    Dod::BufferUtils::append(this->renderContext.xCoords, Dod::BufferUtils::createImFromBuffer(this->obstaclesSContext.xCoords));
+    Dod::BufferUtils::append(this->renderContext.yCoords, Dod::BufferUtils::createImFromBuffer(this->obstaclesSContext.yCoords));
 
     return true;
 
@@ -159,5 +171,5 @@ bool Game::ExecutionBlock::Obstacles::update(float dt)
 void Game::ExecutionBlock::Obstacles::flushSharedLocalContexts()
 {
     this->soundsContext.reset();
-    //    this->renderContext.reset();
+    this->renderContext.reset();
 }

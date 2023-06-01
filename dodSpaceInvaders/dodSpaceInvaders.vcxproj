@@ -161,6 +161,7 @@
     <ClCompile Include="src\game\ObstaclesCore.cpp" />
     <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
+    <ClCompile Include="src\game\PlayerExecutor.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
     <ClCompile Include="src\game\renderer\instantRenderer.cpp" />
@@ -198,7 +199,9 @@
     <ClInclude Include="src\game\ObstaclesCore.h" />
     <ClInclude Include="src\game\ObstaclesExecutor.h" />
     <ClInclude Include="src\game\ObstaclesGameplay.h" />
+    <ClInclude Include="src\game\ObstaclesSContext.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
+    <ClInclude Include="src\game\PlayerExecutor.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
     <ClInclude Include="src\game\RenderContext.h" />
     <ClInclude Include="src\game\Renderer.h" />

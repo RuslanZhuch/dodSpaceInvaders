@@ -69,6 +69,9 @@
     <ClCompile Include="src\game\ObstaclesExecutor.cpp">
       <Filter>game\ExecutionBlocks</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\PlayerExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -194,6 +197,12 @@
     </ClInclude>
     <ClInclude Include="src\game\ObjectsToHitSContext.h">
       <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstaclesSContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

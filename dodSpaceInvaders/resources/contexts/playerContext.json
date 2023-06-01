@@ -1,0 +1,28 @@
+{
+
+  "contextName": "playerContext",
+  "data": {
+    "playerParameters": {
+      "width": 50,
+      "height": 25
+    },
+    "playerPositionContext": {
+      "positionX": 400,
+      "positionY": 850
+    },
+    "playerLifetimeContext": {
+      "lifes": 1
+    },
+    "playerInputsContext": {
+      "inputs": 0,
+      "prevInputs": 0
+    },
+    "playerMovement": {
+      "move": 0
+    },
+    "playerFire": {
+      "fire": 0
+    }
+  }
+ 
+}

@@ -35,6 +35,7 @@ namespace Game::ExecutionBlock
         void createEnemyModel();
         void createEnemyBulletModel();
         void createObstacleModel();
+        void createPlayerModel();
 
     private:
         Dod::MemPool memory;

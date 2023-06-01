@@ -1,18 +1,14 @@
 #pragma once
 
-#include "EnemiesContext.h"
 #include "PlayerContext.h"
 #include "BulletsContext.h"
 #include "ObstaclesContext.h"
 #include "CommonContext.h"
 #include "SceneContext.h"
-#include "ObjectsToHitSContext.h"
-#include "ObstaclesSContext.h"
 
 #include "GameRender.h"
 #include "SoundsSContext.h"
 #include "RenderSharedContext.h"
-#include "EnemiesContext.h"
 #include "BulletsToSpawnSContext.h"
 
 #include <dod/MemPool.h>
@@ -21,7 +17,7 @@
 namespace Game::ExecutionBlock
 {
 
-    class Obstacles
+    class Player
     {
 
     public:
@@ -33,22 +29,22 @@ namespace Game::ExecutionBlock
         template<typename TContext>
         [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
-
-        void setSharedContext(const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext) { this->sContext = sContext; };
-
     private:
 
     private:
         Dod::MemPool memory;
 
-        Game::Context::Obstacles::Parameters obstaclesParameters;
-        Game::Context::Obstacles::UnitsContext obstaclesContext;
+        Game::Context::Player::Parameters playerParameters;
+        Game::Context::Player::Position playerPositionContext;
+        Game::Context::Player::Inputs playerInputsContext;
+        Game::Context::Player::Movement playerMovementContext;
+        Game::Context::Player::Fire playerFireContext;
+        Game::Context::Player::Lifetime playerLifetimeContext;
 
         Context::Sounds::Shared soundsContext;
         Context::Render::Shared renderContext;
-        Context::Obstacles::Shared obstaclesSContext;
+        Context::BulletsToSpawn::Shared bulletsToSpawnContext;
 
-        const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext{ nullptr };
     };
 
 };
