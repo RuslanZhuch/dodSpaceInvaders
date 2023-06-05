@@ -49,4 +49,8 @@ namespace Game::Gameplay::Player
         float playerHeight
     ) noexcept;
 
+    void lifetimeUpdate(
+        Dod::ImBuffer<int32_t> enemiesToRemove,
+        int32_t& lifes
+    ) noexcept;
 };

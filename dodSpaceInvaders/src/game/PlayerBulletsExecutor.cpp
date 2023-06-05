@@ -1,4 +1,4 @@
-#include "EnemiesBulletsExecutor.h"
+#include "PlayerBulletsExecutor.h"
 #include "BulletsGameplay.h"
 #include "BulletsCore.h"
 #include "CollisionCore.h"
@@ -13,22 +13,22 @@
 #include <rapidjson/reader.h>
 
 template <>
-const Game::Context::Sounds::Shared& Game::ExecutionBlock::EnemiesBullets::getSharedLocalContext<Game::Context::Sounds::Shared>()
+const Game::Context::Sounds::Shared& Game::ExecutionBlock::PlayerBullets::getSharedLocalContext<Game::Context::Sounds::Shared>()
 {
     return this->soundsContext;
 }
 template <>
-const Game::Context::Render::Shared& Game::ExecutionBlock::EnemiesBullets::getSharedLocalContext<Game::Context::Render::Shared>()
+const Game::Context::Render::Shared& Game::ExecutionBlock::PlayerBullets::getSharedLocalContext<Game::Context::Render::Shared>()
 {
     return this->renderContext;
 }
 template <>
-const Game::Context::ObjectsToHit::Shared& Game::ExecutionBlock::EnemiesBullets::getSharedLocalContext<Game::Context::ObjectsToHit::Shared>()
+const Game::Context::ObjectsToHit::Shared& Game::ExecutionBlock::PlayerBullets::getSharedLocalContext<Game::Context::ObjectsToHit::Shared>()
 {
     return this->obstaclesToHitContext;
 }
 
-void Game::ExecutionBlock::EnemiesBullets::loadContext()
+void Game::ExecutionBlock::PlayerBullets::loadContext()
 {
 
     int32_t header{ 0 };
@@ -72,7 +72,7 @@ void Game::ExecutionBlock::EnemiesBullets::loadContext()
     }
 
     {
-        std::ifstream contextFile("resources/contexts/enemyBulletsContext.json");
+        std::ifstream contextFile("resources/contexts/playerBulletsContext.json");
         assert(contextFile.is_open());
         const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
 
@@ -91,36 +91,36 @@ void Game::ExecutionBlock::EnemiesBullets::loadContext()
             {
                 for (const auto& dataElement : element.value.GetObject())
                 {
-                    if (dataElement.name == "enemyBulletsParameters" && dataElement.value.IsObject())
+                    if (dataElement.name == "bulletsParameters" && dataElement.value.IsObject())
                     {
                         const auto enemyBulletsParametersObj{ dataElement.value.GetObject() };
                         [[maybe_unused]] const auto velocity{ enemyBulletsParametersObj["velocity"].GetFloat() };
-                        this->enemyBulletsParameters.velocity = velocity;
+                        this->playerBulletsParameters.velocity = velocity;
                     }
-                    else if (dataElement.name == "enemyBulletsContext" && dataElement.value.IsObject())
+                    else if (dataElement.name == "bulletsContext" && dataElement.value.IsObject())
                     {
                         const auto enemyBulletsContextObj{ dataElement.value.GetObject() };
 
-//                        const auto xCoords{ enemyBulletsContextObj["xCoords"].GetObject() };
-//                        const auto xCoordsType{ xCoords["type"].GetString() };
-//                        const auto xCoordsDataType{ xCoords["dataType"].GetString() };
-//                        const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
-//                        const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
-//                        Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
-//
-//                        const auto yCoords{ enemyBulletsContextObj["yCoords"].GetObject() };
-//                        const auto yCoordsType{ yCoords["type"].GetString() };
-//                        const auto yCoordsDataType{ yCoords["dataType"].GetString() };
-//                        const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
-//                        const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
-//                        Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
+                        //                        const auto xCoords{ enemyBulletsContextObj["xCoords"].GetObject() };
+                        //                        const auto xCoordsType{ xCoords["type"].GetString() };
+                        //                        const auto xCoordsDataType{ xCoords["dataType"].GetString() };
+                        //                        const auto xCoordsCapacity{ xCoords["capacity"].GetInt() };
+                        //                        const auto xCoordsCapacityBytes{ xCoordsCapacity * sizeof(float) };
+                        //                        Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.xCoords, Dod::MemUtils::stackAquire(this->memory, xCoordsCapacityBytes, header));
+                        //
+                        //                        const auto yCoords{ enemyBulletsContextObj["yCoords"].GetObject() };
+                        //                        const auto yCoordsType{ yCoords["type"].GetString() };
+                        //                        const auto yCoordsDataType{ yCoords["dataType"].GetString() };
+                        //                        const auto yCoordsCapacity{ yCoords["capacity"].GetInt() };
+                        //                        const auto yCoordsCapacityBytes{ yCoordsCapacity * sizeof(float) };
+                        //                        Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.yCoords, Dod::MemUtils::stackAquire(this->memory, yCoordsCapacityBytes, header));
 
                         const auto toRemove{ enemyBulletsContextObj["toRemove"].GetObject() };
                         const auto toRemoveType{ toRemove["type"].GetString() };
                         const auto toRemoveDataType{ toRemove["dataType"].GetString() };
                         const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
                         const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
-                        Dod::BufferUtils::initFromMemory(this->enemyBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
+                        Dod::BufferUtils::initFromMemory(this->playerBulletsContext.toRemove, Dod::MemUtils::stackAquire(this->memory, toRemoveCapacityBytes, header));
                     }
                 }
             }
@@ -129,7 +129,7 @@ void Game::ExecutionBlock::EnemiesBullets::loadContext()
 
 }
 
-void Game::ExecutionBlock::EnemiesBullets::initiate()
+void Game::ExecutionBlock::PlayerBullets::initiate()
 {
 
     this->renderContext.init();
@@ -139,17 +139,17 @@ void Game::ExecutionBlock::EnemiesBullets::initiate()
 
     this->obstaclesToHitContext.init();
 
-    this->playerToHit.init();
+    this->enemiesToHitContext.init();
 
 }
 
-bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
+bool Game::ExecutionBlock::PlayerBullets::update(float dt)
 {
 
     const auto bulletsToCreateX{ Dod::SharedContext::get(this->bulletsSContext).xCoords };
     const auto bulletsToCreateY{ Dod::SharedContext::get(this->bulletsSContext).yCoords };
 
-    Dod::BufferUtils::populate(this->soundsContext.soundIdsToPlay, 0, 
+    Dod::BufferUtils::populate(this->soundsContext.soundIdsToPlay, 0,
         Dod::BufferUtils::getNumFilledElements(bulletsToCreateX));
 
     Dod::BufferUtils::append(this->renderContext.xCoords,
@@ -159,7 +159,7 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
 
     Game::Core::Bullets::updateMovement(
         this->renderContext.yCoords,
-        this->enemyBulletsParameters.velocity,
+        this->playerBulletsParameters.velocity,
         dt
     );
 
@@ -169,7 +169,7 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
     const auto obstaclesHeight{ Dod::SharedContext::get(this->obstaclesSContext).height };
 
     Game::Gameplay::Bullets::testWithObstacles(
-        this->enemyBulletsContext.toRemove,
+        this->playerBulletsContext.toRemove,
         this->obstaclesToHitContext.objectsToHit,
         Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
         Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
@@ -179,31 +179,31 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
         obstaclesHeight
     );
 
-    const auto playerX{ Dod::SharedContext::get(this->playerSContext).xCoords };
-    const auto playerY{ Dod::SharedContext::get(this->playerSContext).yCoords };
-    const auto playerWidth{ Dod::SharedContext::get(this->playerSContext).width };
-    const auto playerHeight{ Dod::SharedContext::get(this->playerSContext).height };
-
-    Game::Gameplay::Bullets::collisionUpdate(
-        this->playerToHit.objectsToHit,
-        this->enemyBulletsContext.toRemove,
-        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
+    Game::Core::Collision::pointsPlaneIntersection(
+        this->playerBulletsContext.toRemove,
         Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
-        Dod::BufferUtils::createImFromBuffer(playerX),
-        Dod::BufferUtils::createImFromBuffer(playerY),
-        playerWidth,
-        playerHeight
+        this->sceneParameters.topPlaneY,
+        this->sceneParameters.topPlaneDir
     );
 
-    Game::Core::Collision::pointsPlaneIntersection(
-        this->enemyBulletsContext.toRemove,
+    const auto enemiesX{ Dod::SharedContext::get(this->enemiesSContext).xCoords };
+    const auto enemiesY{ Dod::SharedContext::get(this->enemiesSContext).yCoords };
+    const auto enemyWidth{ Dod::SharedContext::get(this->enemiesSContext).width };
+    const auto enemyHeight{ Dod::SharedContext::get(this->enemiesSContext).height };
+
+    Game::Gameplay::Bullets::collisionUpdate(
+        this->enemiesToHitContext.objectsToHit,
+        this->playerBulletsContext.toRemove,
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
         Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
-        this->sceneParameters.bottomPlaneY, 
-        this->sceneParameters.bottomPlaneDir
+        Dod::BufferUtils::createImFromBuffer(enemiesX),
+        Dod::BufferUtils::createImFromBuffer(enemiesY),
+        enemyWidth,
+        enemyHeight
     );
 
     Game::Core::Bullets::updateLifetime(
-        this->enemyBulletsContext.toRemove,
+        this->playerBulletsContext.toRemove,
         this->renderContext.xCoords,
         this->renderContext.yCoords
     );
@@ -215,10 +215,10 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
 
 }
 
-void Game::ExecutionBlock::EnemiesBullets::flushSharedLocalContexts()
+void Game::ExecutionBlock::PlayerBullets::flushSharedLocalContexts()
 {
     this->soundsContext.reset();
     this->obstaclesToHitContext.reset();
-    this->playerToHit.reset();
+    this->enemiesToHitContext.reset();
     //    this->renderContext.reset();
 }

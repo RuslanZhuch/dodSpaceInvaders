@@ -25,6 +25,11 @@ const Game::Context::BulletsToSpawn::Shared& Game::ExecutionBlock::Enemies::getS
 {
     return this->bulletsToSpawnContext;
 }
+template <>
+const Game::Context::Units::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::Units::Shared>()
+{
+    return this->unitsContext;
+}
 
 void Game::ExecutionBlock::Enemies::loadContext()
 {
@@ -117,6 +122,10 @@ void Game::ExecutionBlock::Enemies::initiate()
 
     this->bulletsToSpawnContext.init();
 
+    this->unitsContext.init();
+    this->unitsContext.width = 15.f;
+    this->unitsContext.height = 20.f;
+
     Game::Gameplay::Enemies::generateEnemies(
         this->enemiesParameters.numOfEnemiesPerRow,
         this->enemiesParameters.numOfEnemiesCols,
@@ -124,8 +133,8 @@ void Game::ExecutionBlock::Enemies::initiate()
         this->enemiesParameters.enemiesYStride,
         this->enemyBatchContext.batchCoordX,
         this->enemyBatchContext.batchCoordY,
-        this->renderContext.xCoords,
-        this->renderContext.yCoords
+        this->unitsContext.xCoords,
+        this->unitsContext.yCoords
     );
 
 }
@@ -133,10 +142,11 @@ void Game::ExecutionBlock::Enemies::initiate()
 bool Game::ExecutionBlock::Enemies::update(float dt)
 {
 
+    const auto toRemove{ Dod::SharedContext::get(this->toHitSContext).objectsToHit };
     Game::Gameplay::Enemies::enemiesLifetimeUpdate(
-        this->enemyUnitsContext.toRemove,
-        this->renderContext.xCoords,
-        this->renderContext.yCoords
+        Dod::BufferUtils::createImFromBuffer(toRemove),
+        this->unitsContext.xCoords,
+        this->unitsContext.yCoords
     );
 
     Game::Gameplay::Enemies::enemiesUpdate(
@@ -146,17 +156,21 @@ bool Game::ExecutionBlock::Enemies::update(float dt)
         this->enemyBatchContext.batchTargetX,
         this->enemyBatchContext.batchCoordX,
         this->enemyBatchContext.batchCoordY,
-        this->renderContext.xCoords,
-        this->renderContext.yCoords
+        this->unitsContext.xCoords,
+        this->unitsContext.yCoords
     );
 
+    Dod::BufferUtils::append(this->renderContext.xCoords, Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords));
+    Dod::BufferUtils::append(this->renderContext.yCoords, Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords));
+
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).modelId = 1;
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).numOfElements = Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords);
 
     const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Enemies::updateEnemyBulletsCreation(
         dt,
         this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
-        Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords)
+        Dod::BufferUtils::getNumFilledElements(this->unitsContext.xCoords)
     ) };
 
     Game::Gameplay::Enemies::generateEnemyBullets(
@@ -164,8 +178,8 @@ bool Game::ExecutionBlock::Enemies::update(float dt)
         this->bulletsToSpawnContext.xCoords,
         this->bulletsToSpawnContext.yCoords,
         this->enemyWeaponContext.rand,
-        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
-        Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords)
+        Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords)
     );
 
 	return true;
@@ -176,5 +190,5 @@ void Game::ExecutionBlock::Enemies::flushSharedLocalContexts()
 {
     this->soundsContext.reset();
     this->bulletsToSpawnContext.reset();
-//    this->renderContext.reset();
+    this->renderContext.reset();
 }

@@ -25,6 +25,11 @@ const Game::Context::BulletsToSpawn::Shared& Game::ExecutionBlock::Player::getSh
 {
     return this->bulletsToSpawnContext;
 }
+template <>
+const Game::Context::Units::Shared& Game::ExecutionBlock::Player::getSharedLocalContext<Game::Context::Units::Shared>()
+{
+    return this->unitContext;
+}
 
 void Game::ExecutionBlock::Player::loadContext()
 {
@@ -61,10 +66,10 @@ void Game::ExecutionBlock::Player::loadContext()
                 }
                 else if (dataElement.name == "playerPositionContext" && dataElement.value.IsObject())
                 {
-                    const auto playerPositionContextObj{ dataElement.value.GetObject() };
-                    const auto positionX{ playerPositionContextObj["positionX"].GetFloat() };
-                    const auto positionY{ playerPositionContextObj["positionY"].GetFloat() };
-                    this->playerPositionContext = { positionX, positionY };
+                   const auto playerPositionContextObj{ dataElement.value.GetObject() };
+                   const auto positionX{ playerPositionContextObj["positionX"].GetFloat() };
+                   const auto positionY{ playerPositionContextObj["positionY"].GetFloat() };
+                   this->playerPositionParameters = { positionX, positionY };
                 }
                 else if (dataElement.name == "playerLifetimeContext" && dataElement.value.IsObject())
                 {
@@ -98,46 +103,53 @@ void Game::ExecutionBlock::Player::initiate()
 {
 
     this->renderContext.init();
+    this->bulletsToSpawnContext.init();
+
+    this->unitContext.init();
+
+    Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerPositionParameters.xCoord);
+    Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerPositionParameters.yCoord);
+    this->unitContext.width = this->playerParameters.width;
+    this->unitContext.height = this->playerParameters.height;
 
 }
 
 bool Game::ExecutionBlock::Player::update(float dt)
 {
-    
+
+    const auto toRemove{ Dod::SharedContext::get(this->toHitSContext).objectsToHit };
+
+    Game::Gameplay::Player::lifetimeUpdate(
+        Dod::BufferUtils::createImFromBuffer(toRemove),
+        this->playerLifetimeContext.lifes
+    );
+
     Game::Gameplay::Player::updateInputs(
         this->playerInputsContext.inputs,
         this->playerInputsContext.prevInputs
     );
 
+    auto& currX{ Dod::BufferUtils::get(this->unitContext.xCoords, 0) };
+    auto& currY{ Dod::BufferUtils::get(this->unitContext.yCoords, 0) };
+
     Game::Gameplay::Player::updateMovement(
         this->playerMovementContext.move,
-        this->playerPositionContext.xCoord,
+        currX,
         this->playerInputsContext.inputs,
         this->playerInputsContext.prevInputs,
         dt
     );
 
-    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
-    Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).modelId = 4;
-    Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).numOfElements = 1;
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta, Context::Render::Shared::ModelMeta(4, 1), this->playerLifetimeContext.lifes > 0);
 
-    Dod::BufferUtils::constructBack(this->renderContext.xCoords, this->playerPositionContext.xCoord);
-    Dod::BufferUtils::constructBack(this->renderContext.yCoords, this->playerPositionContext.yCoord);
+    Dod::BufferUtils::constructBack(this->renderContext.xCoords, currX, this->playerLifetimeContext.lifes > 0);
+    Dod::BufferUtils::constructBack(this->renderContext.yCoords, currY, this->playerLifetimeContext.lifes > 0);
 
-//    const auto numOfEnemyBulletsToCreate{ Game::Gameplay::Player::updateEnemyBulletsCreation(
-//        dt,
-//        this->enemyWeaponContext.enemyWeaponCooldownTimeLeft,
-//        Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords)
-//    ) };
-//
-//    Game::Gameplay::Player::generateEnemyBullets(
-//        numOfEnemyBulletsToCreate,
-//        this->bulletsToSpawnContext.xCoords,
-//        this->bulletsToSpawnContext.yCoords,
-//        this->enemyWeaponContext.rand,
-//        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
-//        Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords)
-//    );
+    const auto numOfPlayerBulletsToCreate{ Game::Gameplay::Player::updateFireComponent(
+        this->playerLifetimeContext.lifes,
+        this->playerInputsContext.inputs,
+        this->playerInputsContext.prevInputs
+    ) };
 
     return true;
 

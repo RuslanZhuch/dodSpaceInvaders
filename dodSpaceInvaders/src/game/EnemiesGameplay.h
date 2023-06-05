@@ -14,7 +14,7 @@ namespace Game::Gameplay::Enemies
     );
 
     void enemiesLifetimeUpdate(
-        Dod::DBBuffer<int32_t>& enemiesToRemove,
+        Dod::ImBuffer<int32_t> enemiesToRemove,
         Dod::DBBuffer<float>& enemiesX,
         Dod::DBBuffer<float>& enemiesY
     );

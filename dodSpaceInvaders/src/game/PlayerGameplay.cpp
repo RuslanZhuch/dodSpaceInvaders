@@ -114,3 +114,11 @@ void Game::Gameplay::Player::testWithBullets(
     playerLifes -= int32_t(1) * (currNumBulletsToDelete - prevNumBulletsToDelete > 0);
 
 }
+
+void Game::Gameplay::Player::lifetimeUpdate(
+    Dod::ImBuffer<int32_t> enemiesToRemove, 
+    int32_t& lifes
+) noexcept
+{
+    lifes -= Dod::BufferUtils::getNumFilledElements(enemiesToRemove);
+}

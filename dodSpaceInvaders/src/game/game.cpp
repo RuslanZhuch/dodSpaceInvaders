@@ -10,6 +10,7 @@
 #include <game/EnemiesBulletsExecutor.h>
 #include <game/ObstaclesExecutor.h>
 #include <game/PlayerExecutor.h>
+#include <game/PlayerBulletsExecutor.h>
 
 #include <dod/SharedContext.h>
 #include <game/SoundsSContext.h>
@@ -17,6 +18,7 @@
 #include <game/ModelsSharedContext.h>
 #include <game/ObjectsToHitSContext.h>
 #include <game/ObstaclesSContext.h>
+#include <game/UnitsSContext.h>
 
 bool msgLoop(
     float dt, 
@@ -28,11 +30,18 @@ bool msgLoop(
     Game::ExecutionBlock::EnemiesBullets& enemyBullets,
     Game::ExecutionBlock::Obstacles& obstacles,
     Game::ExecutionBlock::Player& player,
+    Game::ExecutionBlock::PlayerBullets& playerBullets,
+
     Dod::SharedContext::Controller<Game::Context::Sounds::Shared>& soundsContext,
     Dod::SharedContext::Controller<Game::Context::Models::Shared>& modelsContext,
-    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& bulletsToSpawnContext,
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& enemyBulletsToSpawnContext,
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& playerBulletsToSpawnContext,
     Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& obstaclesToHitContext,
     Dod::SharedContext::Controller<Game::Context::Obstacles::Shared>& obstaclesContext,
+    Dod::SharedContext::Controller<Game::Context::Units::Shared>& enemiesContext,
+    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& enemiesToHitContext,
+    Dod::SharedContext::Controller<Game::Context::Units::Shared>& playerContext,
+    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& playerToHitContext,
     Dod::SharedContext::Controller<Game::Context::Render::Shared>& renderContext
 )
 {
@@ -43,28 +52,44 @@ bool msgLoop(
     enemyBullets.update(dt);
     obstacles.update(dt);
     player.update(dt);
+    playerBullets.update(dt);
     const auto bContinue{ render.update(dt) };
     
     Dod::SharedContext::flush(&soundsContext);
     Dod::SharedContext::flush(&renderContext);
-    Dod::SharedContext::flush(&bulletsToSpawnContext);
+    Dod::SharedContext::flush(&enemyBulletsToSpawnContext);
+    Dod::SharedContext::flush(&playerBulletsToSpawnContext);
     Dod::SharedContext::flush(&obstaclesToHitContext);
     Dod::SharedContext::flush(&obstaclesContext);
+    Dod::SharedContext::flush(&enemiesContext);
+    Dod::SharedContext::flush(&enemiesToHitContext);
+    Dod::SharedContext::flush(&playerContext);
+    Dod::SharedContext::flush(&playerToHitContext);
 //    Dod::SharedContext::flush(&modelsContext);
 
     Dod::SharedContext::merge(&renderContext, enemies.getSharedLocalContext<Game::Context::Render::Shared>());
     Dod::SharedContext::merge(&renderContext, enemyBullets.getSharedLocalContext<Game::Context::Render::Shared>());
+    Dod::SharedContext::merge(&renderContext, playerBullets.getSharedLocalContext<Game::Context::Render::Shared>());
     Dod::SharedContext::merge(&renderContext, obstacles.getSharedLocalContext<Game::Context::Render::Shared>());
     Dod::SharedContext::merge(&renderContext, player.getSharedLocalContext<Game::Context::Render::Shared>());
     Dod::SharedContext::merge(&soundsContext, enemyBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
+    Dod::SharedContext::merge(&soundsContext, playerBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
     Dod::SharedContext::merge(&modelsContext, models.getSharedLocalContext<Game::Context::Models::Shared>());
-    Dod::SharedContext::merge(&bulletsToSpawnContext, enemies.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
+    Dod::SharedContext::merge(&enemyBulletsToSpawnContext, enemies.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
+    Dod::SharedContext::merge(&playerBulletsToSpawnContext, player.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
     Dod::SharedContext::merge(&obstaclesToHitContext, enemyBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
+    Dod::SharedContext::merge(&obstaclesToHitContext, playerBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
     Dod::SharedContext::merge(&obstaclesContext, obstacles.getSharedLocalContext<Game::Context::Obstacles::Shared>());
+    Dod::SharedContext::merge(&enemiesContext, enemies.getSharedLocalContext<Game::Context::Units::Shared>());
+    Dod::SharedContext::merge(&enemiesToHitContext, playerBullets.getEnemiesToHitInstanceContext());
+    Dod::SharedContext::merge(&playerContext, player.getSharedLocalContext<Game::Context::Units::Shared>());
+    Dod::SharedContext::merge(&playerToHitContext, enemyBullets.getPlayerToHitInstanceContext());
+    
     exe.flushSharedLocalContexts();
     enemies.flushSharedLocalContexts();
     models.flushSharedLocalContexts();
     enemyBullets.flushSharedLocalContexts();
+    playerBullets.flushSharedLocalContexts();
     obstacles.flushSharedLocalContexts();
     player.flushSharedLocalContexts();
 
@@ -78,9 +103,14 @@ void Game::run()
     Dod::SharedContext::Controller<Game::Context::Sounds::Shared> sContext;
     Dod::SharedContext::Controller<Game::Context::Models::Shared> sModels;
     Dod::SharedContext::Controller<Game::Context::Render::Shared> sRender;
-    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared> sBulletsToSpawn;
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared> sEnBulletsToSpawn;
+    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared> sPlayerBulletsToSpawn;
     Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared> sObstaclesToHit;
     Dod::SharedContext::Controller<Game::Context::Obstacles::Shared> sObstacles;
+    Dod::SharedContext::Controller<Game::Context::Units::Shared> sEnemies;
+    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared> sEnemiesToHit;
+    Dod::SharedContext::Controller<Game::Context::Units::Shared> sPlayer;
+    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared> sPlayerToHit;
 
     Game::ExecutionBlock::Main exe;
     exe.loadContext();
@@ -92,12 +122,14 @@ void Game::run()
 
     Game::ExecutionBlock::Enemies enemies;
     enemies.loadContext();
+    enemies.setSharedContext(&sEnemiesToHit);
     enemies.initiate();
 
     Game::ExecutionBlock::EnemiesBullets enemyBullets;
     enemyBullets.loadContext();
-    enemyBullets.setSharedContext(&sBulletsToSpawn);
+    enemyBullets.setSharedContext(&sEnBulletsToSpawn);
     enemyBullets.setSharedContext(&sObstacles);
+    enemyBullets.setSharedContext(&sPlayer);
     enemyBullets.initiate();
 
     Game::ExecutionBlock::Obstacles obstacles;
@@ -111,8 +143,16 @@ void Game::run()
     render.setSharedContext(&sModels);
     render.initiate();
 
+    Game::ExecutionBlock::PlayerBullets playerBullets;
+    playerBullets.loadContext();
+    playerBullets.setSharedContext(&sPlayerBulletsToSpawn);
+    playerBullets.setSharedContext(&sObstacles);
+    playerBullets.setEnemiesSharedContext(&sEnemies);
+    playerBullets.initiate();
+
     Game::ExecutionBlock::Player player;
     player.loadContext();
+    player.setSharedContext(&sPlayerToHit);
     player.initiate();
 
     Game::ExecutionBlock::Sounds sounds;
@@ -135,12 +175,18 @@ void Game::run()
             enemyBullets,
             obstacles,
             player,
+            playerBullets,
 
             sContext,
             sModels,
-            sBulletsToSpawn,
+            sEnBulletsToSpawn,
+            sPlayerBulletsToSpawn,
             sObstaclesToHit,
             sObstacles,
+            sEnemies,
+            sEnemiesToHit,
+            sPlayer,
+            sPlayerToHit,
             sRender
         ))
             break;

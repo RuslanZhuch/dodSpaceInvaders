@@ -1,0 +1,27 @@
+{
+
+  "contextName": "playerBulletsContext",
+  "data": {
+    "bulletsParameters": {
+      "velocity": -180
+    },
+    "bulletsContext": {
+      "xCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "yCoords": {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "capacity": 512
+      },
+      "toRemove": {
+        "type": "dbbuffer",
+        "dataType": "int32_t",
+        "capacity": 256
+      }
+    }
+  }
+ 
+}

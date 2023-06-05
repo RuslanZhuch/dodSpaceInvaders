@@ -72,6 +72,9 @@
     <ClCompile Include="src\game\PlayerExecutor.cpp">
       <Filter>game\ExecutionBlocks</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\PlayerBulletsExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -204,6 +207,15 @@
     <ClInclude Include="src\game\PlayerExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
+    <ClInclude Include="src\game\PlayerBulletsExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\UnitsSContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerSContext.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
@@ -263,6 +275,9 @@
       <Filter>resources\contexts</Filter>
     </None>
     <None Include="resources\contexts\obstaclesContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\playerBulletsContext.json">
       <Filter>resources\contexts</Filter>
     </None>
   </ItemGroup>

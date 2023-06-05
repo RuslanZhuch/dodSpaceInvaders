@@ -28,18 +28,14 @@ auto Game::Gameplay::Enemies::enemiesBatchUpdate(
 }
 
 void Game::Gameplay::Enemies::enemiesLifetimeUpdate(
-    Dod::DBBuffer<int32_t>& enemiesToRemove, 
+    Dod::ImBuffer<int32_t> enemiesToRemove,
     Dod::DBBuffer<float>& enemiesX,
     Dod::DBBuffer<float>& enemiesY
     )
 {
 
-    const auto enemiesToRemoveConst{ Dod::BufferUtils::createImFromBuffer(enemiesToRemove) };
-
-    Dod::BufferUtils::remove(enemiesX, enemiesToRemoveConst);
-    Dod::BufferUtils::remove(enemiesY, enemiesToRemoveConst);
-
-    enemiesToRemove.numOfFilledEls = 0;
+    Dod::BufferUtils::remove(enemiesX, enemiesToRemove);
+    Dod::BufferUtils::remove(enemiesY, enemiesToRemove);
 
 }
 

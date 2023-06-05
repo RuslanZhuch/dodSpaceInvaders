@@ -210,11 +210,11 @@ bool Game::ExecutionBlock::Main::update(float dt)
 //        dt
 //    );
 //
-//    const auto numOfPlayerBulletsToCreate{ Game::Gameplay::Player::updateFireComponent(
-//        this->playerLifetimeContext.lifes,
-//        this->playerInputsContext.inputs,
-//        this->playerInputsContext.prevInputs
-//    ) };
+//    
+//    
+//    
+//    
+//    
 //
 //    Game::Gameplay::Player::createBulletsSFx(
 //        this->soundsContext.soundIdsToPlay,

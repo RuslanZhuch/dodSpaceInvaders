@@ -161,6 +161,7 @@
     <ClCompile Include="src\game\ObstaclesCore.cpp" />
     <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
+    <ClCompile Include="src\game\PlayerBulletsExecutor.cpp" />
     <ClCompile Include="src\game\PlayerExecutor.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
@@ -200,9 +201,11 @@
     <ClInclude Include="src\game\ObstaclesExecutor.h" />
     <ClInclude Include="src\game\ObstaclesGameplay.h" />
     <ClInclude Include="src\game\ObstaclesSContext.h" />
+    <ClInclude Include="src\game\PlayerBulletsExecutor.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
     <ClInclude Include="src\game\PlayerExecutor.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
+    <ClInclude Include="src\game\PlayerSContext.h" />
     <ClInclude Include="src\game\RenderContext.h" />
     <ClInclude Include="src\game\Renderer.h" />
     <ClInclude Include="src\game\renderer\instantRenderer.h" />
@@ -212,6 +215,7 @@
     <ClInclude Include="src\game\SceneRenderer.h" />
     <ClInclude Include="src\game\SoundsExecutor.h" />
     <ClInclude Include="src\game\SoundsSContext.h" />
+    <ClInclude Include="src\game\UnitsSContext.h" />
     <ClInclude Include="src\utils\randomGenerator.h" />
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +229,7 @@
     <None Include="resources\contexts\enemyBulletsContext.json" />
     <None Include="resources\contexts\mainContext.json" />
     <None Include="resources\contexts\obstaclesContext.json" />
+    <None Include="resources\contexts\playerBulletsContext.json" />
     <None Include="resources\contexts\rendererContext.json" />
     <None Include="resources\contexts\sceneContext.json" />
   </ItemGroup>
