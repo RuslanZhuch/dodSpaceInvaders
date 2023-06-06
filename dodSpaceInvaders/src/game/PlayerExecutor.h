@@ -26,7 +26,7 @@ namespace Game::ExecutionBlock
         void loadContext();
 
         void initiate();
-        [[nodiscard]] bool update(float dt);
+        void update(float dt);
 
         template<typename TContext>
         [[nodiscard]] const TContext& getSharedLocalContext();

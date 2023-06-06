@@ -29,7 +29,7 @@ namespace Game::ExecutionBlock
         void loadContext();
 
         void initiate();
-        [[nodiscard]] bool update(float dt);
+        void update(float dt);
 
         void setSharedContext(const Dod::SharedContext::Controller<Context::Sounds::Shared>* sContext) { this->sContext = sContext; };
 

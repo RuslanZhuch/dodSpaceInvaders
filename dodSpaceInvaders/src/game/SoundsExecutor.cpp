@@ -19,12 +19,11 @@ void Game::ExecutionBlock::Sounds::initiate()
     Dod::BufferUtils::get(this->sounds, 1).load("resources/sounds/weapons/shoot2.wav");
 }
 
-bool Game::ExecutionBlock::Sounds::update(float dt)
+void Game::ExecutionBlock::Sounds::update(float dt)
 {
     const auto soundIdsToPlay{ Dod::SharedContext::get(this->sContext).soundIdsToPlay };
     for (int32_t sfxId{}; sfxId < Dod::BufferUtils::getNumFilledElements(soundIdsToPlay); ++sfxId) {
         this->soundsCore->play(Dod::BufferUtils::get(this->sounds, Dod::BufferUtils::get(soundIdsToPlay, sfxId)));
     }
 
-	return true;
 }

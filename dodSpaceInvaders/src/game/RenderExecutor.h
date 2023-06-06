@@ -6,6 +6,7 @@
 #include "ObstaclesContext.h"
 #include "CommonContext.h"
 #include "SceneContext.h"
+#include "ApplicationSContext.h"
 
 #include "GameRender.h"
 #include "ModelsSharedContext.h"
@@ -28,17 +29,20 @@ namespace Game::ExecutionBlock
         void loadContext();
 
         void initiate();
-        [[nodiscard]] bool update(float dt);
+        void update(float dt);
 
         void setSharedContext(const Dod::SharedContext::Controller<Context::Models::Shared>* sContext) { this->sModelsContext = sContext; };
         void setSharedContext(const Dod::SharedContext::Controller<Context::Render::Shared>* sContext) { this->sRenderContext = sContext; };
-
+        
+        void flushSharedLocalContexts();
+        [[nodiscard]] const auto& getApplicationInstanceContext() const { return this->applicationContext; }
     private:
 
     private:
         Dod::MemPool memory;
         Game::Context::Common::Parameters commonContext;
 
+        Game::Context::Application::Shared applicationContext;
         Game::Context::Render::RenderBuffer renderBufferContext;
 
         std::unique_ptr<GameRenderer> gameRenderer;

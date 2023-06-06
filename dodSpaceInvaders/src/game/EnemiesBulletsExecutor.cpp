@@ -143,7 +143,7 @@ void Game::ExecutionBlock::EnemiesBullets::initiate()
 
 }
 
-bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
+void Game::ExecutionBlock::EnemiesBullets::update(float dt)
 {
 
     const auto bulletsToCreateX{ Dod::SharedContext::get(this->bulletsSContext).xCoords };
@@ -210,8 +210,6 @@ bool Game::ExecutionBlock::EnemiesBullets::update(float dt)
 
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).modelId = 2;
     Dod::BufferUtils::get(this->renderContext.modelsMeta, 0).numOfElements = Dod::BufferUtils::getNumFilledElements(this->renderContext.xCoords);
-
-    return true;
 
 }
 

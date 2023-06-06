@@ -94,6 +94,8 @@ void Game::ExecutionBlock::Render::loadContext()
 void Game::ExecutionBlock::Render::initiate()
 {
 
+    this->applicationContext.init();
+
 	this->gameRenderer = std::make_unique<GameRenderer>(
         this->commonContext.width, 
         this->commonContext.height, 
@@ -102,7 +104,7 @@ void Game::ExecutionBlock::Render::initiate()
 
 }
 
-bool Game::ExecutionBlock::Render::update(float dt)
+void Game::ExecutionBlock::Render::update(float dt)
 {
 
     sf::Event event;
@@ -110,8 +112,7 @@ bool Game::ExecutionBlock::Render::update(float dt)
     auto& window{ this->gameRenderer->getWindow() };
     while (window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
-            window.close();
+        Dod::BufferUtils::populate(this->applicationContext.commands, 1, event.type == sf::Event::Closed);
     }
 
     window.clear();
@@ -152,6 +153,9 @@ bool Game::ExecutionBlock::Render::update(float dt)
 
     window.display();
 
-    return window.isOpen();
+}
 
+void Game::ExecutionBlock::Render::flushSharedLocalContexts()
+{
+    this->applicationContext.reset();
 }

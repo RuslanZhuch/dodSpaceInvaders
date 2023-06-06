@@ -22,9 +22,9 @@ void Game::ExecutionBlock::Models::initiate()
 
 }
 
-bool Game::ExecutionBlock::Models::update(float dt)
+void Game::ExecutionBlock::Models::update(float dt)
 {
-    return true;
+    return;
 }
 
 void Game::ExecutionBlock::Models::flushSharedLocalContexts()

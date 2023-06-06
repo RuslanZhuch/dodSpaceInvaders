@@ -138,7 +138,7 @@ void Game::ExecutionBlock::Obstacles::initiate()
 
 }
 
-bool Game::ExecutionBlock::Obstacles::update(float dt)
+void Game::ExecutionBlock::Obstacles::update(float dt)
 {
 
     const auto obstaclesToHit{ Dod::SharedContext::get(this->sContext).objectsToHit };
@@ -163,8 +163,6 @@ bool Game::ExecutionBlock::Obstacles::update(float dt)
 
     Dod::BufferUtils::append(this->renderContext.xCoords, Dod::BufferUtils::createImFromBuffer(this->obstaclesSContext.xCoords));
     Dod::BufferUtils::append(this->renderContext.yCoords, Dod::BufferUtils::createImFromBuffer(this->obstaclesSContext.yCoords));
-
-    return true;
 
 }
 

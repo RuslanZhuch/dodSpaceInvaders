@@ -205,7 +205,7 @@
     <ClInclude Include="src\game\PlayerContext.h" />
     <ClInclude Include="src\game\PlayerExecutor.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
-    <ClInclude Include="src\game\PlayerSContext.h" />
+    <ClInclude Include="src\game\ApplicationSContext.h" />
     <ClInclude Include="src\game\RenderContext.h" />
     <ClInclude Include="src\game\Renderer.h" />
     <ClInclude Include="src\game\renderer\instantRenderer.h" />

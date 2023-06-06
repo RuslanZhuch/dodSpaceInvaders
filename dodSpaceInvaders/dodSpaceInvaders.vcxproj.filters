@@ -213,7 +213,7 @@
     <ClInclude Include="src\game\UnitsSContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\PlayerSContext.h">
+    <ClInclude Include="src\game\ApplicationSContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
   </ItemGroup>

@@ -139,7 +139,7 @@ void Game::ExecutionBlock::Enemies::initiate()
 
 }
 
-bool Game::ExecutionBlock::Enemies::update(float dt)
+void Game::ExecutionBlock::Enemies::update(float dt)
 {
 
     const auto toRemove{ Dod::SharedContext::get(this->toHitSContext).objectsToHit };
@@ -181,8 +181,6 @@ bool Game::ExecutionBlock::Enemies::update(float dt)
         Dod::BufferUtils::createImFromBuffer(this->unitsContext.xCoords),
         Dod::BufferUtils::createImFromBuffer(this->unitsContext.yCoords)
     );
-
-	return true;
 
 }
 

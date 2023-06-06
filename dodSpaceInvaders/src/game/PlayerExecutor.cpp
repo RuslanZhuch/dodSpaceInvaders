@@ -114,7 +114,7 @@ void Game::ExecutionBlock::Player::initiate()
 
 }
 
-bool Game::ExecutionBlock::Player::update(float dt)
+void Game::ExecutionBlock::Player::update(float dt)
 {
 
     const auto toRemove{ Dod::SharedContext::get(this->toHitSContext).objectsToHit };
@@ -151,7 +151,13 @@ bool Game::ExecutionBlock::Player::update(float dt)
         this->playerInputsContext.prevInputs
     ) };
 
-    return true;
+    Game::Gameplay::Player::createBullets(
+        numOfPlayerBulletsToCreate,
+        this->bulletsToSpawnContext.xCoords,
+        this->bulletsToSpawnContext.yCoords,
+        currX,
+        currY
+    );
 
 }
 

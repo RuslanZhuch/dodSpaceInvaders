@@ -19,83 +19,9 @@
 #include <game/ObjectsToHitSContext.h>
 #include <game/ObstaclesSContext.h>
 #include <game/UnitsSContext.h>
+#include <game/ApplicationSContext.h>
 
-bool msgLoop(
-    float dt, 
-    Game::ExecutionBlock::Main& exe, 
-    Game::ExecutionBlock::Sounds& sounds, 
-    Game::ExecutionBlock::Enemies& enemies, 
-    Game::ExecutionBlock::Models& models, 
-    Game::ExecutionBlock::Render& render, 
-    Game::ExecutionBlock::EnemiesBullets& enemyBullets,
-    Game::ExecutionBlock::Obstacles& obstacles,
-    Game::ExecutionBlock::Player& player,
-    Game::ExecutionBlock::PlayerBullets& playerBullets,
-
-    Dod::SharedContext::Controller<Game::Context::Sounds::Shared>& soundsContext,
-    Dod::SharedContext::Controller<Game::Context::Models::Shared>& modelsContext,
-    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& enemyBulletsToSpawnContext,
-    Dod::SharedContext::Controller<Game::Context::BulletsToSpawn::Shared>& playerBulletsToSpawnContext,
-    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& obstaclesToHitContext,
-    Dod::SharedContext::Controller<Game::Context::Obstacles::Shared>& obstaclesContext,
-    Dod::SharedContext::Controller<Game::Context::Units::Shared>& enemiesContext,
-    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& enemiesToHitContext,
-    Dod::SharedContext::Controller<Game::Context::Units::Shared>& playerContext,
-    Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared>& playerToHitContext,
-    Dod::SharedContext::Controller<Game::Context::Render::Shared>& renderContext
-)
-{
-
-    sounds.update(dt);
-    enemies.update(dt);
-    models.update(dt);
-    enemyBullets.update(dt);
-    obstacles.update(dt);
-    player.update(dt);
-    playerBullets.update(dt);
-    const auto bContinue{ render.update(dt) };
-    
-    Dod::SharedContext::flush(&soundsContext);
-    Dod::SharedContext::flush(&renderContext);
-    Dod::SharedContext::flush(&enemyBulletsToSpawnContext);
-    Dod::SharedContext::flush(&playerBulletsToSpawnContext);
-    Dod::SharedContext::flush(&obstaclesToHitContext);
-    Dod::SharedContext::flush(&obstaclesContext);
-    Dod::SharedContext::flush(&enemiesContext);
-    Dod::SharedContext::flush(&enemiesToHitContext);
-    Dod::SharedContext::flush(&playerContext);
-    Dod::SharedContext::flush(&playerToHitContext);
-//    Dod::SharedContext::flush(&modelsContext);
-
-    Dod::SharedContext::merge(&renderContext, enemies.getSharedLocalContext<Game::Context::Render::Shared>());
-    Dod::SharedContext::merge(&renderContext, enemyBullets.getSharedLocalContext<Game::Context::Render::Shared>());
-    Dod::SharedContext::merge(&renderContext, playerBullets.getSharedLocalContext<Game::Context::Render::Shared>());
-    Dod::SharedContext::merge(&renderContext, obstacles.getSharedLocalContext<Game::Context::Render::Shared>());
-    Dod::SharedContext::merge(&renderContext, player.getSharedLocalContext<Game::Context::Render::Shared>());
-    Dod::SharedContext::merge(&soundsContext, enemyBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
-    Dod::SharedContext::merge(&soundsContext, playerBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
-    Dod::SharedContext::merge(&modelsContext, models.getSharedLocalContext<Game::Context::Models::Shared>());
-    Dod::SharedContext::merge(&enemyBulletsToSpawnContext, enemies.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
-    Dod::SharedContext::merge(&playerBulletsToSpawnContext, player.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
-    Dod::SharedContext::merge(&obstaclesToHitContext, enemyBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
-    Dod::SharedContext::merge(&obstaclesToHitContext, playerBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
-    Dod::SharedContext::merge(&obstaclesContext, obstacles.getSharedLocalContext<Game::Context::Obstacles::Shared>());
-    Dod::SharedContext::merge(&enemiesContext, enemies.getSharedLocalContext<Game::Context::Units::Shared>());
-    Dod::SharedContext::merge(&enemiesToHitContext, playerBullets.getEnemiesToHitInstanceContext());
-    Dod::SharedContext::merge(&playerContext, player.getSharedLocalContext<Game::Context::Units::Shared>());
-    Dod::SharedContext::merge(&playerToHitContext, enemyBullets.getPlayerToHitInstanceContext());
-    
-    exe.flushSharedLocalContexts();
-    enemies.flushSharedLocalContexts();
-    models.flushSharedLocalContexts();
-    enemyBullets.flushSharedLocalContexts();
-    playerBullets.flushSharedLocalContexts();
-    obstacles.flushSharedLocalContexts();
-    player.flushSharedLocalContexts();
-
-    return bContinue;
-
-}
+#include <iostream>
 
 void Game::run()
 {
@@ -111,6 +37,7 @@ void Game::run()
     Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared> sEnemiesToHit;
     Dod::SharedContext::Controller<Game::Context::Units::Shared> sPlayer;
     Dod::SharedContext::Controller<Game::Context::ObjectsToHit::Shared> sPlayerToHit;
+    Dod::SharedContext::Controller<Game::Context::Application::Shared> sApplication;
 
     Game::ExecutionBlock::Main exe;
     exe.loadContext();
@@ -165,31 +92,63 @@ void Game::run()
     while (true)
     {
         const auto start{ std::chrono::high_resolution_clock::now() };
-        if (!msgLoop(
-            deltaTime, 
-            exe, 
-            sounds, 
-            enemies,
-            models,
-            render,
-            enemyBullets,
-            obstacles,
-            player,
-            playerBullets,
 
-            sContext,
-            sModels,
-            sEnBulletsToSpawn,
-            sPlayerBulletsToSpawn,
-            sObstaclesToHit,
-            sObstacles,
-            sEnemies,
-            sEnemiesToHit,
-            sPlayer,
-            sPlayerToHit,
-            sRender
-        ))
-            break;
+        std::cout << deltaTime << '\n';
+
+        sounds.update(deltaTime);
+        enemies.update(deltaTime);
+        models.update(deltaTime);
+        enemyBullets.update(deltaTime);
+        obstacles.update(deltaTime);
+        player.update(deltaTime);
+        playerBullets.update(deltaTime);
+        render.update(deltaTime);
+
+        Dod::SharedContext::flush(&sContext);
+        Dod::SharedContext::flush(&sRender);
+        Dod::SharedContext::flush(&sEnBulletsToSpawn);
+        Dod::SharedContext::flush(&sPlayerBulletsToSpawn);
+        Dod::SharedContext::flush(&sObstaclesToHit);
+        Dod::SharedContext::flush(&sObstacles);
+        Dod::SharedContext::flush(&sEnemies);
+        Dod::SharedContext::flush(&sEnemiesToHit);
+        Dod::SharedContext::flush(&sPlayer);
+        Dod::SharedContext::flush(&sPlayerToHit);
+        //    Dod::SharedContext::flush(&modelsContext);
+
+        Dod::SharedContext::merge(&sRender, enemies.getSharedLocalContext<Game::Context::Render::Shared>());
+        Dod::SharedContext::merge(&sRender, enemyBullets.getSharedLocalContext<Game::Context::Render::Shared>());
+        Dod::SharedContext::merge(&sRender, playerBullets.getSharedLocalContext<Game::Context::Render::Shared>());
+        Dod::SharedContext::merge(&sRender, obstacles.getSharedLocalContext<Game::Context::Render::Shared>());
+        Dod::SharedContext::merge(&sRender, player.getSharedLocalContext<Game::Context::Render::Shared>());
+        Dod::SharedContext::merge(&sContext, enemyBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
+        Dod::SharedContext::merge(&sContext, playerBullets.getSharedLocalContext<Game::Context::Sounds::Shared>());
+        Dod::SharedContext::merge(&sModels, models.getSharedLocalContext<Game::Context::Models::Shared>());
+        Dod::SharedContext::merge(&sEnBulletsToSpawn, enemies.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
+        Dod::SharedContext::merge(&sPlayerBulletsToSpawn, player.getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>());
+        Dod::SharedContext::merge(&sObstaclesToHit, enemyBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
+        Dod::SharedContext::merge(&sObstaclesToHit, playerBullets.getSharedLocalContext<Game::Context::ObjectsToHit::Shared>());
+        Dod::SharedContext::merge(&sObstacles, obstacles.getSharedLocalContext<Game::Context::Obstacles::Shared>());
+        Dod::SharedContext::merge(&sEnemies, enemies.getSharedLocalContext<Game::Context::Units::Shared>());
+        Dod::SharedContext::merge(&sEnemiesToHit, playerBullets.getEnemiesToHitInstanceContext());
+        Dod::SharedContext::merge(&sPlayer, player.getSharedLocalContext<Game::Context::Units::Shared>());
+        Dod::SharedContext::merge(&sPlayerToHit, enemyBullets.getPlayerToHitInstanceContext());
+        Dod::SharedContext::merge(&sApplication, render.getApplicationInstanceContext());
+
+        exe.flushSharedLocalContexts();
+        render.flushSharedLocalContexts();
+        enemies.flushSharedLocalContexts();
+        models.flushSharedLocalContexts();
+        enemyBullets.flushSharedLocalContexts();
+        playerBullets.flushSharedLocalContexts();
+        obstacles.flushSharedLocalContexts();
+        player.flushSharedLocalContexts();
+
+        for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplication.context.commands); ++cmdId)
+        {
+            if (Dod::BufferUtils::get(sApplication.context.commands, 0) == 1)
+                return;
+        }
 
         const auto end{ std::chrono::high_resolution_clock::now() };
         deltaTime = static_cast<float>(std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count()) / 1'000'000'000.f;
