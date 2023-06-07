@@ -23,4 +23,16 @@ def gen_inits(handler, executors_data):
         name = get_name(data)
         class_name = "Game::ExecutionBlock::" + _to_double_camel_case(name)
         generator.generate_variable(handler, class_name, name)
+        generator.generate_line(handler, name + ".loadContext();")
+        generator.generate_line(handler, name + ".initiate();")
+        
+def gen_updates(handler, executors_data):
+    for data in executors_data:
+        name = get_name(data)
+        generator.generate_line(handler, name + ".update(deltaTime);")
+        
+def gen_flush(handler, executors_data):
+    for data in executors_data:
+        name = get_name(data)
+        generator.generate_line(handler, name + ".flushSharedLocalContexts();")
         

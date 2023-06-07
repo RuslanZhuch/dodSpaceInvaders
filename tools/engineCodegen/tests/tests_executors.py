@@ -14,14 +14,15 @@ sys.path.append("../src")
 
 import executors
 import generator
+import runtime
 
 EXPECT_NUM_OF_EXECUTORS = 2
 
 def load_executors():
-    return executors.load("assets")
+    return executors.load("assets/executors")
 
 def create_target_file():
-    return generator.generate_runtime_file("dest")
+    return runtime.generate_runtime_file("dest")
 
 class TestExecutors(unittest.TestCase):
     def test_load_executors(self):
@@ -47,5 +48,56 @@ class TestExecutors(unittest.TestCase):
         
         descriptor_file = open("dest/runtime.cpp", "r")
         file_data = descriptor_file.read()
-        self.assertEqual(file_data, "Game::ExecutionBlock::Executor1 executor1;\nGame::ExecutionBlock::Executor2 executor2;\n")
+        
+        expected_file = open("assets/expected/executorsGeneration.cpp", "r")
+        expected_file_data = expected_file.read()
+        self.assertEqual(file_data, expected_file_data)
+        
+    def test_gen_executor_update(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = create_target_file()
+        self.assertIsNotNone(handler)
+        
+        executors.gen_updates(handler, executors_data)
+        
+        handler.close()
+        
+        descriptor_file = open("dest/runtime.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/executorsUpdates.cpp", "r")
+        expected_file_data = expected_file.read()
+        self.assertEqual(file_data, expected_file_data)
+        
+    def test_gen_executor_flush(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = create_target_file()
+        self.assertIsNotNone(handler)
+        
+        executors.gen_flush(handler, executors_data)
+        
+        handler.close()
+        
+        descriptor_file = open("dest/runtime.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/executorsFlush.cpp", "r")
+        expected_file_data = expected_file.read()
+        self.assertEqual(file_data, expected_file_data)
+        
+    def test_gen_executor_header(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        executors.gen_header("dest/executors/", executors_data[0])
+        
+        descriptor_file = open("dest/runtime.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/executorsFlush.cpp", "r")
+        expected_file_data = expected_file.read()
         
