@@ -4,20 +4,17 @@
 
 namespace Game::ExecutionBlock
 {
-
     class Test1
     {
-
     public:
-        void loadContext();
+        void loadContext() noexcept;
+        void initiate() noexcept;
+        void update(float dt) noexcept;
+        void flushSharedLocalContexts() noexcept;
 
-        void initiate();
-        void update(float dt);
-
-        void flushSharedLocalContexts();
+    private:
 
     private:
         Dod::MemPool memory;
     };
-
-};
+}

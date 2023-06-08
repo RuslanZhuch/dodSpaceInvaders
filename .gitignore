@@ -352,3 +352,8 @@ tools/engineCodegen/tests/dest/runtime.cpp
 tools/engineCodegen/tests/dest/file1.cpp
 tools/engineCodegen/tests/dest/file2.cpp
 tools/engineCodegen/tests/dest/gen.cpp
+tools/engineCodegen/tests/dest/gen_class.cpp
+tools/engineCodegen/tests/dest/gen_empty_class.cpp
+tools/engineCodegen/tests/dest/gen_newLine.cpp
+tools/engineCodegen/tests/dest/test1
+tools/engineCodegen/tests/dest/Test1Executor.h

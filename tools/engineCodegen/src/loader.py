@@ -18,6 +18,7 @@ def load_descriptors(folder_path):
     data = []
     for (dir_path, dir_names, file_names) in walk(folder_path):
         for file_name in file_names:
-            data.append(load_descriptor(dir_path + "/" + file_name))
+            if dir_path == folder_path:
+                data.append(load_descriptor(dir_path + "/" + file_name))
             
     return data

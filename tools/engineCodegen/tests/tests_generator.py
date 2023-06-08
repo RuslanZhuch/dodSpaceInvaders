@@ -44,6 +44,32 @@ class TestGenerators(unittest.TestCase):
         
         self.assertEqual(file_data, "Generated line\n")
         
+    def test_generate_empty_line(self):
+        handler = generator.generate_file("dest", "gen_newLine.cpp")
+        self.assertIsNotNone(handler)
+        
+        generator.generate_line(handler, "Generated line")
+        generator.generate_empty(handler)
+        generator.generate_line(handler, "Generated line2")
+        generator.generate_empty(handler, 2)
+        generator.generate_line(handler, "Generated line3")
+        
+        def block_data(handler):
+            generator.generate_empty(handler)
+            generator.generate_line(handler, "Generated line4")
+            
+        generator.generate_block(handler, "", block_data)
+        
+        handler.close()
+        
+        descriptor_file = open("dest/gen_newLine.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/newLine.cpp", "r")
+        expected_file_data = expected_file.read()
+        
+        self.assertEqual(file_data, expected_file_data)
+        
     def test_generate_variable(self):
         handler = create_target_file()
         self.assertIsNotNone(handler)
@@ -98,7 +124,7 @@ class TestGenerators(unittest.TestCase):
         descriptor_file = open("dest/gen.cpp", "r")
         file_data = descriptor_file.read()
         
-        self.assertEqual(file_data, "void func1()\n{\n\tLine1\n}\n")
+        self.assertEqual(file_data, "void func1()\n{\n    Line1\n}\n")
         
     def test_generate_block(self):
         handler = create_target_file()
@@ -115,5 +141,46 @@ class TestGenerators(unittest.TestCase):
         descriptor_file = open("dest/gen.cpp", "r")
         file_data = descriptor_file.read()
         
-        self.assertEqual(file_data, "block1\n{\n\tBlock line\n}\n")
+        self.assertEqual(file_data, "block1\n{\n    Block line\n}\n")
+        
+    def test_generate_empty_class(self):
+        handler = generator.generate_file("dest", "gen_empty_class.cpp")
+        self.assertIsNotNone(handler)
+        
+        def class_data(class_handler):
+            pass
+        generator.generate_class(handler, "Test1", class_data)
+        
+        handler.close()
+        
+        descriptor_file = open("dest/gen_empty_class.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/classDeclarationEmpty.cpp", "r")
+        expected_file_data = expected_file.read()
+        
+        self.assertEqual(file_data, expected_file_data)
+        
+    def test_generate_class(self):
+        handler = generator.generate_file("dest", "gen_class.cpp")
+        self.assertIsNotNone(handler)
+        
+        def class_data(class_handler):
+            generator.generate_class_public_method(class_handler, "publicMethod1", "float", [], True)
+            generator.generate_class_public_method(class_handler, "publicMethod2", "void", ['float dt'], False)
+            generator.generate_class_private_method(class_handler, "privateMethod1", "int", ['int n'], True)
+            generator.generate_class_variable(class_handler, "int", "var1", 0)
+            generator.generate_class_variable(class_handler, "Dod::MemPool", "memory")
+            
+        generator.generate_class(handler, "Test2", class_data)
+
+        handler.close()
+        
+        descriptor_file = open("dest/gen_class.cpp", "r")
+        file_data = descriptor_file.read()
+        
+        expected_file = open("assets/expected/classDeclaration.cpp", "r")
+        expected_file_data = expected_file.read()
+        
+        self.assertEqual(file_data, expected_file_data)
         
