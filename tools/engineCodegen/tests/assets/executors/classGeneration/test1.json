@@ -1,4 +1,13 @@
 {
     "whoIAm": "Executor",
-    "version": 1
+    "version": 1,
+    "contextsWriteTo": [
+        "target1",
+        "target2",
+        "target3"
+    ],
+    "contextsToFlush": [
+        "target1",
+        "target3"
+    ]
 }

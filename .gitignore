@@ -357,3 +357,9 @@ tools/engineCodegen/tests/dest/gen_empty_class.cpp
 tools/engineCodegen/tests/dest/gen_newLine.cpp
 tools/engineCodegen/tests/dest/test1
 tools/engineCodegen/tests/dest/Test1Executor.h
+tools/engineCodegen/tests/dest/gen_class_impl.cpp
+tools/engineCodegen/tests/dest/gen_executor_1_body_flush.cpp
+tools/engineCodegen/tests/dest/gen_executor_1_body_init.cpp
+tools/engineCodegen/tests/dest/gen_executor_2_body_flush.cpp
+tools/engineCodegen/tests/dest/gen_executor_2_body_init.cpp
+tools/engineCodegen/tests/dest/Test1Executor.cpp

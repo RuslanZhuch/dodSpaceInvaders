@@ -16,6 +16,8 @@ import executors
 import generator
 import runtime
 
+import utils
+
 EXPECT_NUM_OF_EXECUTORS = 2
 
 def load_executors():
@@ -53,12 +55,7 @@ class TestExecutors(unittest.TestCase):
         
         handler.close()
         
-        descriptor_file = open("dest/runtime.cpp", "r")
-        file_data = descriptor_file.read()
-        
-        expected_file = open("assets/expected/executorsGeneration.cpp", "r")
-        expected_file_data = expected_file.read()
-        self.assertEqual(file_data, expected_file_data)
+        utils.assert_files(self, "dest/runtime.cpp", "assets/expected/executorsGeneration.cpp")
         
     def test_gen_executor_update(self):
         executors_data = load_executors()
@@ -71,12 +68,7 @@ class TestExecutors(unittest.TestCase):
         
         handler.close()
         
-        descriptor_file = open("dest/runtime.cpp", "r")
-        file_data = descriptor_file.read()
-        
-        expected_file = open("assets/expected/executorsUpdates.cpp", "r")
-        expected_file_data = expected_file.read()
-        self.assertEqual(file_data, expected_file_data)
+        utils.assert_files(self, "dest/runtime.cpp", "assets/expected/executorsUpdates.cpp")
         
     def test_gen_executor_flush(self):
         executors_data = load_executors()
@@ -89,23 +81,72 @@ class TestExecutors(unittest.TestCase):
         
         handler.close()
         
-        descriptor_file = open("dest/runtime.cpp", "r")
+        utils.assert_files(self, "dest/runtime.cpp", "assets/expected/executorsFlush.cpp")
+        
+    def test_gen_executor_1_body_flush(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "gen_executor_1_body_flush.cpp")
+        self.assertIsNotNone(handler)
+        
+        executors.gen_body_flush(handler, executors_data[0])
+        handler.close()
+        
+        descriptor_file = open("dest/gen_executor_1_body_flush.cpp", "r")
         file_data = descriptor_file.read()
+        self.assertEqual(file_data, "")
         
-        expected_file = open("assets/expected/executorsFlush.cpp", "r")
-        expected_file_data = expected_file.read()
-        self.assertEqual(file_data, expected_file_data)
+    def test_gen_executor_2_body_flush(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
         
-    def test_gen_executor_header(self):
+        handler = generator.generate_file("dest", "gen_executor_2_body_flush.cpp")
+        self.assertIsNotNone(handler)
+        
+        executors.gen_body_flush(handler, executors_data[1])
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_executor_2_body_flush.cpp", "assets/expected/gen_executor_2_body_flush.cpp")
+        
+    def test_gen_executor_1_body_init(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "gen_executor_1_body_init.cpp")
+        self.assertIsNotNone(handler)
+        
+        executors.gen_body_init(handler, executors_data[0])
+        handler.close()
+        
+        descriptor_file = open("dest/gen_executor_1_body_init.cpp", "r")
+        file_data = descriptor_file.read()
+        self.assertEqual(file_data, "")
+        
+    def test_gen_executor_2_body_init(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "gen_executor_2_body_init.cpp")
+        self.assertIsNotNone(handler)
+        
+        executors.gen_body_init(handler, executors_data[1])
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_executor_2_body_init.cpp", "assets/expected/gen_executor_2_body_init.cpp")
+        
+    def test_gen_executor_test1_header(self):
         executors_data = load_executors_for_class()
         self.assertEqual(len(executors_data), 1)
         
         executors.gen_header("dest", executors_data[0])
         
-        descriptor_file = open("dest/Test1Executor.h", "r")
-        file_data = descriptor_file.read()
+        utils.assert_files(self, "dest/Test1Executor.h", "assets/expected/Test1Executor.h")
+
+    def test_gen_executor_test1_source(self):
+        executors_data = load_executors_for_class()
+        self.assertEqual(len(executors_data), 1)
         
-        expected_file = open("assets/expected/Test1Executor.h", "r")
-        expected_file_data = expected_file.read()
-        self.assertEqual(file_data, expected_file_data)
+        executors.gen_source("dest", executors_data[0])
         
+        utils.assert_files(self, "dest/Test1Executor.cpp", "assets/expected/Test1Executor.cpp")

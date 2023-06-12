@@ -14,7 +14,8 @@ sys.path.append("../src")
 
 import executors
 import generator
-import runtime
+
+import utils
 
 EXPECT_NUM_OF_EXECUTORS = 2
 
@@ -62,14 +63,8 @@ class TestGenerators(unittest.TestCase):
         
         handler.close()
         
-        descriptor_file = open("dest/gen_newLine.cpp", "r")
-        file_data = descriptor_file.read()
-        
-        expected_file = open("assets/expected/newLine.cpp", "r")
-        expected_file_data = expected_file.read()
-        
-        self.assertEqual(file_data, expected_file_data)
-        
+        utils.assert_files(self, "dest/gen_newLine.cpp", "assets/expected/newLine.cpp")
+                
     def test_generate_variable(self):
         handler = create_target_file()
         self.assertIsNotNone(handler)
@@ -153,15 +148,9 @@ class TestGenerators(unittest.TestCase):
         
         handler.close()
         
-        descriptor_file = open("dest/gen_empty_class.cpp", "r")
-        file_data = descriptor_file.read()
+        utils.assert_files(self, "dest/gen_empty_class.cpp", "assets/expected/classDeclarationEmpty.cpp")
         
-        expected_file = open("assets/expected/classDeclarationEmpty.cpp", "r")
-        expected_file_data = expected_file.read()
-        
-        self.assertEqual(file_data, expected_file_data)
-        
-    def test_generate_class(self):
+    def test_generate_class_declaration(self):
         handler = generator.generate_file("dest", "gen_class.cpp")
         self.assertIsNotNone(handler)
         
@@ -176,11 +165,26 @@ class TestGenerators(unittest.TestCase):
 
         handler.close()
         
-        descriptor_file = open("dest/gen_class.cpp", "r")
-        file_data = descriptor_file.read()
+        utils.assert_files(self, "dest/gen_class.cpp", "assets/expected/classDeclaration.cpp")
+                
+    def test_generate_class_implementation(self):
+        handler = generator.generate_file("dest", "gen_class_impl.cpp")
+        self.assertIsNotNone(handler)
         
-        expected_file = open("assets/expected/classDeclaration.cpp", "r")
-        expected_file_data = expected_file.read()
+        def class_data(class_handler):
+            generator.generate_class_public_method(class_handler, "publicMethod1", "float", [], True)
+            
+            def pubm2_body(self, class_handler):
+                generator.generate_line(class_handler, "some stuff here")
+            generator.generate_class_public_method(class_handler, "publicMethod2", "void", ['float dt'], False, pubm2_body)
+            
+            def prm1_body(self, class_handler):
+                generator.generate_line(class_handler, "some stuff here 2")
+            generator.generate_class_private_method(class_handler, "privateMethod1", "int", ['int n'], True, prm1_body)
+            
+        generator.generate_class_impl(handler, "Test2", class_data)
+
+        handler.close()
         
-        self.assertEqual(file_data, expected_file_data)
+        utils.assert_files(self, "dest/gen_class_impl.cpp", "assets/expected/classImplementation.cpp")
         

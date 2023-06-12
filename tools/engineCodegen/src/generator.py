@@ -33,17 +33,24 @@ def generate_block(hander, block_header, block_data):
     with hander.block(block_header):
         block_data(hander)
         
-def _generate_class_method(method_name, return_type, arguments, is_const):
-    method_handler = cpp_class.CppClass.CppMethod(name = method_name, ret_type = return_type, is_const=is_const)
+def _generate_class_method(method_name, return_type, arguments, is_const, body):
+    method_handler = cpp_class.CppClass.CppMethod(
+        name = method_name, 
+        ret_type = return_type, 
+        is_const=is_const, 
+        implementation_handle = body)
     for argument in arguments:
         method_handler.add_argument(argument)
     return method_handler
     
-def generate_class_private_method(class_handler, method_name, return_type, arguments, is_const):
-    class_handler.add_private_method(_generate_class_method(method_name, return_type, arguments, is_const))
+def _default_method_impl(self, class_handler):
+    generate_empty(class_handler)
     
-def generate_class_public_method(class_handler, method_name, return_type, arguments, is_const):
-    class_handler.add_method(_generate_class_method(method_name, return_type, arguments, is_const))
+def generate_class_private_method(class_handler, method_name, return_type, arguments, is_const, body=_default_method_impl):
+    class_handler.add_private_method(_generate_class_method(method_name, return_type, arguments, is_const, body))
+    
+def generate_class_public_method(class_handler, method_name, return_type, arguments, is_const, body=_default_method_impl):
+    class_handler.add_method(_generate_class_method(method_name, return_type, arguments, is_const, body))
     
 def generate_class_variable(class_handler, variable_type, variable_name, initial = None):
     class_handler.add_variable(cpp_variable.CppVariable(
@@ -56,3 +63,8 @@ def generate_class(handler, class_name, class_data):
     class_handler = cpp_class.CppClass(name = class_name, is_struct = False)
     class_data(class_handler)
     class_handler.render_to_string_declaration(handler)
+    
+def generate_class_impl(handler, class_name, class_data):
+    class_handler = cpp_class.CppClass(name = class_name, is_struct = False)
+    class_data(class_handler)
+    class_handler.render_to_string_implementation(handler)

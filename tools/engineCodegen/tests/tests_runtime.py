@@ -14,6 +14,8 @@ sys.path.append("../src")
 
 import runtime
 
+import utils
+
 class TestRuntime(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
@@ -27,10 +29,4 @@ class TestRuntime(unittest.TestCase):
     def test_generate_runtime_function(self):
         runtime.generate("dest", "runtime.cpp")
         
-        descriptor_file = open("dest/runtime.cpp", "r")
-        file_data = descriptor_file.read()
-        
-        expected_file = open("assets/expected/runtime.cpp", "r")
-        expected_file_data = expected_file.read()
-        self.assertEqual(file_data, expected_file_data)
-        
+        utils.assert_files(self, "dest/runtime.cpp", "assets/expected/runtime.cpp")
