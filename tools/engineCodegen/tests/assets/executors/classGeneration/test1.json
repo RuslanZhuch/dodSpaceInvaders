@@ -1,6 +1,7 @@
 {
     "whoIAm": "Executor",
     "version": 1,
+    "memory": 2048,
     "contextsWriteTo": [
         "target1",
         "target2",

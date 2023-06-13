@@ -1,41 +1,26 @@
 #pragma once
 
 #include <dod/Buffers.h>
+#include <dod/MemPool.h>
 
 namespace Game::Context::Player
 {
 
-    struct Parameters
+    struct Data
     {
+
+        [[nodiscard]] static Data load(Dod::MemPool& pool, int32_t& header) noexcept;
+
         float width{};
         float height{};
-    };
-
-    struct Position
-    {
         float xCoord{};
         float yCoord{};
-    };
-
-    struct Lifetime
-    {
         int32_t lifes{};
-    };
-
-    struct Inputs
-    {
         uint32_t inputs{};
         uint32_t prevInputs{};
-    };
-
-    struct Movement
-    {
         float move{};
-    };
+        float fire{};
 
-    struct Fire
-    {
-        float move{};
     };
 
 };

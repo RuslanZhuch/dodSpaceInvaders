@@ -13,6 +13,8 @@ namespace Game::ExecutionBlock
         void flushSharedLocalContexts() noexcept;
 
     private:
+        void initImpl() noexcept;
+        void updateImpl(float dt) noexcept;
 
     private:
         Dod::MemPool memory;

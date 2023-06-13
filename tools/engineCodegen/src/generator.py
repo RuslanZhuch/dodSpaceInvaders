@@ -1,4 +1,5 @@
 import sys
+import os
 sys.path.append("../../thirdparty/code_generator/src")
 
 from code_generation.core import code_generator
@@ -8,6 +9,10 @@ from code_generation.cpp import cpp_class
 
 def generate_file(folder, file_name):
     return code_generator.CppFile(folder + "/" + file_name)
+
+def get_file_generated(folder, file_name):
+    path = folder + "/" + file_name
+    return os.path.isfile(path)
 
 def generate_variable(handler, var_type, var_name, initial = None):
     variable = cpp_variable.CppVariable(

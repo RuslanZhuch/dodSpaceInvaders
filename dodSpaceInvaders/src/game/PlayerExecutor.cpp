@@ -34,68 +34,10 @@ const Game::Context::Units::Shared& Game::ExecutionBlock::Player::getSharedLocal
 void Game::ExecutionBlock::Player::loadContext()
 {
 
-    std::ifstream contextFile("resources/contexts/playerContext.json");
-    assert(contextFile.is_open());
-    const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
-
-    rapidjson::Document json;
-    json.Parse(fileRawData.c_str());
-    const auto root{ json.GetObject() };
-
     int32_t header{ 0 };
     this->memory.allocate(2048);
 
-    for (const auto& element : root)
-    {
-        if (element.name == "contextName")
-        {
-            const auto contextName{ element.value.GetString() };
-            std::cout << "Loading context: " << contextName << "\n";
-        }
-        else if (element.name == "data")
-        {
-            for (const auto& dataElement : element.value.GetObject())
-            {
-                if (dataElement.name == "playerParameters" && dataElement.value.IsObject())
-                {
-                    const auto playerParametersObj{ dataElement.value.GetObject() };
-                    const auto width{ playerParametersObj["width"].GetFloat() };
-                    this->playerParameters.width = width;
-                    const auto height{ playerParametersObj["height"].GetFloat() };
-                    this->playerParameters.height = height;
-                }
-                else if (dataElement.name == "playerPositionContext" && dataElement.value.IsObject())
-                {
-                   const auto playerPositionContextObj{ dataElement.value.GetObject() };
-                   const auto positionX{ playerPositionContextObj["positionX"].GetFloat() };
-                   const auto positionY{ playerPositionContextObj["positionY"].GetFloat() };
-                   this->playerPositionParameters = { positionX, positionY };
-                }
-                else if (dataElement.name == "playerLifetimeContext" && dataElement.value.IsObject())
-                {
-                    const auto playerLifetimeContextObj{ dataElement.value.GetObject() };
-                    const auto lifes{ playerLifetimeContextObj["lifes"].GetInt() };
-                    this->playerLifetimeContext.lifes = lifes;
-                }
-                else if (dataElement.name == "playerInputsContext" && dataElement.value.IsObject())
-                {
-                    const auto playerInputsContextObj{ dataElement.value.GetObject() };
-                    const auto inputs{ playerInputsContextObj["inputs"].GetInt() };
-                    const auto prevInputs{ playerInputsContextObj["prevInputs"].GetInt() };
-                }
-                else if (dataElement.name == "playerMovement" && dataElement.value.IsObject())
-                {
-                    const auto playerMovementObj{ dataElement.value.GetObject() };
-                    const auto move{ playerMovementObj["move"].GetInt() };
-                }
-                else if (dataElement.name == "playerFire" && dataElement.value.IsObject())
-                {
-                    const auto playerFireObj{ dataElement.value.GetObject() };
-                    const auto move{ playerFireObj["fire"].GetInt() };
-                }
-            }
-        }
-    }
+    this->playerContext = Game::Context::Player::Data::load(this->memory, header);
 
 }
 
@@ -107,10 +49,10 @@ void Game::ExecutionBlock::Player::initiate()
 
     this->unitContext.init();
 
-    Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerPositionParameters.xCoord);
-    Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerPositionParameters.yCoord);
-    this->unitContext.width = this->playerParameters.width;
-    this->unitContext.height = this->playerParameters.height;
+    Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerContext.xCoord);
+    Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerContext.yCoord);
+    this->unitContext.width = this->playerContext.width;
+    this->unitContext.height = this->playerContext.height;
 
 }
 
@@ -121,34 +63,34 @@ void Game::ExecutionBlock::Player::update(float dt)
 
     Game::Gameplay::Player::lifetimeUpdate(
         Dod::BufferUtils::createImFromBuffer(toRemove),
-        this->playerLifetimeContext.lifes
+        this->playerContext.lifes
     );
 
     Game::Gameplay::Player::updateInputs(
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs
+        this->playerContext.inputs,
+        this->playerContext.prevInputs
     );
 
     auto& currX{ Dod::BufferUtils::get(this->unitContext.xCoords, 0) };
     auto& currY{ Dod::BufferUtils::get(this->unitContext.yCoords, 0) };
 
     Game::Gameplay::Player::updateMovement(
-        this->playerMovementContext.move,
+        this->playerContext.move,
         currX,
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs,
+        this->playerContext.inputs,
+        this->playerContext.prevInputs,
         dt
     );
 
-    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta, Context::Render::Shared::ModelMeta(4, 1), this->playerLifetimeContext.lifes > 0);
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta, Context::Render::Shared::ModelMeta(4, 1), this->playerContext.lifes > 0);
 
-    Dod::BufferUtils::constructBack(this->renderContext.xCoords, currX, this->playerLifetimeContext.lifes > 0);
-    Dod::BufferUtils::constructBack(this->renderContext.yCoords, currY, this->playerLifetimeContext.lifes > 0);
+    Dod::BufferUtils::constructBack(this->renderContext.xCoords, currX, this->playerContext.lifes > 0);
+    Dod::BufferUtils::constructBack(this->renderContext.yCoords, currY, this->playerContext.lifes > 0);
 
     const auto numOfPlayerBulletsToCreate{ Game::Gameplay::Player::updateFireComponent(
-        this->playerLifetimeContext.lifes,
-        this->playerInputsContext.inputs,
-        this->playerInputsContext.prevInputs
+        this->playerContext.lifes,
+        this->playerContext.inputs,
+        this->playerContext.prevInputs
     ) };
 
     Game::Gameplay::Player::createBullets(

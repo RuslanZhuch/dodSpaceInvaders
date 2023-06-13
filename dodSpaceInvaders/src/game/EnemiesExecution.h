@@ -40,10 +40,7 @@ namespace Game::ExecutionBlock
     private:
         Dod::MemPool memory;
 
-        Game::Context::Enemy::Parameters enemiesParameters;
-        Game::Context::Enemy::BatchContext enemyBatchContext;
-        Game::Context::Enemy::UnitsContext enemyUnitsContext;
-        Game::Context::Enemy::WeaponContext enemyWeaponContext;
+        Game::Context::Enemy::Data enemyContext;
 
         Context::Sounds::Shared soundsContext;
         Context::Render::Shared renderContext;

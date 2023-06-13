@@ -38,12 +38,7 @@ namespace Game::ExecutionBlock
     private:
         Dod::MemPool memory;
 
-        Game::Context::Player::Parameters playerParameters;
-        Game::Context::Player::Position playerPositionParameters;
-        Game::Context::Player::Inputs playerInputsContext;
-        Game::Context::Player::Movement playerMovementContext;
-        Game::Context::Player::Fire playerFireContext;
-        Game::Context::Player::Lifetime playerLifetimeContext;
+        Game::Context::Player::Data playerContext;
 
         Context::Units::Shared unitContext;
 

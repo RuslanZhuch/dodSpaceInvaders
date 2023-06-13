@@ -11,7 +11,8 @@
       "height": 30,
       "weaponCooldownTime": 0.5,
       "startCoordX": 100,
-      "startCoordY": 200
+      "startCoordY": 200,
+      "direction": 1
     },
     "enemiesUnitsContext": {
       "xCoords": {

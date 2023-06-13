@@ -363,3 +363,6 @@ tools/engineCodegen/tests/dest/gen_executor_1_body_init.cpp
 tools/engineCodegen/tests/dest/gen_executor_2_body_flush.cpp
 tools/engineCodegen/tests/dest/gen_executor_2_body_init.cpp
 tools/engineCodegen/tests/dest/Test1Executor.cpp
+tools/engineCodegen/tests/dest/gen_executor_1_body_contexts_load.cpp
+tools/engineCodegen/tests/dest/gen_executor_1_body_initImpl.cpp
+tools/engineCodegen/tests/dest

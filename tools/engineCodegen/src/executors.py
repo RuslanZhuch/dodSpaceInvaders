@@ -55,6 +55,28 @@ def gen_body_init(handler, executor_data):
     for init_context in contexts_write_to:
         generator.generate_line(handler, "this->{}Context.init();".format(init_context))
         
+def gen_body_memory(handler, executor_data):
+    memory = executor_data.get("memory")
+    if memory is None:
+        return
+    
+    generator.generate_line(handler, "int32_t header{};")
+    generator.generate_line(handler, "this->memory.allocate({});".format(memory))
+        
+def gen_body_contexts_load(handler, executor_data):
+    contexts_write_to = executor_data.get("contextsWriteTo")
+    if contexts_write_to is None:
+        return
+    
+    for init_context in contexts_write_to:
+        generator.generate_line(handler, "this->{}Context.load(this->memory, header);".format(init_context))
+        
+def gen_body_update(handler, executor_data):   
+    generator.generate_line(handler, "this->updateImpl(dt);")
+        
+def gen_body_initImpl(handler, executor_data):   
+    generator.generate_line(handler, "this->initImpl();")
+        
 def gen_header(folder, executor_data):
     executor_name = get_name(executor_data)
     class_name = _to_class_name(executor_name)
@@ -73,6 +95,8 @@ def gen_header(folder, executor_data):
             generator.generate_class_public_method(class_handler, "initiate", "void", [], False)
             generator.generate_class_public_method(class_handler, "update", "void", ['float dt'], False)
             generator.generate_class_public_method(class_handler, "flushSharedLocalContexts", "void", [], False)
+            generator.generate_class_private_method(class_handler, "initImpl", "void", [], False)
+            generator.generate_class_private_method(class_handler, "updateImpl", "void", ['float dt'], False)
             
             generator.generate_class_variable(class_handler, "Dod::MemPool", "memory")
                         
@@ -93,17 +117,51 @@ def gen_source(folder, executor_data):
     def namespace_block_data(handler):
         generator.generate_empty(handler)
         def class_data(class_handler):
-            generator.generate_class_public_method(class_handler, "loadContext", "void", [], False)
+            def load_body(self, handler):
+                gen_body_memory(handler, executor_data)
+                generator.generate_empty(handler)
+                gen_body_contexts_load(handler, executor_data)
+            generator.generate_class_public_method(class_handler, "loadContext", "void", [], False, load_body)
             
             def init_body(self, handler):
                 gen_body_init(handler, executor_data)
+                generator.generate_empty(handler)
+                gen_body_initImpl(handler, executor_data)
+                
             generator.generate_class_public_method(class_handler, "initiate", "void", [], False, init_body)
-            generator.generate_class_public_method(class_handler, "update", "void", ['float dt'], False)
+            
+            def update_body(self, handler):
+                gen_body_update(handler, executor_data)
+            generator.generate_class_public_method(class_handler, "update", "void", ['float dt'], False, update_body)
             
             def flush_body(self, handler):
                 gen_body_flush(handler, executor_data)
             generator.generate_class_public_method(class_handler, "flushSharedLocalContexts", "void", [], False, flush_body)
                         
+        generator.generate_class_impl(handler, class_name, class_data)
+        
+    generator.generate_block(handler, "namespace Game::ExecutionBlock", namespace_block_data)
+    
+def gen_implementation(folder, executor_data):
+    executor_name = get_name(executor_data)
+    class_name = _to_class_name(executor_name)
+    file_name_header = class_name + "Executor.h"
+    file_name_source = class_name + "ExecutorImpl.cpp"
+    
+    if generator.get_file_generated(folder, file_name_source):
+        return
+    
+    handler = generator.generate_file(folder, file_name_source)
+
+    generator.generate_line(handler, "#include \"{}\"".format(file_name_header))
+    generator.generate_empty(handler)
+    
+    def namespace_block_data(handler):
+        generator.generate_empty(handler)
+        def class_data(class_handler):
+            generator.generate_class_public_method(class_handler, "initImpl", "void", [], False)
+            generator.generate_class_public_method(class_handler, "updateImpl", "void", ['float dt'], False)
+       
         generator.generate_class_impl(handler, class_name, class_data)
         
     generator.generate_block(handler, "namespace Game::ExecutionBlock", namespace_block_data)

@@ -2,7 +2,7 @@ import unittest
 
 import json
 
-from os import path
+import os
 import sys
  
 from pathlib import Path
@@ -32,6 +32,16 @@ class TestGenerators(unittest.TestCase):
         self.assertIsNotNone(generator.generate_file("dest", "file2.cpp"))
         open("dest/file2.cpp")
         
+    def test_check_file_exist(self):
+        file_full_path = "dest/temp_file.cpp"
+        if os.path.isfile(file_full_path):
+            os.remove(file_full_path)
+        
+        self.assertFalse(generator.get_file_generated("dest", "temp_file.cpp"))
+    
+        self.assertIsNotNone(generator.generate_file("dest", "temp_file.cpp"))
+        self.assertTrue(generator.get_file_generated("dest", "temp_file.cpp"))
+                
     def test_generate_line(self):
         handler = create_target_file()
         self.assertIsNotNone(handler)

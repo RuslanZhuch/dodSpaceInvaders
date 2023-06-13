@@ -1,4 +1,5 @@
 {
     "whoIAm": "Executor",
-    "version": 1
+    "version": 1,
+    "memory": 2048
 }

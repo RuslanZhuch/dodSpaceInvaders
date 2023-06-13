@@ -151,6 +151,7 @@
     <ClCompile Include="src\game\BulletsGameplay.cpp" />
     <ClCompile Include="src\game\CollisionCore.cpp" />
     <ClCompile Include="src\game\EnemiesBulletsExecutor.cpp" />
+    <ClCompile Include="src\game\EnemiesContext.cpp" />
     <ClCompile Include="src\game\EnemiesCore.cpp" />
     <ClCompile Include="src\game\EnemiesExecution.cpp" />
     <ClCompile Include="src\game\EnemiesGameplay.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
     <ClCompile Include="src\game\PlayerBulletsExecutor.cpp" />
+    <ClCompile Include="src\game\PlayerContext.cpp" />
     <ClCompile Include="src\game\PlayerExecutor.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
@@ -230,6 +232,7 @@
     <None Include="resources\contexts\mainContext.json" />
     <None Include="resources\contexts\obstaclesContext.json" />
     <None Include="resources\contexts\playerBulletsContext.json" />
+    <None Include="resources\contexts\playerContext.json" />
     <None Include="resources\contexts\rendererContext.json" />
     <None Include="resources\contexts\sceneContext.json" />
   </ItemGroup>

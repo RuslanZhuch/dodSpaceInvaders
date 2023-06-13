@@ -75,6 +75,12 @@
     <ClCompile Include="src\game\PlayerBulletsExecutor.cpp">
       <Filter>game\ExecutionBlocks</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\PlayerContext.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\EnemiesContext.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -278,6 +284,9 @@
       <Filter>resources\contexts</Filter>
     </None>
     <None Include="resources\contexts\playerBulletsContext.json">
+      <Filter>resources\contexts</Filter>
+    </None>
+    <None Include="resources\contexts\playerContext.json">
       <Filter>resources\contexts</Filter>
     </None>
   </ItemGroup>
