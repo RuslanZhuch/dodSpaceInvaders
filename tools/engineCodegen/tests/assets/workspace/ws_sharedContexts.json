@@ -1,0 +1,20 @@
+{
+    "usage": [
+        {
+            "contextName": "sContext1",
+            "instanceName": "shared1"
+        },
+        {
+            "contextName": "sContext1",
+            "instanceName": "shared2"
+        },
+        {
+            "contextName": "sContext2",
+            "instanceName": "shared3"
+        },
+        {
+            "contextName": "sContext3",
+            "instanceName": "shared4"
+        }
+    ]
+}

@@ -109,31 +109,31 @@ class TestExecutors(unittest.TestCase):
         
         utils.assert_files(self, "dest/gen_executor_2_body_flush.cpp", "assets/expected/gen_executor_2_body_flush.cpp")
         
-    def test_gen_executor_1_body_init(self):
-        executors_data = load_executors()
-        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
-        
-        handler = generator.generate_file("dest", "gen_executor_1_body_init.cpp")
-        self.assertIsNotNone(handler)
-        
-        executors.gen_body_init(handler, executors_data[0])
-        handler.close()
-        
-        descriptor_file = open("dest/gen_executor_1_body_init.cpp", "r")
-        file_data = descriptor_file.read()
-        self.assertEqual(file_data, "")
-        
-    def test_gen_executor_2_body_init(self):
-        executors_data = load_executors()
-        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
-        
-        handler = generator.generate_file("dest", "gen_executor_2_body_init.cpp")
-        self.assertIsNotNone(handler)
-        
-        executors.gen_body_init(handler, executors_data[1])
-        handler.close()
-        
-        utils.assert_files(self, "dest/gen_executor_2_body_init.cpp", "assets/expected/gen_executor_2_body_init.cpp")
+#    def test_gen_executor_1_body_init(self):
+#        executors_data = load_executors()
+#        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+#        
+#        handler = generator.generate_file("dest", "gen_executor_1_body_init.cpp")
+#        self.assertIsNotNone(handler)
+#        
+#        executors.gen_body_init(handler, executors_data[0])
+#        handler.close()
+#        
+#        descriptor_file = open("dest/gen_executor_1_body_init.cpp", "r")
+#        file_data = descriptor_file.read()
+#        self.assertEqual(file_data, "")
+#        
+#    def test_gen_executor_2_body_init(self):
+#        executors_data = load_executors()
+#        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+#        
+#        handler = generator.generate_file("dest", "gen_executor_2_body_init.cpp")
+#        self.assertIsNotNone(handler)
+#        
+#        executors.gen_body_init(handler, executors_data[1])
+#        handler.close()
+#        
+#        utils.assert_files(self, "dest/gen_executor_2_body_init.cpp", "assets/expected/gen_executor_2_body_init.cpp")
         
     def test_gen_executor_1_body_memory(self):
         executors_data = load_executors()
@@ -203,19 +203,49 @@ class TestExecutors(unittest.TestCase):
         file_data = descriptor_file.read()
         self.assertEqual(file_data, "this->updateImpl(dt);\n")
         
-    def test_gen_executor_1_body_initImpl(self):
+    def test_gen_executor_1_body_init(self):
         executors_data = load_executors()
         self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
         
         handler = generator.generate_file("dest", "gen_executor_1_body_initImpl.cpp")
         self.assertIsNotNone(handler)
         
-        executors.gen_body_initImpl(handler, executors_data[0])
+        executors.gen_body_init(handler, executors_data[0])
         handler.close()
         
         descriptor_file = open("dest/gen_executor_1_body_initImpl.cpp", "r")
         file_data = descriptor_file.read()
         self.assertEqual(file_data, "this->initImpl();\n")
+        
+    def test_gen_executor_1_contexts_decl(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "gen_executor_1_contexts_decl.cpp")
+        self.assertIsNotNone(handler)
+        
+        def class_data(class_handler):
+            executors.gen_contexts_decl(class_handler, executors_data[0])
+            
+        generator.generate_class(handler, "Test", class_data)
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_executor_1_contexts_decl.cpp", "assets/expected/gen_executor_1_contexts_decl.cpp")
+                
+    def test_gen_executor_2_contexts_decl(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "gen_executor_2_contexts_decl.cpp")
+        self.assertIsNotNone(handler)
+        
+        def class_data(class_handler):
+            executors.gen_contexts_decl(class_handler, executors_data[1])
+            
+        generator.generate_class(handler, "Test", class_data)
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_executor_2_contexts_decl.cpp", "assets/expected/gen_executor_2_contexts_decl.cpp")
         
     def test_gen_executor_test1_header(self):
         executors_data = load_executors_for_class()

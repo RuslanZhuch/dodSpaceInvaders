@@ -31,3 +31,15 @@ class TestCore(unittest.TestCase):
         self.assertEqual(data[1].get("version"), 2)
         self.assertEqual(data[1].get("name"), "executor2")
         
+    def test_load_data_shared_contexts_from_folder(self):
+        data = loader.load_shared_contexts("assets/contexts/shared")
+        self.assertEqual(len(data), 2)
+        
+        self.assertEqual(data[0].get("whoIAm"), "SContext")
+        self.assertEqual(data[0].get("version"), 1)
+        self.assertEqual(data[0].get("name"), "sContext1")
+        
+        self.assertEqual(data[1].get("whoIAm"), "SContext")
+        self.assertEqual(data[1].get("version"), 2)
+        self.assertEqual(data[1].get("name"), "sContext2")
+        

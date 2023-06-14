@@ -2,6 +2,10 @@
 
 void runtime()
 {
+    Dod::SharedContext::Controller<Game::Context::SContext1::Shared> shared1Context;
+    Dod::SharedContext::Controller<Game::Context::SContext1::Shared> shared2Context;
+    Dod::SharedContext::Controller<Game::Context::SContext2::Shared> shared3Context;
+
     Game::ExecutionBlock::Executor1 executor1;
     executor1.loadContext();
     executor1.initiate();

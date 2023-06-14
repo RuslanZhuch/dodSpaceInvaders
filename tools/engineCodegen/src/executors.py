@@ -48,13 +48,8 @@ def gen_body_flush(handler, executor_data):
         generator.generate_line(handler, "this->{}Context.reset();".format(flush_context))
         
 def gen_body_init(handler, executor_data):
-    contexts_write_to = executor_data.get("contextsWriteTo")
-    if contexts_write_to is None:
-        return
-    
-    for init_context in contexts_write_to:
-        generator.generate_line(handler, "this->{}Context.init();".format(init_context))
-        
+    generator.generate_line(handler, "this->initImpl();")
+
 def gen_body_memory(handler, executor_data):
     memory = executor_data.get("memory")
     if memory is None:
@@ -64,18 +59,46 @@ def gen_body_memory(handler, executor_data):
     generator.generate_line(handler, "this->memory.allocate({});".format(memory))
         
 def gen_body_contexts_load(handler, executor_data):
-    contexts_write_to = executor_data.get("contextsWriteTo")
-    if contexts_write_to is None:
-        return
+    contexts_local = executor_data.get("contextsLocal")
+    if contexts_local is not None:
+        for context in contexts_local:
+            for element in context["list"]:
+                generator.generate_line(handler, "this->{}Context.load(this->memory, header);".format(element))
+        generator.generate_empty(handler)
     
-    for init_context in contexts_write_to:
-        generator.generate_line(handler, "this->{}Context.load(this->memory, header);".format(init_context))
+    contexts_write_to = executor_data.get("contextsWriteTo")
+    if contexts_write_to is not None:
+        for context in contexts_write_to:
+            for element in context["list"]:
+                generator.generate_line(handler, "this->{}Context.load();".format(element))
         
 def gen_body_update(handler, executor_data):   
     generator.generate_line(handler, "this->updateImpl(dt);")
         
-def gen_body_initImpl(handler, executor_data):   
-    generator.generate_line(handler, "this->initImpl();")
+def gen_contexts_decl(handler, executor_data):   
+    contexts_local = executor_data.get("contextsLocal")
+    if contexts_local is not None:
+        for context in contexts_local:
+            class_name = "Game::Context::{}::Local".format(_to_class_name(context["type"]))
+            for element in context["list"]:
+                field_name = "{}Context".format(element)
+                generator.generate_class_variable(handler, class_name, field_name)
+    
+    contexts_write_to = executor_data.get("contextsWriteTo")
+    if contexts_write_to is not None:
+        for context in contexts_write_to:
+            class_name = "Game::Context::{}::Shared".format(_to_class_name(context["type"]))
+            for element in context["list"]:
+                field_name = "{}Context".format(element)
+                generator.generate_class_variable(handler, class_name, field_name)
+    
+    contexts_shared = executor_data.get("contextsShared")
+    if contexts_shared is not None:
+        for context in contexts_shared:
+            class_name = "const Dod::SharedContext::Controller<Game::Context::{}::Shared>*".format(_to_class_name(context["type"]))
+            for element in context["list"]:
+                field_name = "{}Context".format(element)
+                generator.generate_class_variable(handler, class_name, field_name, "nullptr")
         
 def gen_header(folder, executor_data):
     executor_name = get_name(executor_data)
@@ -99,7 +122,9 @@ def gen_header(folder, executor_data):
             generator.generate_class_private_method(class_handler, "updateImpl", "void", ['float dt'], False)
             
             generator.generate_class_variable(class_handler, "Dod::MemPool", "memory")
-                        
+            
+            gen_contexts_decl(class_handler, executor_data)
+                                    
         generator.generate_class(handler, class_name, class_data)
         
     generator.generate_block(handler, "namespace Game::ExecutionBlock", namespace_block_data)
@@ -125,8 +150,6 @@ def gen_source(folder, executor_data):
             
             def init_body(self, handler):
                 gen_body_init(handler, executor_data)
-                generator.generate_empty(handler)
-                gen_body_initImpl(handler, executor_data)
                 
             generator.generate_class_public_method(class_handler, "initiate", "void", [], False, init_body)
             

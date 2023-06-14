@@ -12,6 +12,7 @@ namespace Game::Context::Models
 	{
 		void init()
 		{
+
 			this->memory.allocate(1024);
 			int32_t header{};
 			constexpr int32_t totalElements{ 8 };

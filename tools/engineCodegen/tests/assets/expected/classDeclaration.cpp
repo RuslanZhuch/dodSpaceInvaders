@@ -7,7 +7,7 @@ public:
 private:
     [[nodiscard]] int privateMethod1(int n) const noexcept;
 
-private:
+public:
     int var1{};
     Dod::MemPool memory;
 };

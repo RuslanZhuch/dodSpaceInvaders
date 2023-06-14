@@ -8,17 +8,18 @@ namespace Game::ExecutionBlock
         int32_t header{};
         this->memory.allocate(2048);
 
-        this->target1Context.load(this->memory, header);
-        this->target2Context.load(this->memory, header);
-        this->target3Context.load(this->memory, header);
+        this->local1Context.load(this->memory, header);
+        this->local2Context.load(this->memory, header);
+        this->local3Context.load(this->memory, header);
+        this->local4Context.load(this->memory, header);
+
+        this->target1Context.load();
+        this->target2Context.load();
+        this->target3Context.load();
     }
 
     void Test1::initiate() noexcept
     {
-        this->target1Context.init();
-        this->target2Context.init();
-        this->target3Context.init();
-
         this->initImpl();
     }
 

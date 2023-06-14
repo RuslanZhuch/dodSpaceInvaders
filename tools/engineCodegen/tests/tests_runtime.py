@@ -27,6 +27,6 @@ class TestRuntime(unittest.TestCase):
         descriptor_file = open("dest/runtime.cpp")
         
     def test_generate_runtime_function(self):
-        runtime.generate("dest", "runtime.cpp")
+        runtime.generate("dest", "runtime.cpp", "assets/workspace/ws_sharedContexts.json")
         
         utils.assert_files(self, "dest/runtime.cpp", "assets/expected/runtime.cpp")
