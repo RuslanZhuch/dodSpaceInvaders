@@ -1,6 +1,11 @@
 import loader
 import generator
 
+class SharedUsage:
+    def __init__(self, shared_instance, executor_scontext):
+        self.shared_instance = shared_instance
+        self.executor_scontext = executor_scontext
+
 def _to_camel_case(text):
     s = text.replace("-", " ").replace("_", " ")
     s = s.split()
@@ -21,12 +26,42 @@ def load(folder):
 def get_name(data):
     return data.get("name")
 
-def gen_inits(handler, executors_data):
+def load_shared_context_usage(workspace_data):
+    output = dict()
+    
+    usage = workspace_data["sharedContextsUsage"]
+    if usage is None:
+        return output
+    
+    for element in usage:
+        executor_name = element["executorName"]
+        shared_instance = element["instanceName"]
+        executor_scontext = element["executorSharedName"]
+        if output.get(executor_name) is None:
+            output[executor_name] = []    
+        output[executor_name].append(SharedUsage(shared_instance, executor_scontext))
+        
+    return output
+
+def gen_shared_context_init(handler, executor_data, workspace_data):
+    usage_full_data = load_shared_context_usage(workspace_data)
+    
+    executor_name = get_name(executor_data)
+    
+    usage_data = usage_full_data.get(executor_name)
+    if usage_data is None:
+        return
+    
+    for usage in usage_data:
+        generator.generate_line(handler, "{}.{}Context = &{}Context;".format(executor_name, usage.executor_scontext, usage.shared_instance))
+
+def gen_inits(handler, executors_data, workspace_data):
     for data in executors_data:
         name = get_name(data)
         class_name = "Game::ExecutionBlock::" + _to_class_name(name)
         generator.generate_variable(handler, class_name, name)
         generator.generate_line(handler, name + ".loadContext();")
+        gen_shared_context_init(handler, data, workspace_data)
         generator.generate_line(handler, name + ".initiate();")
         
 def gen_updates(handler, executors_data):

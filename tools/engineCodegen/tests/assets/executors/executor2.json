@@ -34,16 +34,17 @@
     ],
     "contextsShared": [
         {
-            "type": "type4",
+            "type": "sContext1",
             "list": [
                 "shared1",
                 "shared2"
             ]
         },
         {
-            "type": "type5",
+            "type": "sContext2",
             "list": [
-                "shared3"
+                "shared3",
+                "shared4"
             ]
         }
     ],

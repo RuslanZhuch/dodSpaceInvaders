@@ -21,7 +21,7 @@ class TestCore(unittest.TestCase):
         
     def test_load_data_from_folder(self):
         data = loader.load_descriptors("assets/executors")
-        self.assertEqual(len(data), 2)
+        self.assertEqual(len(data), 3)
         
         self.assertEqual(data[0].get("whoIAm"), "Executor")
         self.assertEqual(data[0].get("version"), 1)
@@ -30,6 +30,10 @@ class TestCore(unittest.TestCase):
         self.assertEqual(data[1].get("whoIAm"), "Executor_2")
         self.assertEqual(data[1].get("version"), 2)
         self.assertEqual(data[1].get("name"), "executor2")
+        
+        self.assertEqual(data[2].get("whoIAm"), "Executor_3")
+        self.assertEqual(data[2].get("version"), 3)
+        self.assertEqual(data[2].get("name"), "executor3")
         
     def test_load_data_shared_contexts_from_folder(self):
         data = loader.load_shared_contexts("assets/contexts/shared")

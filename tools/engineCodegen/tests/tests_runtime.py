@@ -15,6 +15,7 @@ sys.path.append("../src")
 import runtime
 
 import utils
+import loader
 
 class TestRuntime(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
@@ -27,6 +28,7 @@ class TestRuntime(unittest.TestCase):
         descriptor_file = open("dest/runtime.cpp")
         
     def test_generate_runtime_function(self):
-        runtime.generate("dest", "runtime.cpp", "assets/workspace/ws_sharedContexts.json")
+        workspace_data = loader.load_application_context_data("assets/workspace/ws_applicationContext.json")
+        runtime.generate("dest", "runtime.cpp", "assets/workspace/ws_applicationContext.json", workspace_data)
         
         utils.assert_files(self, "dest/runtime.cpp", "assets/expected/runtime.cpp")
