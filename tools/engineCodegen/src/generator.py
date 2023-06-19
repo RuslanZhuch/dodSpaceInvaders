@@ -38,11 +38,12 @@ def generate_block(hander, block_header, block_data):
     with hander.block(block_header):
         block_data(hander)
         
-def _generate_class_method(method_name, return_type, arguments, is_const, body):
+def _generate_class_method(method_name, return_type, arguments, is_const, is_static, body):
     method_handler = cpp_class.CppClass.CppMethod(
-        name = method_name, 
-        ret_type = return_type, 
+        name=method_name, 
+        ret_type=return_type, 
         is_const=is_const, 
+        is_static=is_static,
         implementation_handle = body)
     for argument in arguments:
         method_handler.add_argument(argument)
@@ -51,11 +52,26 @@ def _generate_class_method(method_name, return_type, arguments, is_const, body):
 def _default_method_impl(self, class_handler):
     generate_empty(class_handler)
     
+def generate_struct_method(struct_handler, struct_name, return_type, arguments, is_const, body=_default_method_impl, is_static=False):
+    struct_handler.add_method(_generate_class_method(struct_name, return_type, arguments, is_const, is_static, body))
+    
+def generate_struct_variable(struct_handler, variable_type, variable_name, initial = None):
+    struct_handler.add_variable(cpp_variable.CppVariable(
+        name=variable_name,
+        type=variable_type,
+        initialization_value = initial
+    ))
+    
+def generate_struct(handler, struct_name, struct_data):
+    struct_handler = cpp_class.CppClass(name = struct_name, is_struct = True)
+    struct_data(struct_handler)
+    struct_handler.render_to_string_declaration(handler)
+    
 def generate_class_private_method(class_handler, method_name, return_type, arguments, is_const, body=_default_method_impl):
-    class_handler.add_private_method(_generate_class_method(method_name, return_type, arguments, is_const, body))
+    class_handler.add_private_method(_generate_class_method(method_name, return_type, arguments, is_const, False, body))
     
 def generate_class_public_method(class_handler, method_name, return_type, arguments, is_const, body=_default_method_impl):
-    class_handler.add_method(_generate_class_method(method_name, return_type, arguments, is_const, body))
+    class_handler.add_method(_generate_class_method(method_name, return_type, arguments, is_const, False, body))
     
 def generate_class_variable(class_handler, variable_type, variable_name, initial = None):
     class_handler.add_variable(cpp_variable.CppVariable(

@@ -23,6 +23,55 @@ def _to_class_name(name):
 def load_shared(folder):
     return loader.load_shared_contexts(folder)
 
+class ContextData:
+    class ObjectDataElement:
+        def __init__(self, name, data_type, initial):
+             self.name = name
+             self.data_type = data_type
+             self.initial = initial
+             
+    class BufferDataElement:
+        def __init__(self, name, data_type, capacity):
+             self.name = name
+             self.data_type = data_type
+             self.capacity = capacity
+             
+    def __init__(self, objects_data, buffers_data):
+        self.objects_data = objects_data
+        self.buffers_data = buffers_data
+
+def load_data(context_raw_data):
+    objects_data = []
+    buffers_data = []
+    for variable in context_raw_data["data"]:
+        type = variable["type"]
+        name = variable["name"]
+        data_type = variable["dataType"]
+        if type == "object":
+            initial = variable.get("initial")
+            objects_data.append(ContextData.ObjectDataElement(name, data_type, initial))
+        elif type == "dbbuffer":
+            capacity = variable["capacity"]
+            buffers_data.append(ContextData.BufferDataElement(name, data_type, capacity))
+    
+    return ContextData(objects_data, buffers_data)
+
+def generate_context_data(handler, context_raw_data):
+    
+    def struct_body(struct_handler):
+        generator.generate_struct_method(struct_handler, "load", "Data", ["Dod::MemPool& pool", "int32_t& header"], False, is_static=True)
+        
+        context_data = load_data(context_raw_data)
+        
+        for object in context_data.objects_data:
+            generator.generate_struct_variable(struct_handler, object.data_type, object.name, object.initial)
+            
+        for buffer in context_data.buffers_data:
+            type = "Dod::DBBuffer<{}>".format(buffer.data_type)
+            generator.generate_struct_variable(struct_handler, type, buffer.name, None)
+            
+    generator.generate_struct(handler, "Data", struct_body)
+
 class ContextUsage:
     def __init__(self, context_name, instance_name):
         self.context_name = context_name

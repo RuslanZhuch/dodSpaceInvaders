@@ -47,3 +47,8 @@ def load_application_context_data(file_path):
     descriptor_file = open(file_path)
     data = json.load(descriptor_file)
     return data
+
+def load_file_data(file_path):
+    descriptor_file = open(file_path)
+    data = json.load(descriptor_file)
+    return data

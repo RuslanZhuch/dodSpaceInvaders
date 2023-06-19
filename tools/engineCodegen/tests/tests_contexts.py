@@ -25,6 +25,45 @@ class TestContexts(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
         self.maxDiff = None
+    
+    def test_load_context_data(self):
+        context_raw_data = loader.load_file_data("assets/contexts/local/lContext1.json")
+        context_data = contexts.load_data(context_raw_data)
+        
+        self.assertEqual(len(context_data.objects_data), 3)
+        self.assertEqual(len(context_data.buffers_data), 2)
+        
+        self.assertEqual(context_data.objects_data[0].name, "var1")
+        self.assertEqual(context_data.objects_data[1].name, "var2")
+        self.assertEqual(context_data.objects_data[2].name, "var3")
+        
+        self.assertEqual(context_data.objects_data[0].data_type, "int32_t")
+        self.assertEqual(context_data.objects_data[1].data_type, "float")
+        self.assertEqual(context_data.objects_data[2].data_type, "CustomData1")
+        
+        self.assertEqual(context_data.objects_data[0].initial, 1)
+        self.assertEqual(context_data.objects_data[1].initial, 1.1)
+        self.assertEqual(context_data.objects_data[2].initial, None)
+        
+        self.assertEqual(context_data.buffers_data[0].name, "dbvar1")
+        self.assertEqual(context_data.buffers_data[1].name, "dbvar2")
+        
+        self.assertEqual(context_data.buffers_data[0].data_type, "float")
+        self.assertEqual(context_data.buffers_data[1].data_type, "int64_t")
+        
+        self.assertEqual(context_data.buffers_data[0].capacity, 512)
+        self.assertEqual(context_data.buffers_data[1].capacity, 1024)
+        
+    def test_gen_context1_data(self):
+        context_raw_data = loader.load_file_data("assets/contexts/local/lContext1.json")
+        
+        handler = generator.generate_file("dest", "gen_lContext1_data.cpp")
+        self.assertIsNotNone(handler)
+        contexts.generate_context_data(handler, context_raw_data)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_lContext1_data.cpp", "assets/expected/gen_lContext1_data.cpp")
         
     def test_load_shared_context_instancies(self):
         data = contexts.load_shared_context_instances("assets/workspace/ws_applicationContext.json")

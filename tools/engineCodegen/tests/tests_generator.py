@@ -160,6 +160,23 @@ class TestGenerators(unittest.TestCase):
         
         utils.assert_files(self, "dest/gen_empty_class.cpp", "assets/expected/classDeclarationEmpty.cpp")
         
+    def test_generate_struct_declaration(self):
+        handler = generator.generate_file("dest", "gen_struct.cpp")
+        self.assertIsNotNone(handler)
+        
+        def struct_data(struct_handler):
+            generator.generate_struct_method(struct_handler, "method1", "float", [], True)
+            generator.generate_struct_method(struct_handler, "method2", "void", ['float dt'], False)
+            generator.generate_struct_method(struct_handler, "method3", "void", ['int32_t arg'], False, is_static = True)
+            generator.generate_struct_variable(struct_handler, "int", "var1", 0)
+            generator.generate_struct_variable(struct_handler, "Dod::MemPool", "memory")
+            
+        generator.generate_struct(handler, "Test2", struct_data)
+
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_struct.cpp", "assets/expected/structDeclaration.cpp")
+        
     def test_generate_class_declaration(self):
         handler = generator.generate_file("dest", "gen_class.cpp")
         self.assertIsNotNone(handler)
