@@ -65,6 +65,10 @@ class TestContexts(unittest.TestCase):
         
         utils.assert_files(self, "dest/gen_lContext1_data.cpp", "assets/expected/gen_lContext1_data.cpp")
         
+    def test_gen_context1_def(self):
+        contexts.generate_context_def("dest", "assets/contexts/local/lContext1.json")
+        utils.assert_files(self, "dest/lContext1Context.h", "assets/expected/lContext1Context.h")
+        
     def test_load_shared_context_instancies(self):
         data = contexts.load_shared_context_instances("assets/workspace/ws_applicationContext.json")
         self.assertEqual(len(data), 5)

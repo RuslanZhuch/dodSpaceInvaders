@@ -8,6 +8,9 @@ def _path_leaf(path):
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
 
+def load_name(file_path):
+    return path.splitext(_path_leaf(file_path))[0]
+
 def load_descriptor(file_path):
     descriptor_file = open(file_path)
     data = json.load(descriptor_file)

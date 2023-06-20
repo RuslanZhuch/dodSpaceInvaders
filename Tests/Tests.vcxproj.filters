@@ -47,6 +47,9 @@
     <ClCompile Include="engineTests\SharedContext.cpp">
       <Filter>engineTests</Filter>
     </ClCompile>
+    <ClCompile Include="engineTests\Contexts.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

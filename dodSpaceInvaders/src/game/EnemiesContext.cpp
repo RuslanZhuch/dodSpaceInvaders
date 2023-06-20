@@ -1,6 +1,7 @@
 #include "EnemiesContext.h"
 
 #include <dod/BufferUtils.h>
+#include <engine/contextUtils.h>
 
 #include <rapidjson/document.h>
 
@@ -13,68 +14,27 @@ Game::Context::Enemy::Data Game::Context::Enemy::Data::load(Dod::MemPool& pool, 
 
     Data data;
 
-    std::ifstream contextFile("resources/contexts/enemiesContext.json");
-    assert(contextFile.is_open());
-    const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
+    const auto doc{ Engine::ContextUtils::loadFileDataRoot("resources/contexts/enemiesContext.json") };
+    const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 13) };
 
-    rapidjson::Document json;
-    json.Parse(fileRawData.c_str());
-    const auto root{ json.GetObject() };
+    if (!inputDataOpt.has_value())
+        return data;
 
-    for (const auto& element : root)
-    {
-        if (element.name == "contextName")
-        {
-            const auto contextName{ element.value.GetString() };
-            std::cout << "Loading context: " << contextName << "\n";
-        }
-        else if (element.name == "data")
-        {
-            for (const auto& dataElement : element.value.GetObject())
-            {
-                if (dataElement.name == "enemiesParameters" && dataElement.value.IsObject())
-                {
-                    const auto enemiesParametersObj{ dataElement.value.GetObject() };
-                    const auto numOfEnemiesPerRow{ enemiesParametersObj["numOfEnemiesPerRow"].GetInt() };
-                    data.numOfEnemiesPerRow = numOfEnemiesPerRow;
-                    const auto numOfEnemiesPerCol{ enemiesParametersObj["numOfEnemiesPerCol"].GetInt() };
-                    data.numOfEnemiesCols = numOfEnemiesPerCol;
-                    const auto enemiesXStride{ enemiesParametersObj["enemiesXStride"].GetFloat() };
-                    data.enemiesXStride = enemiesXStride;
-                    const auto enemiesYStride{ enemiesParametersObj["enemiesYStride"].GetFloat() };
-                    data.enemiesYStride = enemiesYStride;
-                    const auto width{ enemiesParametersObj["width"].GetFloat() };
-                    data.width = width;
-                    const auto height{ enemiesParametersObj["height"].GetFloat() };
-                    data.height = height;
-                    const auto weaponCooldownTime{ enemiesParametersObj["weaponCooldownTime"].GetFloat() };
-                    data.weaponCooldownTime = weaponCooldownTime;
-                    const auto startCoordX{ enemiesParametersObj["startCoordX"].GetFloat() };
-                    data.batchCoordX = startCoordX;
-                    const auto startCoordY{ enemiesParametersObj["startCoordY"].GetFloat() };
-                    data.batchCoordY = startCoordY;
-                    const auto direction{ enemiesParametersObj["direction"].GetInt() };
-                    data.direction = direction;
-                }
-                else if (dataElement.name == "enemiesWeaponContext" && dataElement.value.IsObject())
-                {
-                    const auto enemiesWeaponContextObj{ dataElement.value.GetObject() };
-                    data.enemyWeaponCooldownTimeLeft = enemiesWeaponContextObj["cooldownTimeLeft"].GetInt();
-                }
-                else if (dataElement.name == "enemiesUnitsContext" && dataElement.value.IsObject())
-                {
-                    const auto enemiesUnitsContextObj{ dataElement.value.GetObject() };
+    const auto& loadingDataArray{ inputDataOpt.value() };
 
-                    const auto toRemove{ enemiesUnitsContextObj["toRemove"].GetObject() };
-                    const auto toRemoveType{ toRemove["type"].GetString() };
-                    const auto toRemoveDataType{ toRemove["dataType"].GetString() };
-                    const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
-                    const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
-                    Dod::BufferUtils::initFromMemory(data.toRemove, Dod::MemUtils::stackAquire(pool, toRemoveCapacityBytes, header));
-                }
-            }
-        }
-    }
+    Engine::ContextUtils::loadVariable(data.numOfEnemiesPerRow, loadingDataArray, 0);
+    Engine::ContextUtils::loadVariable(data.numOfEnemiesCols, loadingDataArray, 1);
+    Engine::ContextUtils::loadVariable(data.enemiesXStride, loadingDataArray, 2);
+    Engine::ContextUtils::loadVariable(data.enemiesYStride, loadingDataArray, 3);
+    Engine::ContextUtils::loadVariable(data.width, loadingDataArray, 4);
+    Engine::ContextUtils::loadVariable(data.height, loadingDataArray, 5);
+    Engine::ContextUtils::loadVariable(data.weaponCooldownTime, loadingDataArray, 6);
+    Engine::ContextUtils::loadVariable(data.batchCoordX, loadingDataArray, 7);
+    Engine::ContextUtils::loadVariable(data.batchCoordY, loadingDataArray, 8);
+    Engine::ContextUtils::loadVariable(data.direction, loadingDataArray, 9);
+    Engine::ContextUtils::loadVariable(data.enemyWeaponCooldownTimeLeft, loadingDataArray, 10);
+
+    Engine::ContextUtils::loadBuffer(data.toRemove, loadingDataArray, 12, pool, header);
 
     return data;
 

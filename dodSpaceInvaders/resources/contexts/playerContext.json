@@ -1,28 +1,61 @@
 {
-
-  "contextName": "playerContext",
-  "data": {
-    "playerParameters": {
-      "width": 50,
-      "height": 25
+  "whoIAm": "Context",
+  "version": 1,
+  "contextType": "Local",
+  "data": [
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "width",
+      "initial": 50
     },
-    "playerPositionContext": {
-      "positionX": 400,
-      "positionY": 850
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "height",
+      "initial": 25
     },
-    "playerLifetimeContext": {
-      "lifes": 1
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "positionX",
+      "initial": 400
     },
-    "playerInputsContext": {
-      "inputs": 0,
-      "prevInputs": 0
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "positionY",
+      "initial": 850
     },
-    "playerMovement": {
-      "move": 0
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "lifes",
+      "initial": 1
     },
-    "playerFire": {
-      "fire": 0
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "inputs",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "prevInputs",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "move",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "fire",
+      "initial": 0
     }
-  }
- 
+  ]
 }

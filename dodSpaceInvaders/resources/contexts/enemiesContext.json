@@ -1,39 +1,85 @@
 {
 
   "contextName": "enemiesContext",
-  "data": {
-    "enemiesParameters": {
-      "numOfEnemiesPerRow": 10,
-      "numOfEnemiesPerCol": 4,
-      "enemiesXStride": 50,
-      "enemiesYStride": 50,
-      "width": 25,
-      "height": 30,
-      "weaponCooldownTime": 0.5,
-      "startCoordX": 100,
-      "startCoordY": 200,
-      "direction": 1
+  "data": [
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "numOfEnemiesPerRow",
+      "initial": 10
     },
-    "enemiesUnitsContext": {
-      "xCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 41
-      },
-      "yCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 41
-      },
-      "toRemove": {
-        "type": "dbbuffer",
-        "dataType": "int32_t",
-        "capacity": 41
-      }
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "numOfEnemiesPerCol",
+      "initial": 4
     },
-    "enemiesWeaponContext": {
-      "cooldownTimeLeft":  2
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "enemiesXStride",
+      "initial": 50
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "enemiesYStride",
+      "initial": 50
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "width",
+      "initial": 25
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "height",
+      "initial": 30
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "weaponCooldownTime",
+      "initial": 0.5
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "startCoordX",
+      "initial": 100
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "startCoordY",
+      "initial": 200
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "direction",
+      "initial": 1
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "cooldownTimeLeft",
+      "initial": 2
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "cooldownTime",
+      "initial": 2
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "float",
+      "name": "toRemove",
+      "capacity": 41
     }
-  }
+  ]
  
 }

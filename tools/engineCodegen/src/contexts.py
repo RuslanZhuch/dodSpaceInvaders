@@ -72,6 +72,22 @@ def generate_context_data(handler, context_raw_data):
             
     generator.generate_struct(handler, "Data", struct_body)
 
+def generate_context_def(dest_path, context_file_path):
+    context_raw_data = loader.load_file_data(context_file_path)
+    context_name = loader.load_name(context_file_path)
+    handler = generator.generate_file(dest_path, "{}Context.h".format(context_name))
+    
+    generator.generate_line(handler, "#pragma once")
+    generator.generate_empty(handler)
+    generator.generate_line(handler, "#include <dod/Buffers.h>")
+    generator.generate_line(handler, "#include <dod/MemPool.h>")
+    generator.generate_empty(handler)
+    
+    def namespace_body(namespace_handler):
+        generate_context_data(namespace_handler, context_raw_data)
+    generator.generate_block(handler, "namespace Game::Context::Lcontext1", namespace_body)
+    
+
 class ContextUsage:
     def __init__(self, context_name, instance_name):
         self.context_name = context_name

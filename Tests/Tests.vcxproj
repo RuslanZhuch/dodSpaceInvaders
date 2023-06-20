@@ -48,6 +48,7 @@
     <ClCompile Include="engineTests\Algorithms.cpp" />
     <ClCompile Include="engineTests\Buffers.cpp" />
     <ClCompile Include="engineTests\BufferUtils.cpp" />
+    <ClCompile Include="engineTests\Contexts.cpp" />
     <ClCompile Include="engineTests\MemPool.cpp" />
     <ClCompile Include="engineTests\MemUtils.cpp" />
     <ClCompile Include="engineTests\SharedContext.cpp" />

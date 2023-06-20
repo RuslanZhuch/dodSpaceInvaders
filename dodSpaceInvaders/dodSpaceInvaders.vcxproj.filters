@@ -81,6 +81,9 @@
     <ClCompile Include="src\game\EnemiesContext.cpp">
       <Filter>game\Context</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\contextUtils.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -222,6 +225,9 @@
     <ClInclude Include="src\game\ApplicationSContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\contextUtils.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dod">
@@ -259,6 +265,9 @@
     </Filter>
     <Filter Include="resources\contexts">
       <UniqueIdentifier>{58bbf531-7b44-4eed-885a-0b8944452501}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{e17cf9d8-4988-4ed7-8dd7-a15b2dd6d0c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

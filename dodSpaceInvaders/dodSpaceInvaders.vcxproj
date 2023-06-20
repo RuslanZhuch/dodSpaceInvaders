@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\contextUtils.cpp" />
     <ClCompile Include="src\game\BulletsCore.cpp" />
     <ClCompile Include="src\game\BulletsGameplay.cpp" />
     <ClCompile Include="src\game\CollisionCore.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="src\game\game.cpp" />
     <ClCompile Include="src\game\main.cpp" />
     <ClInclude Include="src\dod\SharedContext.h" />
+    <ClInclude Include="src\engine\contextUtils.h" />
     <ClInclude Include="src\game\BulletsContext.h" />
     <ClInclude Include="src\game\BulletsCore.h" />
     <ClInclude Include="src\game\BulletsGameplay.h" />
