@@ -4,22 +4,22 @@
   "contextType": "Local",
   "data": [
     {
-        "type": "object",
-        "dataType": "float",
-        "name": "width",
-        "initial": 50
-      },
-      {
-        "type": "object",
-        "dataType": "int32_t",
-        "name": "height",
-        "initial": 25
-      },
-      {
-        "type": "object",
-        "dataType": "uint32_t",
-        "name": "positionX",
-        "initial": 134217728
-      }
+      "type": "object",
+      "dataType": "float",
+      "name": "width",
+      "initial": 50
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "height",
+      "initial": 25
+    },
+    {
+      "type": "object",
+      "dataType": "uint32_t",
+      "name": "positionX",
+      "initial": 134217728
+    }
   ]
 }

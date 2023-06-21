@@ -69,6 +69,66 @@ class TestContexts(unittest.TestCase):
         contexts.generate_context_def("dest", "assets/contexts/local/lContext1.json")
         utils.assert_files(self, "dest/lContext1Context.h", "assets/expected/lContext1Context.h")
         
+    def test_gen_context2_def(self):
+        contexts.generate_context_def("dest", "assets/contexts/local/lContext2.json")
+        utils.assert_files(self, "dest/lContext2Context.h", "assets/expected/lContext2Context.h")
+        
+    def test_gen_context1_load(self):
+        file_path = "assets/contexts/local/lContext1.json"
+        context_raw_data = loader.load_file_data(file_path)
+        
+        handler = generator.generate_file("dest", "gen_lContext1_load.cpp")
+        self.assertIsNotNone(handler)
+        contexts.generate_context_load(handler, context_raw_data, file_path)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_lContext1_load.cpp", "assets/expected/gen_lContext1_load.cpp")
+          
+    def test_gen_context2_load(self):
+        file_path = "assets/contexts/local/lContext2.json"
+        context_raw_data = loader.load_file_data(file_path)
+        
+        handler = generator.generate_file("dest", "gen_lContext2_load.cpp")
+        self.assertIsNotNone(handler)
+        contexts.generate_context_load(handler, context_raw_data, file_path)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_lContext2_load.cpp", "assets/expected/gen_lContext2_load.cpp")
+      
+    def test_gen_context1_reset(self):
+        file_path = "assets/contexts/local/lContext1.json"
+        context_raw_data = loader.load_file_data(file_path)
+        
+        handler = generator.generate_file("dest", "gen_lContext1_reset.cpp")
+        self.assertIsNotNone(handler)
+        contexts.generate_context_reset(handler, context_raw_data)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_lContext1_reset.cpp", "assets/expected/gen_lContext1_reset.cpp")
+          
+    def test_gen_context2_reset(self):
+        file_path = "assets/contexts/local/lContext1.json"
+        context_raw_data = loader.load_file_data(file_path)
+        
+        handler = generator.generate_file("dest", "gen_lContext1_merge.cpp")
+        self.assertIsNotNone(handler)
+        contexts.generate_context_merge(handler, context_raw_data)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_lContext1_merge.cpp", "assets/expected/gen_lContext1_merge.cpp")
+          
+    def test_gen_context1_impl(self):
+        contexts.generate_context_impl("dest", "assets/contexts/local/lContext1.json")
+        utils.assert_files(self, "dest/lContext1Context.cpp", "assets/expected/lContext1Context.cpp")
+        
+    def test_gen_context2_impl(self):
+        contexts.generate_context_impl("dest", "assets/contexts/local/lContext2.json")
+        utils.assert_files(self, "dest/lContext2Context.cpp", "assets/expected/lContext2Context.cpp")
+        
     def test_load_shared_context_instancies(self):
         data = contexts.load_shared_context_instances("assets/workspace/ws_applicationContext.json")
         self.assertEqual(len(data), 5)

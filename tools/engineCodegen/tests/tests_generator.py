@@ -176,6 +176,23 @@ class TestGenerators(unittest.TestCase):
         handler.close()
         
         utils.assert_files(self, "dest/gen_struct.cpp", "assets/expected/structDeclaration.cpp")
+           
+    def test_generate_struct_implementation(self):
+        handler = generator.generate_file("dest", "gen_struct_impl.cpp")
+        self.assertIsNotNone(handler)
+        
+        def class_data(class_handler):
+            generator.generate_class_public_method(class_handler, "method1", "float", [], True)
+            
+            def pubm2_body(self, class_handler):
+                generator.generate_line(class_handler, "some stuff here")
+            generator.generate_class_public_method(class_handler, "method2", "void", ['float dt'], False, pubm2_body)
+            
+        generator.generate_struct_impl(handler, "Test3", class_data)
+
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_struct_impl.cpp", "assets/expected/structImplementation.cpp")
         
     def test_generate_class_declaration(self):
         handler = generator.generate_file("dest", "gen_class.cpp")

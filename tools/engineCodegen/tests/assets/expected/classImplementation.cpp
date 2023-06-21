@@ -1,3 +1,4 @@
+
 [[nodiscard]] float Test2::publicMethod1() const noexcept
 {
 
@@ -12,4 +13,3 @@ void Test2::publicMethod2(float dt) noexcept
 {
     some stuff here 2
 }
-

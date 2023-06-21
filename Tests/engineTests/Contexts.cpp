@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <dod/Buffers.h>
+#include <dod/BufferUtils.h>
 #include <engine/contextUtils.cpp>
 
 #include <rapidjson/document.h>
@@ -106,5 +108,31 @@ TEST(Context, LoadVariable)
 
 TEST(Context, LoadBuffer)
 {
-	ASSERT_TRUE(false);
+
+	const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/sampleFileBuffers.json") };
+	const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 2) };
+	ASSERT_TRUE(inputDataOpt.has_value());
+
+	const auto& data{ inputDataOpt.value() };
+	ASSERT_EQ(data.Size(), 2);
+
+	{
+		Dod::MemPool memory;
+		memory.allocate(2048);
+		int32_t header{};
+
+		Dod::DBBuffer<float> dst;
+		Engine::ContextUtils::loadBuffer(dst, data, 0, memory, header);
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(dst), 40);
+	}
+	{
+		Dod::MemPool memory;
+		memory.allocate(2048);
+		int32_t header{};
+
+		Dod::DBBuffer<int64_t> dst;
+		Engine::ContextUtils::loadBuffer(dst, data, 1, memory, header);
+		EXPECT_EQ(Dod::BufferUtils::getCapacity(dst), 80);
+	}
+
 }

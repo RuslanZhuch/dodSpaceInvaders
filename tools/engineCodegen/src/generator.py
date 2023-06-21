@@ -67,6 +67,11 @@ def generate_struct(handler, struct_name, struct_data):
     struct_data(struct_handler)
     struct_handler.render_to_string_declaration(handler)
     
+def generate_struct_impl(handler, struct_name, struct_data):
+    struct_handler = cpp_class.CppClass(name = struct_name, is_struct = True)
+    struct_data(struct_handler)
+    struct_handler.render_to_string_implementation(handler)
+
 def generate_class_private_method(class_handler, method_name, return_type, arguments, is_const, body=_default_method_impl):
     class_handler.add_private_method(_generate_class_method(method_name, return_type, arguments, is_const, False, body))
     

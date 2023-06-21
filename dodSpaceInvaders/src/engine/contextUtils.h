@@ -56,7 +56,7 @@ namespace Engine::ContextUtils
         
         */
 
-        using type_t = std::decay_t<decltype(dest)>;
+        using type_t = T;
 
         if (!src[id].IsObject())
             return;

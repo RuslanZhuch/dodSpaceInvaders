@@ -3,7 +3,7 @@
 #include <dod/Buffers.h>
 #include <dod/MemPool.h>
 
-namespace Game::Context::LContext1
+namespace Game::Context::LContext2
 {
     struct Data
     {
@@ -13,8 +13,7 @@ namespace Game::Context::LContext1
 
         int32_t var1{ 1 };
         float var2{ 1.1 };
-        CustomData1 var3;
-        Dod::DBBuffer<float> dbvar1;
-        Dod::DBBuffer<int64_t> dbvar2;
+        Dod::DBBuffer<float> dbvar0;
+        Dod::DBBuffer<int64_t> dbvar1;
     };
 }

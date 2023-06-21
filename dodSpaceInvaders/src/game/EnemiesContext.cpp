@@ -33,6 +33,7 @@ Game::Context::Enemy::Data Game::Context::Enemy::Data::load(Dod::MemPool& pool, 
     Engine::ContextUtils::loadVariable(data.batchCoordY, loadingDataArray, 8);
     Engine::ContextUtils::loadVariable(data.direction, loadingDataArray, 9);
     Engine::ContextUtils::loadVariable(data.enemyWeaponCooldownTimeLeft, loadingDataArray, 10);
+    Engine::ContextUtils::loadVariable(data.weaponCooldownTime, loadingDataArray, 11);
 
     Engine::ContextUtils::loadBuffer(data.toRemove, loadingDataArray, 12, pool, header);
 

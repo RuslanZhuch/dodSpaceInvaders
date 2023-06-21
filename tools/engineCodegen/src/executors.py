@@ -175,7 +175,6 @@ def gen_source(folder, executor_data):
     generator.generate_empty(handler)
     
     def namespace_block_data(handler):
-        generator.generate_empty(handler)
         def class_data(class_handler):
             def load_body(self, handler):
                 gen_body_memory(handler, executor_data)
@@ -197,6 +196,7 @@ def gen_source(folder, executor_data):
             generator.generate_class_public_method(class_handler, "flushSharedLocalContexts", "void", [], False, flush_body)
                         
         generator.generate_class_impl(handler, class_name, class_data)
+        generator.generate_empty(handler)
         
     generator.generate_block(handler, "namespace Game::ExecutionBlock", namespace_block_data)
     
@@ -215,12 +215,12 @@ def gen_implementation(folder, executor_data):
     generator.generate_empty(handler)
     
     def namespace_block_data(handler):
-        generator.generate_empty(handler)
         def class_data(class_handler):
             generator.generate_class_public_method(class_handler, "initImpl", "void", [], False)
             generator.generate_class_public_method(class_handler, "updateImpl", "void", ['float dt'], False)
        
         generator.generate_class_impl(handler, class_name, class_data)
+        generator.generate_empty(handler)
         
     generator.generate_block(handler, "namespace Game::ExecutionBlock", namespace_block_data)
     

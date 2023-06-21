@@ -60,6 +60,8 @@ def generate_context_data(handler, context_raw_data):
     
     def struct_body(struct_handler):
         generator.generate_struct_method(struct_handler, "load", "Data", ["Dod::MemPool& pool", "int32_t& header"], False, is_static=True)
+        generator.generate_struct_method(struct_handler, "reset", "void", [], False)
+        generator.generate_struct_method(struct_handler, "merge", "void", ["const Data& other"], False)
         
         context_data = load_data(context_raw_data)
         
@@ -85,9 +87,98 @@ def generate_context_def(dest_path, context_file_path):
     
     def namespace_body(namespace_handler):
         generate_context_data(namespace_handler, context_raw_data)
-    generator.generate_block(handler, "namespace Game::Context::Lcontext1", namespace_body)
+    class_name = _to_class_name(context_name)
+    generator.generate_block(handler, "namespace Game::Context::{}".format(class_name), namespace_body)
     
+def generate_context_impl(dest_path, context_file_path):
+    context_raw_data = loader.load_file_data(context_file_path)
+    context_name = loader.load_name(context_file_path)
+    handler = generator.generate_file(dest_path, "{}Context.cpp".format(context_name))
+    
+    generator.generate_line(handler, "#include \"{}Context.h\"".format(context_name))
+    generator.generate_empty(handler)
 
+    generator.generate_line(handler, "#include <dod/BufferUtils.h>")
+    generator.generate_line(handler, "#include <engine/contextUtils.h>")
+    generator.generate_empty(handler)
+    
+    def namespace_body(namespace_handler):
+        generate_context_load(namespace_handler, context_raw_data, context_file_path)
+        generate_context_reset(namespace_handler, context_raw_data)
+        generate_context_merge(namespace_handler, context_raw_data)
+        generator.generate_empty(handler)
+    class_name = _to_class_name(context_name)
+    generator.generate_block(handler, "namespace Game::Context::{}".format(class_name), namespace_body)
+    
+def generate_context_load(handler, context_raw_data, context_file_path):
+    def struct_data(struct_handler):
+        
+        def load_body(self, handler):
+            generator.generate_empty(handler)
+            generator.generate_variable(handler, "Data", "data")
+            generator.generate_empty(handler)
+            
+            context_data = load_data(context_raw_data)
+            total_elements = len(context_data.objects_data) + len(context_data.buffers_data)
+            
+            generator.generate_variable(handler, "const auto", "doc", "Engine::ContextUtils::loadFileDataRoot(\"{}\")".format(context_file_path))
+            generator.generate_variable(handler, "const auto&", "inputDataOpt", "Engine::ContextUtils::gatherContextData(doc, {})".format(total_elements))
+            generator.generate_empty(handler)
+            
+            def if_statement_body(handler):
+                generator.generate_line(handler, "return data;")
+            generator.generate_block(handler, "if (!inputDataOpt.has_value())", if_statement_body)
+            generator.generate_empty(handler)
+            
+            generator.generate_variable(handler, "const auto&", "loadingDataArray", "inputDataOpt.value()")
+            generator.generate_empty(handler)
+            
+            element_id = 0
+            for object in context_data.objects_data:
+                variable_name = object.name
+                generator.generate_line(handler, "Engine::ContextUtils::loadVariable(data.{}, loadingDataArray, {});".format(variable_name, element_id))
+                element_id += 1
+            generator.generate_empty(handler)
+                
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                generator.generate_line(handler, "Engine::ContextUtils::loadBuffer(data.{}, loadingDataArray, {}, pool, header);".format(buffer_name, element_id))
+                element_id += 1
+            generator.generate_empty(handler)
+            
+            generator.generate_line(handler, "return data;")
+            generator.generate_empty(handler)
+        
+        generator.generate_struct_method(struct_handler, "load", "Data", ["Dod::MemPool& pool", "int32_t& header"], False, load_body, is_static=True)
+
+    generator.generate_struct_impl(handler, "Data", struct_data)
+    
+def generate_context_reset(handler, context_raw_data):
+    def struct_data(struct_handler):
+        
+        def load_body(self, handler):
+            context_data = load_data(context_raw_data)
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                generator.generate_line(handler, "Dod::BufferUtils::flush(this->{});".format(buffer_name))
+
+        generator.generate_struct_method(struct_handler, "reset", "void", [], False, load_body)
+
+    generator.generate_struct_impl(handler, "Data", struct_data)
+    
+def generate_context_merge(handler, context_raw_data):
+    def struct_data(struct_handler):
+        
+        def load_body(self, handler):
+            context_data = load_data(context_raw_data)
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                generator.generate_line(handler, "Dod::BufferUtils::append(this->{0}, Dod::BufferUtils::createImFromBuffer(other.{0}));".format(buffer_name))
+
+        generator.generate_struct_method(struct_handler, "merge", "void", ["const Shared& other"], False, load_body)
+
+    generator.generate_struct_impl(handler, "Data", struct_data)
+    
 class ContextUsage:
     def __init__(self, context_name, instance_name):
         self.context_name = context_name
