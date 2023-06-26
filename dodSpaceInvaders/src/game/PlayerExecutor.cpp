@@ -34,20 +34,17 @@ const Game::Context::Units::Shared& Game::ExecutionBlock::Player::getSharedLocal
 void Game::ExecutionBlock::Player::loadContext()
 {
 
-    int32_t header{ 0 };
-    this->memory.allocate(2048);
-
-    this->playerContext = Game::Context::Player::Data::load(this->memory, header);
+    this->playerContext.load();
 
 }
 
 void Game::ExecutionBlock::Player::initiate()
 {
 
-    this->renderContext.init();
-    this->bulletsToSpawnContext.init();
+    this->renderContext.load();
+    this->bulletsToSpawnContext.load();
 
-    this->unitContext.init();
+    this->unitContext.load();
 
     Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerContext.xCoord);
     Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerContext.yCoord);

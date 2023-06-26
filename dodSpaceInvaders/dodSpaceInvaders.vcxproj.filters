@@ -84,6 +84,43 @@
     <ClCompile Include="src\engine\contextUtils.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\SoundsController.cpp" />
+    <ClCompile Include="src\game\Application.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\EnemyBullets.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\PlayerBullets.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\BulletsToSpawn.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Common.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ModelsToRender.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObjectsToHit.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Obstacles.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\SoundsControl.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Scene.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\RenderCommands.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\RenderInternal.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -156,19 +193,19 @@
     <ClInclude Include="src\game\PlayerContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\BulletsContext.h">
+    <ClInclude Include="src\game\EnemyBullets.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\ObstaclesContext.h">
+    <ClInclude Include="src\game\Obstacles.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\CommonContext.h">
+    <ClInclude Include="src\game\Common.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\ObstaclesGameplay.h">
       <Filter>game\Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\SceneContext.h">
+    <ClInclude Include="src\game\Scene.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\dod\SharedContext.h">
@@ -177,7 +214,7 @@
     <ClInclude Include="src\game\SoundsExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\SoundsSContext.h">
+    <ClInclude Include="src\game\SoundsControl.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\EnemiesExecution.h">
@@ -186,13 +223,13 @@
     <ClInclude Include="src\game\RenderExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\RenderSharedContext.h">
+    <ClInclude Include="src\game\RenderCommnads.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\RenderContext.h">
+    <ClInclude Include="src\game\RenderInternal.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\ModelsSharedContext.h">
+    <ClInclude Include="src\game\ModelsToRender.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\ModelsExecutor.h">
@@ -201,13 +238,13 @@
     <ClInclude Include="src\game\EnemiesBulletsExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\BulletsToSpawnSContext.h">
+    <ClInclude Include="src\game\BulletsToSpawn.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\ObstaclesExecutor.h">
       <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\ObjectsToHitSContext.h">
+    <ClInclude Include="src\game\ObjectsToHit.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\ObstaclesSContext.h">
@@ -222,11 +259,14 @@
     <ClInclude Include="src\game\UnitsSContext.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\ApplicationSContext.h">
+    <ClInclude Include="src\game\Application.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\contextUtils.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerBullets.h">
+      <Filter>game\Context</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -298,5 +338,6 @@
     <None Include="resources\contexts\playerContext.json">
       <Filter>resources\contexts</Filter>
     </None>
+    <None Include="resources\contexts\soundsController.json" />
   </ItemGroup>
 </Project>

@@ -11,6 +11,10 @@ namespace Game::Context::Enemy
     struct Data
     {
 
+        void load() noexcept;
+        void reset() noexcept;
+        void merge(const Data& other) noexcept;
+
         int32_t numOfEnemiesPerRow{};
         int32_t numOfEnemiesCols{};
         float enemiesXStride{};
@@ -30,7 +34,7 @@ namespace Game::Context::Enemy
         float enemyWeaponCooldownTimeLeft{};
         Utils::RandomGenerator rand;
 
-        [[nodiscard]] static Data load(Dod::MemPool& pool, int32_t& header) noexcept;
+        Dod::MemPool memory;
 
     };
 

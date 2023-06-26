@@ -34,22 +34,19 @@ const Game::Context::Units::Shared& Game::ExecutionBlock::Enemies::getSharedLoca
 void Game::ExecutionBlock::Enemies::loadContext()
 {
 
-    int32_t header{ 0 };
-    this->memory.allocate(2048);
-
-    this->enemyContext = Game::Context::Enemy::Data::load(this->memory, header);
+    this->enemyContext.load();
 
 }
 
 void Game::ExecutionBlock::Enemies::initiate()
 {
 
-    this->renderContext.init();
+    this->renderContext.load();
     Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
 
-    this->bulletsToSpawnContext.init();
+    this->bulletsToSpawnContext.load();
 
-    this->unitsContext.init();
+    this->unitsContext.load();
     this->unitsContext.width = 15.f;
     this->unitsContext.height = 20.f;
 

@@ -132,14 +132,14 @@ void Game::ExecutionBlock::EnemiesBullets::loadContext()
 void Game::ExecutionBlock::EnemiesBullets::initiate()
 {
 
-    this->renderContext.init();
+    this->renderContext.load();
     Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
 
-    this->soundsContext.init();
+    this->soundsContext.load();
 
-    this->obstaclesToHitContext.init();
+    this->obstaclesToHitContext.load();
 
-    this->playerToHit.init();
+    this->playerToHit.load();
 
 }
 

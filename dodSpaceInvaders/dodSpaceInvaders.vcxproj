@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -148,6 +148,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\contextUtils.cpp" />
+    <ClCompile Include="src\game\Application.cpp" />
+    <ClCompile Include="src\game\BulletsToSpawn.cpp" />
+    <ClCompile Include="src\game\Common.cpp" />
+    <ClCompile Include="src\game\EnemyBullets.cpp" />
     <ClCompile Include="src\game\BulletsCore.cpp" />
     <ClCompile Include="src\game\BulletsGameplay.cpp" />
     <ClCompile Include="src\game\CollisionCore.cpp" />
@@ -160,17 +164,26 @@
     <ClCompile Include="src\game\Inputs.cpp" />
     <ClCompile Include="src\game\MainExecution.cpp" />
     <ClCompile Include="src\game\ModelsExecutor.cpp" />
+    <ClCompile Include="src\game\ModelsToRender.cpp" />
+    <ClCompile Include="src\game\ObjectsToHit.cpp" />
+    <ClCompile Include="src\game\Obstacles.cpp" />
     <ClCompile Include="src\game\ObstaclesCore.cpp" />
     <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
+    <ClCompile Include="src\game\PlayerBullets.cpp" />
     <ClCompile Include="src\game\PlayerBulletsExecutor.cpp" />
     <ClCompile Include="src\game\PlayerContext.cpp" />
     <ClCompile Include="src\game\PlayerExecutor.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
+    <ClCompile Include="src\game\RenderCommands.cpp" />
     <ClCompile Include="src\game\Renderer.cpp" />
     <ClCompile Include="src\game\renderer\instantRenderer.cpp" />
     <ClCompile Include="src\game\RenderExecutor.cpp" />
+    <ClCompile Include="src\game\RenderInternal.cpp" />
+    <ClCompile Include="src\game\Scene.cpp" />
     <ClCompile Include="src\game\SceneRenderer.cpp" />
+    <ClCompile Include="src\game\SoundsControl.cpp" />
+    <ClCompile Include="src\game\SoundsController.cpp" />
     <ClCompile Include="src\game\SoundsExecutor.cpp" />
     <ClCompile Include="src\utils\randomGenerator.cpp" />
     <ClInclude Include="src\dod\Algorithms.h" />
@@ -183,12 +196,12 @@
     <ClCompile Include="src\game\main.cpp" />
     <ClInclude Include="src\dod\SharedContext.h" />
     <ClInclude Include="src\engine\contextUtils.h" />
-    <ClInclude Include="src\game\BulletsContext.h" />
+    <ClInclude Include="src\game\EnemyBullets.h" />
     <ClInclude Include="src\game\BulletsCore.h" />
     <ClInclude Include="src\game\BulletsGameplay.h" />
-    <ClInclude Include="src\game\BulletsToSpawnSContext.h" />
+    <ClInclude Include="src\game\BulletsToSpawn.h" />
     <ClInclude Include="src\game\CollisionCore.h" />
-    <ClInclude Include="src\game\CommonContext.h" />
+    <ClInclude Include="src\game\Common.h" />
     <ClInclude Include="src\game\EnemiesBulletsExecutor.h" />
     <ClInclude Include="src\game\EnemiesContext.h" />
     <ClInclude Include="src\game\EnemiesCore.h" />
@@ -198,27 +211,28 @@
     <ClInclude Include="src\game\Inputs.h" />
     <ClInclude Include="src\game\MainExecution.h" />
     <ClInclude Include="src\game\ModelsExecutor.h" />
-    <ClInclude Include="src\game\ModelsSharedContext.h" />
-    <ClInclude Include="src\game\ObjectsToHitSContext.h" />
-    <ClInclude Include="src\game\ObstaclesContext.h" />
+    <ClInclude Include="src\game\ModelsToRender.h" />
+    <ClInclude Include="src\game\ObjectsToHit.h" />
+    <ClInclude Include="src\game\Obstacles.h" />
     <ClInclude Include="src\game\ObstaclesCore.h" />
     <ClInclude Include="src\game\ObstaclesExecutor.h" />
     <ClInclude Include="src\game\ObstaclesGameplay.h" />
     <ClInclude Include="src\game\ObstaclesSContext.h" />
+    <ClInclude Include="src\game\PlayerBullets.h" />
     <ClInclude Include="src\game\PlayerBulletsExecutor.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
     <ClInclude Include="src\game\PlayerExecutor.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
-    <ClInclude Include="src\game\ApplicationSContext.h" />
-    <ClInclude Include="src\game\RenderContext.h" />
+    <ClInclude Include="src\game\Application.h" />
+    <ClInclude Include="src\game\RenderInternal.h" />
     <ClInclude Include="src\game\Renderer.h" />
     <ClInclude Include="src\game\renderer\instantRenderer.h" />
     <ClInclude Include="src\game\RenderExecutor.h" />
-    <ClInclude Include="src\game\RenderSharedContext.h" />
-    <ClInclude Include="src\game\SceneContext.h" />
+    <ClInclude Include="src\game\RenderCommnads.h" />
+    <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\game\SceneRenderer.h" />
     <ClInclude Include="src\game\SoundsExecutor.h" />
-    <ClInclude Include="src\game\SoundsSContext.h" />
+    <ClInclude Include="src\game\SoundsControl.h" />
     <ClInclude Include="src\game\UnitsSContext.h" />
     <ClInclude Include="src\utils\randomGenerator.h" />
   </ItemGroup>
@@ -237,6 +251,7 @@
     <None Include="resources\contexts\playerContext.json" />
     <None Include="resources\contexts\rendererContext.json" />
     <None Include="resources\contexts\sceneContext.json" />
+    <None Include="resources\contexts\soundsController.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

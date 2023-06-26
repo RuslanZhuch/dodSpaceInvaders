@@ -1,5 +1,7 @@
 #pragma once
 
+#include <dod/MemPool.h>
+
 namespace Dod::SharedContext
 {
 
@@ -9,10 +11,11 @@ namespace Dod::SharedContext
 	public:
 		Controller()
 		{
-			this->context.init();
+			this->context.load();
 		}
 	public:
 		Ctx context;
+		Dod::MemPool memory;
 	};
 
 	template <typename Ctx>

@@ -116,8 +116,8 @@ void Game::ExecutionBlock::Obstacles::loadContext()
 void Game::ExecutionBlock::Obstacles::initiate()
 {
 
-    this->renderContext.init();
-    this->obstaclesSContext.init();
+    this->renderContext.load();
+    this->obstaclesSContext.load();
 
     Game::Gameplay::Obstacles::create(
         this->obstaclesSContext.xCoords,

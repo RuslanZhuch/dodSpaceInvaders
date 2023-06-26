@@ -1,6 +1,6 @@
 {
-
-  "contextName": "enemiesContext",
+  "whoIAm": "Context",
+  "version": 1,
   "data": [
     {
       "type": "object",

@@ -13,7 +13,7 @@ void Game::ExecutionBlock::Models::loadContext()
 void Game::ExecutionBlock::Models::initiate()
 {
 
-    this->modelsContext.init();
+    this->modelsContext.load();
 
     this->createEnemyModel();
     this->createEnemyBulletModel();

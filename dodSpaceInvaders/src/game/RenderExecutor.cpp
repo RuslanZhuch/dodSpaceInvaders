@@ -94,7 +94,7 @@ void Game::ExecutionBlock::Render::loadContext()
 void Game::ExecutionBlock::Render::initiate()
 {
 
-    this->applicationContext.init();
+    this->applicationContext.load();
 
 	this->gameRenderer = std::make_unique<GameRenderer>(
         this->commonContext.width, 

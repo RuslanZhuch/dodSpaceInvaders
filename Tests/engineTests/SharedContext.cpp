@@ -2,6 +2,7 @@
 
 #include <dod/BufferUtils.h>
 #include <dod/SharedContext.h>
+#include <dod/MemPool.h>
 
 #include <array>
 
@@ -11,16 +12,23 @@ struct Context1
 	float data2{};
 
 	Dod::DBBuffer<int32_t> buffer1;
-	std::array<int32_t, 10> buffer1Memory{};
 
-	void init()
+	void load(Dod::MemPool& pool, int32_t& header)
 	{
 		this->data1 = 42.f;
 		this->data2 = 123.f;
 
-		this->buffer1Memory = std::to_array<int32_t>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-		Dod::BufferUtils::initFromArray(this->buffer1, this->buffer1Memory);
-		this->buffer1.numOfFilledEls = this->buffer1Memory.size() - 1;
+
+		Dod::BufferUtils::initFromMemory(this->buffer1, Dod::MemUtils::stackAquire(pool, 10 * sizeof(int32_t), header));
+		Dod::BufferUtils::populate(this->buffer1, 2, true);
+		Dod::BufferUtils::populate(this->buffer1, 3, true);
+		Dod::BufferUtils::populate(this->buffer1, 4, true);
+		Dod::BufferUtils::populate(this->buffer1, 5, true);
+		Dod::BufferUtils::populate(this->buffer1, 6, true);
+		Dod::BufferUtils::populate(this->buffer1, 7, true);
+		Dod::BufferUtils::populate(this->buffer1, 8, true);
+		Dod::BufferUtils::populate(this->buffer1, 9, true);
+		Dod::BufferUtils::populate(this->buffer1, 10, true);
 	}
 
 	void reset()
@@ -32,6 +40,15 @@ struct Context1
 	{
 		Dod::BufferUtils::append(this->buffer1, Dod::BufferUtils::createImFromBuffer(other.buffer1));
 	}
+
+//	[[nodiscard]] constexpr auto getNeedTotalBytes() noexcept
+//	{
+//		return
+//			sizeof(this->data1) +
+//			sizeof(this->data2) +
+//			sizeof(decltype(this->buffer1)::type_t) * 10;
+//	}
+
 };
 
 TEST(SharedContext, readData)
@@ -68,25 +85,29 @@ TEST(SharedContext, flushData)
 TEST(SharedContext, mergeData)
 {
 
+	Dod::MemPool memory;
+	memory.allocate(1024);
+	int32_t header{};
+
 	Dod::SharedContext::Controller<Context1> controller;
 	Dod::SharedContext::flush(&controller);
 	for (int32_t elId{}; elId < 1; ++elId)
 		Dod::BufferUtils::populate(controller.context.buffer1, elId + 1, true);
 
 	Context1 localContext1;
-	localContext1.init();
+	localContext1.load(memory, header);
 	localContext1.reset();
 	for (int32_t elId{}; elId < 3; ++elId)
 		Dod::BufferUtils::populate(localContext1.buffer1, elId + 2, true);
 
 	Context1 localContext2;
-	localContext2.init();
+	localContext2.load(memory, header);
 	localContext2.reset();
 	for (int32_t elId{}; elId < 4; ++elId)
 		Dod::BufferUtils::populate(localContext2.buffer1, elId + 5, true);
 
 	Context1 localContext3;
-	localContext3.init();
+	localContext3.load(memory, header);
 	localContext3.reset();
 
 	Dod::SharedContext::merge(&controller, localContext1);

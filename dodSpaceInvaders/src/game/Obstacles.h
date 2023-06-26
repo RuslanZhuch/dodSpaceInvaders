@@ -1,12 +1,18 @@
 #pragma once
 
 #include <dod/Buffers.h>
+#include <dod/MemPool.h>
 
 namespace Game::Context::Obstacles
 {
 
-    struct Parameters
+    struct Data
     {
+
+        void load() noexcept;
+        void reset() noexcept;
+        void merge(const Data& other) noexcept;
+
         float obstaclesStride{ };
         int32_t obstaclesPerRow{ };
         int32_t obstaclesPerCol{ };
@@ -15,10 +21,8 @@ namespace Game::Context::Obstacles
         int32_t obstaclesClusterY{ };
         int32_t initialLifes{ };
         float width{};
-    };
 
-    struct UnitsContext
-    {
+        Dod::MemPool memory;
         Dod::DBBuffer<int32_t> lifes;
         Dod::DBBuffer<int32_t> toRemove;
     };

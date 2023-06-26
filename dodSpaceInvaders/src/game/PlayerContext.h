@@ -9,7 +9,9 @@ namespace Game::Context::Player
     struct Data
     {
 
-        [[nodiscard]] static Data load(Dod::MemPool& pool, int32_t& header) noexcept;
+        void load() noexcept;
+        void reset() noexcept;
+        void merge(const Data& other) noexcept;
 
         float width{};
         float height{};

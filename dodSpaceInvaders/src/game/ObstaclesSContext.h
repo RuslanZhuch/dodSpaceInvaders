@@ -9,7 +9,7 @@ namespace Game::Context::Obstacles
 	struct Shared
 	{
 
-		void init()
+		void load()
 		{
 			this->memory.allocate(1024 * 10);
 			int32_t header{};
@@ -28,16 +28,12 @@ namespace Game::Context::Obstacles
 		{
 			Dod::BufferUtils::append(this->xCoords, Dod::BufferUtils::createImFromBuffer(other.xCoords));
 			Dod::BufferUtils::append(this->yCoords, Dod::BufferUtils::createImFromBuffer(other.yCoords));
-			this->width = other.width;
-			this->height = other.height;
 		}
 
 		Dod::MemPool memory;
 
 		Dod::DBBuffer<float> xCoords;
 		Dod::DBBuffer<float> yCoords;
-		float width{};
-		float height{};
 
 	};
 

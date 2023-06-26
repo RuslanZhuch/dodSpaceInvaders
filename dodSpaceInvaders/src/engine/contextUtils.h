@@ -36,36 +36,35 @@ namespace Engine::ContextUtils
 	}
 
     template <typename T>
-    [[nodiscard]] static void loadBuffer(
-        Dod::DBBuffer<T>& dest,
-        rapidjson::GenericArray<true, rapidjson::Value> src, 
-        size_t id, 
-        Dod::MemPool& pool, 
-        int32_t& header
+    [[nodiscard]] static int32_t getBufferCapacityBytes(
+        rapidjson::GenericArray<true, rapidjson::Value> buffer,
+        size_t id
     ) noexcept
     {
 
-        /*
-        * 
-        const auto toRemove{ enemiesUnitsContextObj["toRemove"].GetObject() };
-        const auto toRemoveType{ toRemove["type"].GetString() };
-        const auto toRemoveDataType{ toRemove["dataType"].GetString() };
-        const auto toRemoveCapacity{ toRemove["capacity"].GetInt() };
-        const auto toRemoveCapacityBytes{ toRemoveCapacity * sizeof(int32_t) };
-        Dod::BufferUtils::initFromMemory(data.toRemove, Dod::MemUtils::stackAquire(pool, toRemoveCapacityBytes, header));
-        
-        */
-
         using type_t = T;
 
-        if (!src[id].IsObject())
-            return;
+        if (!buffer[id].IsObject())
+            return {};
 
-        const auto& dataObject{ src[id].GetObject() };
+        const auto& dataObject{ buffer[id].GetObject() };
 
         constexpr auto dataTypeSize{ sizeof(type_t) };
         const auto capacity{ dataObject["capacity"].GetInt() };
         const auto capacityBytes{ capacity * dataTypeSize };
+
+        return capacityBytes;
+
+    }
+
+    template <typename T>
+    [[nodiscard]] static void loadBuffer(
+        Dod::DBBuffer<T>& dest,
+        int32_t capacityBytes,
+        Dod::MemPool& pool, 
+        int32_t& header
+    ) noexcept
+    {
 
         Dod::BufferUtils::initFromMemory(dest, Dod::MemUtils::stackAquire(pool, capacityBytes, header));
 

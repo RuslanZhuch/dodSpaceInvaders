@@ -1,44 +1,68 @@
 {
 
-  "contextName": "obstaclesContext",
-  "data": {
-    "obstaclesParameters": {
-      "stride": 30,
-      "perRow": 5,
-      "perCol": 2,
-      "numOfClusters": 3,
-      "clustersTotalAreaWidth": 700,
-      "clusterY": 650,
-      "initialLifes": 1,
-      "width": 800
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "stride",
+      "initial": 30
     },
-    "obstaclesUnitsContext": {
-      "xCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 31
-      },
-      "yCoords": {
-        "type": "dbbuffer",
-        "dataType": "float",
-        "capacity": 31
-      },
-      "lifes": {
-        "type": "dbbuffer",
-        "dataType": "int32_t",
-        "capacity": 31
-      },
-      "toHit": {
-        "type": "dbbuffer",
-        "dataType": "int32_t",
-        "capacity": 31
-      },
-      "toRemove": {
-        "type": "dbbuffer",
-        "dataType": "int32_t",
-        "capacity": 31
-      }
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "perRow",
+      "initial": 5
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "perCol",
+      "initial": 2
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "numOfClusters",
+      "initial": 3
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "clustersTotalAreaWidth",
+      "initial": 700
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "clusterY",
+      "initial": 650
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "initialLifes",
+      "initial": 1
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "width",
+      "initial": 800
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "lifes",
+      "initial": 31
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "int32_t",
+      "name": "toRemove",
+      "capacity": 31
     }
-  }
- 
+  ]
+  
 }
