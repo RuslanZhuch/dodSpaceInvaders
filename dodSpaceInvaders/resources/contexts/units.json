@@ -1,0 +1,37 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "dbbuffer",
+      "dataType": "float",
+      "name": "xCoords",
+      "capacity": 512
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "float",
+      "name": "yCoords",
+      "capacity": 512
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "float",
+      "name": "groupWidth",
+      "capacity": 512
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "float",
+      "name": "groupHeight",
+      "capacity": 512
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "int32_t",
+      "name": "elementsInGroup",
+      "capacity": 512
+    }
+  ]
+
+}

@@ -12,91 +12,17 @@
 
 void Game::ExecutionBlock::Render::loadContext()
 {
-    int32_t header{ 0 };
 
-    {
-        std::ifstream contextFile("resources/contexts/commonContext.json");
-        assert(contextFile.is_open());
-        const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
-
-        rapidjson::Document json;
-        json.Parse(fileRawData.c_str());
-        const auto root{ json.GetObject() };
-
-        for (const auto& element : root)
-        {
-            if (element.name == "contextName")
-            {
-                const auto contextName{ element.value.GetString() };
-                std::cout << "Loading context: " << contextName << "\n";
-            }
-            else if (element.name == "data")
-            {
-                for (const auto& dataElement : element.value.GetObject())
-                {
-                    if (dataElement.name == "applicationContext" && dataElement.value.IsObject())
-                    {
-                        const auto applicationContextObj{ dataElement.value.GetObject() };
-                        const auto totalMemoryBytes{ applicationContextObj["totalMemoryBytes"].GetInt() };
-                        this->memory.allocate(totalMemoryBytes);
-                        const auto windowWidth{ applicationContextObj["windowWidth"].GetInt() };
-                        this->commonContext.width = windowWidth;
-                        const auto windowHeight{ applicationContextObj["windowHeight"].GetInt() };
-                        this->commonContext.height = windowHeight;
-                        const auto title{ applicationContextObj["title"].GetString() };
-                        const auto titleSize{ applicationContextObj["title"].GetStringLength() };
-                        std::memcpy(this->commonContext.title.data(), title, std::min(this->commonContext.title.size(), static_cast<size_t>(titleSize)));
-                    }
-                }
-            }
-        }
-    }
-
-
-    {
-        std::ifstream contextFile("resources/contexts/rendererContext.json");
-        assert(contextFile.is_open());
-        const std::string fileRawData((std::istreambuf_iterator<char>(contextFile)), std::istreambuf_iterator<char>());
-
-        rapidjson::Document json;
-        json.Parse(fileRawData.c_str());
-        const auto root{ json.GetObject() };
-
-        for (const auto& element : root)
-        {
-            if (element.name == "contextName")
-            {
-                const auto contextName{ element.value.GetString() };
-                std::cout << "Loading context: " << contextName << "\n";
-            }
-            else if (element.name == "data")
-            {
-                for (const auto& dataElement : element.value.GetObject())
-                {
-                    if (dataElement.name == "renderBuffer" && dataElement.value.IsObject())
-                    {
-                        const auto renderBuffertObj{ dataElement.value.GetObject() };
-
-                        const auto idsToRender{ renderBuffertObj["idsToRender"].GetObject() };
-                        const auto idsToRenderType{ idsToRender["type"].GetString() };
-                        const auto idsToRenderDataType{ idsToRender["dataType"].GetString() };
-                        const auto idsToRenderCapacity{ idsToRender["capacity"].GetInt() };
-                        const auto idsToRenderCapacityBytes{ idsToRenderCapacity * sizeof(int32_t) };
-                        Dod::BufferUtils::initFromMemory(this->renderBufferContext.idsToRender, Dod::MemUtils::stackAquire(this->memory, idsToRenderCapacityBytes, header));
-                    }
-                }
-            }
-        }
-    }
+    this->commonContext.load();
+    this->applicationContext.load();
+    this->renderBufferContext.load();
 
 }
 
 void Game::ExecutionBlock::Render::initiate()
 {
 
-    this->applicationContext.load();
-
-	this->gameRenderer = std::make_unique<GameRenderer>(
+    this->renderBufferContext.gameRenderer = std::make_unique<GameRenderer>(
         this->commonContext.width, 
         this->commonContext.height, 
         this->commonContext.title.data()
@@ -109,7 +35,7 @@ void Game::ExecutionBlock::Render::update(float dt)
 
     sf::Event event;
 
-    auto& window{ this->gameRenderer->getWindow() };
+    auto& window{ this->renderBufferContext.gameRenderer->getWindow() };
     while (window.pollEvent(event))
     {
         Dod::BufferUtils::populate(this->applicationContext.commands, 1, event.type == sf::Event::Closed);

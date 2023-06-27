@@ -1,17 +1,13 @@
 #pragma once
 
 #include "PlayerContext.h"
-#include "BulletsContext.h"
-#include "ObstaclesContext.h"
-#include "CommonContext.h"
-#include "SceneContext.h"
 #include "UnitsSContext.h"
-#include "ObjectsToHitSContext.h"
+#include "ObjectsToHit.h"
 
 #include "GameRender.h"
-#include "SoundsSContext.h"
-#include "RenderSharedContext.h"
-#include "BulletsToSpawnSContext.h"
+#include "SoundsControl.h"
+#include "RenderCommnads.h"
+#include "BulletsToSpawn.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -28,25 +24,17 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        template<typename TContext>
-        [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
-
-        void setSharedContext(const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext) { this->toHitSContext = sContext; };
-    private:
-
-    private:
-        Dod::MemPool memory;
 
         Game::Context::Player::Data playerContext;
 
-        Context::Units::Shared unitContext;
+        Context::Units::Data unitContext;
 
-        Context::Sounds::Shared soundsContext;
-        Context::Render::Shared renderContext;
-        Context::BulletsToSpawn::Shared bulletsToSpawnContext;
+        Context::SoundsController::Data soundsContext;
+        Context::RenderCommands::Data renderContext;
+        Context::BulletsToSpawn::Data bulletsToSpawnContext;
 
-        const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* toHitSContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::ObjectsToHit::Data>* toHitSContext{ nullptr };
 
     };
 

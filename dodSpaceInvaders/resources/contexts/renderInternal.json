@@ -3,6 +3,12 @@
   "version": 1,
   "data": [
     {
+      "type": "object",
+      "dataType": "std::unique_ptr<GameRenderer>",
+      "name": "gameRenderer",
+      "initial": "None"
+    },
+    {
       "type": "dbbuffer",
       "dataType": "int32_t",
       "name": "idsToRender",

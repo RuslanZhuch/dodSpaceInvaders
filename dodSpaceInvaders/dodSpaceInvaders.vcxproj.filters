@@ -121,6 +121,18 @@
     <ClCompile Include="src\game\RenderInternal.cpp">
       <Filter>game\Context</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\UnitsSContext.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObstaclesCoordinates.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\ObstacleParameter.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\Sounds.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -247,7 +259,7 @@
     <ClInclude Include="src\game\ObjectsToHit.h">
       <Filter>game\Context</Filter>
     </ClInclude>
-    <ClInclude Include="src\game\ObstaclesSContext.h">
+    <ClInclude Include="src\game\ObstaclesCoordinates.h">
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\PlayerExecutor.h">
@@ -266,6 +278,12 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\game\PlayerBullets.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\ObstacleParameter.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Sounds.h">
       <Filter>game\Context</Filter>
     </ClInclude>
   </ItemGroup>

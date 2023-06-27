@@ -7,14 +7,14 @@ void Game::Context::RenderInternal::Data::load() noexcept
 {
 
     const auto doc{ Engine::ContextUtils::loadFileDataRoot("resources/contexts/renderInternal.json") };
-    const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 1) };
+    const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 2) };
 
     if (!inputDataOpt.has_value())
         return;
 
     const auto& loadingDataArray{ inputDataOpt.value() };
 
-    const auto idsToRenderCapacityBytes{ Engine::ContextUtils::getBufferCapacityBytes<int32_t>(loadingDataArray, 0) };
+    const auto idsToRenderCapacityBytes{ Engine::ContextUtils::getBufferCapacityBytes<int32_t>(loadingDataArray, 1) };
 
     int32_t needBytes{};
     needBytes += idsToRenderCapacityBytes;

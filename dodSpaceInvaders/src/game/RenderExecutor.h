@@ -1,19 +1,12 @@
 #pragma once
 
-#include "EnemiesContext.h"
-#include "PlayerContext.h"
-#include "BulletsContext.h"
-#include "ObstaclesContext.h"
-#include "CommonContext.h"
-#include "SceneContext.h"
-#include "ApplicationSContext.h"
+#include "Common.h"
+#include "Application.h"
 
-#include "GameRender.h"
-#include "ModelsSharedContext.h"
-#include "RenderSharedContext.h"
-#include "RenderContext.h"
+#include "ModelsToRender.h"
+#include "RenderInternal.h"
+#include "RenderCommnads.h"
 
-#include <dod/MemPool.h>
 #include <dod/SharedContext.h>
 
 #include <array>
@@ -31,24 +24,21 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::Models::Shared>* sContext) { this->sModelsContext = sContext; };
-        void setSharedContext(const Dod::SharedContext::Controller<Context::Render::Shared>* sContext) { this->sRenderContext = sContext; };
+        void setSharedContext(const Dod::SharedContext::Controller<Context::ModelsToRender::Data>* sContext) { this->sModelsContext = sContext; };
+        void setSharedContext(const Dod::SharedContext::Controller<Context::RenderCommands::Data>* sContext) { this->sRenderContext = sContext; };
         
         void flushSharedLocalContexts();
         [[nodiscard]] const auto& getApplicationInstanceContext() const { return this->applicationContext; }
     private:
 
     private:
-        Dod::MemPool memory;
-        Game::Context::Common::Parameters commonContext;
 
-        Game::Context::Application::Shared applicationContext;
-        Game::Context::Render::RenderBuffer renderBufferContext;
+        Game::Context::Common::Data commonContext;
+        Game::Context::Application::Data applicationContext;
+        Game::Context::RenderInternal::Data renderBufferContext;
 
-        std::unique_ptr<GameRenderer> gameRenderer;
-
-        const Dod::SharedContext::Controller<Context::Render::Shared>* sRenderContext{ nullptr };
-        const Dod::SharedContext::Controller<Context::Models::Shared>* sModelsContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::RenderCommands::Data>* sRenderContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::ModelsToRender::Data>* sModelsContext{ nullptr };
 
     };
 

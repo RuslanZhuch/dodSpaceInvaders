@@ -10,46 +10,26 @@
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 
-template <>
-const Game::Context::Sounds::Shared& Game::ExecutionBlock::Player::getSharedLocalContext<Game::Context::Sounds::Shared>()
-{
-    return this->soundsContext;
-}
-template <>
-const Game::Context::Render::Shared& Game::ExecutionBlock::Player::getSharedLocalContext<Game::Context::Render::Shared>()
-{
-    return this->renderContext;
-}
-template <>
-const Game::Context::BulletsToSpawn::Shared& Game::ExecutionBlock::Player::getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>()
-{
-    return this->bulletsToSpawnContext;
-}
-template <>
-const Game::Context::Units::Shared& Game::ExecutionBlock::Player::getSharedLocalContext<Game::Context::Units::Shared>()
-{
-    return this->unitContext;
-}
-
 void Game::ExecutionBlock::Player::loadContext()
 {
 
     this->playerContext.load();
-
-}
-
-void Game::ExecutionBlock::Player::initiate()
-{
 
     this->renderContext.load();
     this->bulletsToSpawnContext.load();
 
     this->unitContext.load();
 
+}
+
+void Game::ExecutionBlock::Player::initiate()
+{
+
     Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerContext.xCoord);
     Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerContext.yCoord);
-    this->unitContext.width = this->playerContext.width;
-    this->unitContext.height = this->playerContext.height;
+    Dod::BufferUtils::populate(this->unitContext.groupWidth, this->playerContext.width, true);
+    Dod::BufferUtils::populate(this->unitContext.groupHeight, this->playerContext.height, true);
+    Dod::BufferUtils::populate(this->unitContext.elementsInGroup, 1, true);
 
 }
 
@@ -79,7 +59,7 @@ void Game::ExecutionBlock::Player::update(float dt)
         dt
     );
 
-    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta, Context::Render::Shared::ModelMeta(4, 1), this->playerContext.lifes > 0);
+    Dod::BufferUtils::constructBack(this->renderContext.modelsMeta, Context::RenderCommands::Data::ModelMeta(4, 1), this->playerContext.lifes > 0);
 
     Dod::BufferUtils::constructBack(this->renderContext.xCoords, currX, this->playerContext.lifes > 0);
     Dod::BufferUtils::constructBack(this->renderContext.yCoords, currY, this->playerContext.lifes > 0);

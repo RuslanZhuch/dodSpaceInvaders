@@ -3,24 +3,20 @@
 #include <dod/BufferUtils.h>
 #include <dod/MemPool.h>
 
-namespace Game::Context::Units
+namespace Game::Context::ObstaclesCoordinates
 {
 
 	struct Data
 	{
 
-		void load();
-
-		void reset();
-
-		void merge(const Data& other);
+		void load() noexcept;
+		void reset() noexcept;
+		void merge(const Data& other) noexcept;
 
 		Dod::MemPool memory;
 
 		Dod::DBBuffer<float> xCoords;
 		Dod::DBBuffer<float> yCoords;
-		float width{};
-		float height{};
 
 	};
 

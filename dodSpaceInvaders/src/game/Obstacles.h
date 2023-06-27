@@ -20,7 +20,6 @@ namespace Game::Context::Obstacles
         int32_t obstaclesClustersTotalAreaWidth{ };
         int32_t obstaclesClusterY{ };
         int32_t initialLifes{ };
-        float width{};
 
         Dod::MemPool memory;
         Dod::DBBuffer<int32_t> lifes;

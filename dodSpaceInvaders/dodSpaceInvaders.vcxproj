@@ -166,7 +166,9 @@
     <ClCompile Include="src\game\ModelsExecutor.cpp" />
     <ClCompile Include="src\game\ModelsToRender.cpp" />
     <ClCompile Include="src\game\ObjectsToHit.cpp" />
+    <ClCompile Include="src\game\ObstacleParameter.cpp" />
     <ClCompile Include="src\game\Obstacles.cpp" />
+    <ClCompile Include="src\game\ObstaclesCoordinates.cpp" />
     <ClCompile Include="src\game\ObstaclesCore.cpp" />
     <ClCompile Include="src\game\ObstaclesExecutor.cpp" />
     <ClCompile Include="src\game\ObstaclesGameplay.cpp" />
@@ -182,9 +184,11 @@
     <ClCompile Include="src\game\RenderInternal.cpp" />
     <ClCompile Include="src\game\Scene.cpp" />
     <ClCompile Include="src\game\SceneRenderer.cpp" />
+    <ClCompile Include="src\game\Sounds.cpp" />
     <ClCompile Include="src\game\SoundsControl.cpp" />
     <ClCompile Include="src\game\SoundsController.cpp" />
     <ClCompile Include="src\game\SoundsExecutor.cpp" />
+    <ClCompile Include="src\game\UnitsSContext.cpp" />
     <ClCompile Include="src\utils\randomGenerator.cpp" />
     <ClInclude Include="src\dod\Algorithms.h" />
     <ClCompile Include="src\dod\MemPool.cpp" />
@@ -213,11 +217,12 @@
     <ClInclude Include="src\game\ModelsExecutor.h" />
     <ClInclude Include="src\game\ModelsToRender.h" />
     <ClInclude Include="src\game\ObjectsToHit.h" />
+    <ClInclude Include="src\game\ObstacleParameter.h" />
     <ClInclude Include="src\game\Obstacles.h" />
     <ClInclude Include="src\game\ObstaclesCore.h" />
     <ClInclude Include="src\game\ObstaclesExecutor.h" />
     <ClInclude Include="src\game\ObstaclesGameplay.h" />
-    <ClInclude Include="src\game\ObstaclesSContext.h" />
+    <ClInclude Include="src\game\ObstaclesCoordinates.h" />
     <ClInclude Include="src\game\PlayerBullets.h" />
     <ClInclude Include="src\game\PlayerBulletsExecutor.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
@@ -231,6 +236,7 @@
     <ClInclude Include="src\game\RenderCommnads.h" />
     <ClInclude Include="src\game\Scene.h" />
     <ClInclude Include="src\game\SceneRenderer.h" />
+    <ClInclude Include="src\game\Sounds.h" />
     <ClInclude Include="src\game\SoundsExecutor.h" />
     <ClInclude Include="src\game\SoundsControl.h" />
     <ClInclude Include="src\game\UnitsSContext.h" />
