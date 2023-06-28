@@ -6,6 +6,12 @@
 #include <Soloud/include/soloud.h>
 #include <Soloud/include/soloud_wav.h>
 
+#include <memory>
+
+#undef max
+#undef min
+#undef GetObject
+
 namespace Game::Context::Sounds
 {
 

@@ -5,6 +5,8 @@
 #include <dod/MemPool.h>
 #include <dod/BufferUtils.h>
 
+#include <array>
+
 namespace Game::Context::ModelsToRender
 {
 

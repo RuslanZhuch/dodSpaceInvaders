@@ -32,12 +32,12 @@ namespace Game::Context::Sounds
 
 	void Data::reset() noexcept
 	{
-		Dod::BufferUtils::flush(this->commands);
+		Dod::BufferUtils::flush(this->sounds);
 	}
 
 	void Data::merge(const Data& other) noexcept
 	{
-		Dod::BufferUtils::append(this->commands, Dod::BufferUtils::createImFromBuffer(other.commands));
+		Dod::BufferUtils::append(this->sounds, Dod::BufferUtils::createImFromBuffer(other.sounds));
 	}
 
 }

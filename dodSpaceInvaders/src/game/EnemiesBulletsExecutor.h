@@ -1,20 +1,19 @@
 #pragma once
 
-#include "EnemiesContext.h"
-#include "PlayerContext.h"
-#include "BulletsContext.h"
-#include "ObstaclesContext.h"
-#include "CommonContext.h"
-#include "SceneContext.h"
+#include "EnemyBullets.h"
+#include "Scene.h"
 #include "UnitsSContext.h"
 
 #include "GameRender.h"
-#include "SoundsSContext.h"
-#include "RenderSharedContext.h"
-#include "BulletsToSpawnSContext.h"
+#include "SoundsControl.h"
+#include "RenderCommnads.h"
 #include "EnemiesContext.h"
-#include "ObjectsToHitSContext.h"
-#include "ObstaclesSContext.h"
+#include "ObjectsToHit.h"
+#include "BulletsToSpawn.h"
+#include "ObstacleParameter.h"
+#include "ObstaclesCoordinates.h"
+#include "Obstacles.h"
+#include "PlayerDimentions.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -31,33 +30,24 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        template<typename TContext>
-        [[nodiscard]] const TContext& getSharedLocalContext();
-
-        [[nodiscard]] const auto& getPlayerToHitInstanceContext() { return this->playerToHit; };
         void flushSharedLocalContexts();
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* sContext) { this->bulletsSContext = sContext; };
-        void setSharedContext(const Dod::SharedContext::Controller<Context::Obstacles::Shared>* sContext) { this->obstaclesSContext = sContext; };
-        void setSharedContext(const Dod::SharedContext::Controller<Context::Units::Shared>* sContext) { this->playerSContext = sContext; };
+        Game::Context::Scene::Data sceneParameters;
+        Game::Context::EnemyBullets::Data enemyBulletsParameters;
+//        Game::Context::Bullets::UnitsContext enemyBulletsContext;
 
-    private:
+        Context::SoundsController::Data soundsContext;
+        Context::RenderCommands::Data renderContext;
+        Context::ObjectsToHit::Data obstaclesToHitContext;
+        Context::ObjectsToHit::Data bulletsToRemove;
+        Context::ObjectsToHit::Data playerToHit;
+        Context::ObstacleParameters::Data obstacleParameters;
+        Context::PlayerDimentions::Data playerDimentions;
 
-    private:
-        Dod::MemPool memory;
-
-        Game::Context::Scene::Parameters sceneParameters;
-        Game::Context::Bullets::Parameters enemyBulletsParameters;
-        Game::Context::Bullets::UnitsContext enemyBulletsContext;
-
-        Context::Sounds::Shared soundsContext;
-        Context::Render::Shared renderContext;
-        Context::ObjectsToHit::Shared obstaclesToHitContext;
-        Context::ObjectsToHit::Shared playerToHit;
-
-        const Dod::SharedContext::Controller<Context::BulletsToSpawn::Shared>* bulletsSContext{ nullptr };
-        const Dod::SharedContext::Controller<Context::Obstacles::Shared>* obstaclesSContext{ nullptr };
-        const Dod::SharedContext::Controller<Context::Units::Shared>* playerSContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::BulletsToSpawn::Data>* bulletsSContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::Obstacles::Data>* obstaclesSContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::ObstaclesCoordinates::Data>* obstaclesCoordinates{ nullptr };
+        const Dod::SharedContext::Controller<Context::Units::Data>* playerSContext{ nullptr };
     };
 
 };

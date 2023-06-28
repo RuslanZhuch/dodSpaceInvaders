@@ -24,14 +24,7 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::ModelsToRender::Data>* sContext) { this->sModelsContext = sContext; };
-        void setSharedContext(const Dod::SharedContext::Controller<Context::RenderCommands::Data>* sContext) { this->sRenderContext = sContext; };
-        
         void flushSharedLocalContexts();
-        [[nodiscard]] const auto& getApplicationInstanceContext() const { return this->applicationContext; }
-    private:
-
-    private:
 
         Game::Context::Common::Data commonContext;
         Game::Context::Application::Data applicationContext;

@@ -1,19 +1,15 @@
 #pragma once
 
-#include "EnemiesContext.h"
-#include "PlayerContext.h"
-#include "BulletsContext.h"
-#include "ObstaclesContext.h"
-#include "CommonContext.h"
-#include "SceneContext.h"
-#include "ObjectsToHitSContext.h"
-#include "ObstaclesSContext.h"
+#include "Obstacles.h"
+#include "ObstacleParameter.h"
 
 #include "GameRender.h"
-#include "SoundsSContext.h"
-#include "RenderSharedContext.h"
+#include "SoundsControl.h"
+#include "RenderCommnads.h"
 #include "EnemiesContext.h"
-#include "BulletsToSpawnSContext.h"
+#include "ObjectsToHit.h"
+#include "UnitsSContext.h"
+#include "ObstaclesCoordinates.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -30,25 +26,20 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        template<typename TContext>
-        [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext) { this->sContext = sContext; };
-
-    private:
-
-    private:
         Dod::MemPool memory;
 
-        Game::Context::Obstacles::Parameters obstaclesParameters;
-        Game::Context::Obstacles::UnitsContext obstaclesContext;
+        Game::Context::Obstacles::Data obstaclesParameters;
+        Game::Context::ObstacleParameters::Data obstaclesDimentionParameters;
+        Game::Context::ObstaclesCoordinates::Data obstaclesCoordinates;
+        Game::Context::ObjectsToHit::Data obstaclesToRemove;
 
-        Context::Sounds::Shared soundsContext;
-        Context::Render::Shared renderContext;
-        Context::Obstacles::Shared obstaclesSContext;
+        Context::SoundsController::Data soundsContext;
+        Context::RenderCommands::Data renderContext;
+//        Context::Obstacles::Shared obstaclesSContext;
 
-        const Dod::SharedContext::Controller<Context::ObjectsToHit::Shared>* sContext{ nullptr };
+        const Dod::SharedContext::Controller<Context::ObjectsToHit::Data>* obstaclesToHit{ nullptr };
     };
 
 };

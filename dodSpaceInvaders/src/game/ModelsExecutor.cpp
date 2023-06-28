@@ -1,19 +1,12 @@
 #include "ModelsExecutor.h"
 
-template <>
-const Game::Context::Models::Shared& Game::ExecutionBlock::Models::getSharedLocalContext<Game::Context::Models::Shared>()
-{
-    return this->modelsContext;
-}
-
 void Game::ExecutionBlock::Models::loadContext()
 {
+    this->modelsContext.load();
 }
 
 void Game::ExecutionBlock::Models::initiate()
 {
-
-    this->modelsContext.load();
 
     this->createEnemyModel();
     this->createEnemyBulletModel();

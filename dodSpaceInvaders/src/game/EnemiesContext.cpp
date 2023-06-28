@@ -13,7 +13,7 @@ void Game::Context::Enemy::Data::load() noexcept
 {
 
     const auto doc{ Engine::ContextUtils::loadFileDataRoot("resources/contexts/enemiesContext.json") };
-    const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 13) };
+    const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 11) };
 
     if (!inputDataOpt.has_value())
         return;
@@ -24,16 +24,14 @@ void Game::Context::Enemy::Data::load() noexcept
     Engine::ContextUtils::loadVariable(this->numOfEnemiesCols, loadingDataArray, 1);
     Engine::ContextUtils::loadVariable(this->enemiesXStride, loadingDataArray, 2);
     Engine::ContextUtils::loadVariable(this->enemiesYStride, loadingDataArray, 3);
-    Engine::ContextUtils::loadVariable(this->width, loadingDataArray, 4);
-    Engine::ContextUtils::loadVariable(this->height, loadingDataArray, 5);
-    Engine::ContextUtils::loadVariable(this->weaponCooldownTime, loadingDataArray, 6);
-    Engine::ContextUtils::loadVariable(this->batchCoordX, loadingDataArray, 7);
-    Engine::ContextUtils::loadVariable(this->batchCoordY, loadingDataArray, 8);
-    Engine::ContextUtils::loadVariable(this->direction, loadingDataArray, 9);
-    Engine::ContextUtils::loadVariable(this->enemyWeaponCooldownTimeLeft, loadingDataArray, 10);
-    Engine::ContextUtils::loadVariable(this->weaponCooldownTime, loadingDataArray, 11);
+    Engine::ContextUtils::loadVariable(this->weaponCooldownTime, loadingDataArray, 4);
+    Engine::ContextUtils::loadVariable(this->batchCoordX, loadingDataArray, 5);
+    Engine::ContextUtils::loadVariable(this->batchCoordY, loadingDataArray, 6);
+    Engine::ContextUtils::loadVariable(this->direction, loadingDataArray, 7);
+    Engine::ContextUtils::loadVariable(this->enemyWeaponCooldownTimeLeft, loadingDataArray, 8);
+    Engine::ContextUtils::loadVariable(this->weaponCooldownTime, loadingDataArray, 9);
 
-    const auto toRemoveCapacityBytes{ Engine::ContextUtils::getBufferCapacityBytes<int32_t>(loadingDataArray, 12) };
+    const auto toRemoveCapacityBytes{ Engine::ContextUtils::getBufferCapacityBytes<int32_t>(loadingDataArray, 10) };
 
     int32_t needBytes{};
     needBytes += toRemoveCapacityBytes;

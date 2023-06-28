@@ -5,7 +5,7 @@
 namespace Game::Context::RenderCommands
 {
 
-	void Data::load()
+	void Data::load() noexcept
 	{
 
 		const auto doc{ Engine::ContextUtils::loadFileDataRoot("resources/contexts/renderCommands.json") };
@@ -34,14 +34,14 @@ namespace Game::Context::RenderCommands
 
 	}
 
-	void Data::reset()
+	void Data::reset() noexcept
 	{
 		Dod::BufferUtils::flush(this->xCoords);
 		Dod::BufferUtils::flush(this->yCoords);
 		Dod::BufferUtils::flush(this->modelsMeta);
 	}
 
-	void Data::merge(const Data& other)
+	void Data::merge(const Data& other) noexcept
 	{
 		Dod::BufferUtils::append(this->xCoords, Dod::BufferUtils::createImFromBuffer(other.xCoords));
 		Dod::BufferUtils::append(this->yCoords, Dod::BufferUtils::createImFromBuffer(other.yCoords));

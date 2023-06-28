@@ -3,7 +3,7 @@
 #include <dod/Buffers.h>
 #include <dod/MemPool.h>
 
-namespace Game::Context::Player
+namespace Game::Context::EnemyDimentions
 {
 
     struct Data
@@ -13,13 +13,8 @@ namespace Game::Context::Player
         void reset() noexcept;
         void merge(const Data& other) noexcept;
 
-        float xCoord{};
-        float yCoord{};
-        int32_t lifes{};
-        uint32_t inputs{};
-        uint32_t prevInputs{};
-        float move{};
-        float fire{};
+        float width{};
+        float height{};
 
     };
 

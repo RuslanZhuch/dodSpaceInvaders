@@ -16,6 +16,7 @@
 #include "ObstacleParameter.h"
 #include "UnitsSContext.h"
 #include "ObjectsToHit.h"
+#include "EnemyDimentions.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -44,6 +45,7 @@ namespace Game::ExecutionBlock
         Context::ObjectsToHit::Data enemiesToHitContext;
         Context::ObstacleParameters::Data obstacleParameters;
         Context::ObjectsToHit::Data playerBulletsToRemove;
+        Context::EnemyDimentions::Data enemyDimentions;
 
         const Dod::SharedContext::Controller<Context::BulletsToSpawn::Data>* bulletsSContext{ nullptr };
         const Dod::SharedContext::Controller<Context::Obstacles::Data>* obstaclesSContext{ nullptr };

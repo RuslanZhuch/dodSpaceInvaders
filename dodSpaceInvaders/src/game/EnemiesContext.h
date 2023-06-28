@@ -19,8 +19,6 @@ namespace Game::Context::Enemy
         int32_t numOfEnemiesCols{};
         float enemiesXStride{};
         float enemiesYStride{};
-        float width{};
-        float height{};
         float weaponCooldownTime{};
 
         float batchTargetX{};

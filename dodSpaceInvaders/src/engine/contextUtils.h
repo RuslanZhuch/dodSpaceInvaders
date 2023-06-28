@@ -32,7 +32,7 @@ namespace Engine::ContextUtils
             dest = dataObject["initial"].GetUint();
         else if constexpr (std::is_same_v<type_t, float>)
             dest = dataObject["initial"].GetFloat();
-
+        
 	}
 
     template <typename T>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dod/MemPool.h>
+#include <dod/Buffers.h>
 
 namespace Game::Context::SoundsController
 {

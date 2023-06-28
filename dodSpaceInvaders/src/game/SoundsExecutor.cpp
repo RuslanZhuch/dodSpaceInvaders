@@ -5,6 +5,8 @@
 #include <Soloud/include/soloud.h>
 #include <Soloud/include/soloud_wav.h>
 
+#include <iostream>
+
 void Game::ExecutionBlock::Sounds::loadContext()
 {
     this->soundEngine.load();
@@ -30,6 +32,7 @@ void Game::ExecutionBlock::Sounds::update(float dt)
 
     const auto soundIdsToPlay{ Dod::SharedContext::get(this->sContext).soundIdsToPlay };
     for (int32_t sfxId{}; sfxId < Dod::BufferUtils::getNumFilledElements(soundIdsToPlay); ++sfxId) {
+        std::cout << "Play sound id " << Dod::BufferUtils::get(soundIdsToPlay, sfxId) << "\n";
         this->soundEngine.soundsCore->play(Dod::BufferUtils::get(this->soundEngine.sounds, Dod::BufferUtils::get(soundIdsToPlay, sfxId)));
     }
 

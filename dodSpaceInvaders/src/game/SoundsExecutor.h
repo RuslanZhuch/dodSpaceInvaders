@@ -20,11 +20,6 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        void setSharedContext(const Dod::SharedContext::Controller<Context::SoundsController::Data>* sContext) { this->sContext = sContext; };
-
-    private:
-
-    private:
         Dod::MemPool memory;
 
         Context::Sounds::Data soundEngine;

@@ -10,45 +10,24 @@
 #include <rapidjson/document.h>
 #include <rapidjson/reader.h>
 
-template <>
-const Game::Context::Sounds::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::Sounds::Shared>()
-{
-    return this->soundsContext;
-}
-template <>
-const Game::Context::Render::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::Render::Shared>()
-{
-    return this->renderContext;
-}
-template <>
-const Game::Context::BulletsToSpawn::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::BulletsToSpawn::Shared>()
-{
-    return this->bulletsToSpawnContext;
-}
-template <>
-const Game::Context::Units::Shared& Game::ExecutionBlock::Enemies::getSharedLocalContext<Game::Context::Units::Shared>()
-{
-    return this->unitsContext;
-}
-
 void Game::ExecutionBlock::Enemies::loadContext()
 {
 
     this->enemyContext.load();
+    this->renderContext.load();
+    this->unitsContext.load();
+    this->bulletsToSpawnContext.load();
 
 }
 
 void Game::ExecutionBlock::Enemies::initiate()
 {
 
-    this->renderContext.load();
     Dod::BufferUtils::constructBack(this->renderContext.modelsMeta);
 
-    this->bulletsToSpawnContext.load();
 
-    this->unitsContext.load();
-    this->unitsContext.width = 15.f;
-    this->unitsContext.height = 20.f;
+//    this->unitsContext.width = 15.f;
+//    this->unitsContext.height = 20.f;
 
     Game::Gameplay::Enemies::generateEnemies(
         this->enemyContext.numOfEnemiesPerRow,

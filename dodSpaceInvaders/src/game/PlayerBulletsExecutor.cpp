@@ -21,6 +21,7 @@ void Game::ExecutionBlock::PlayerBullets::loadContext()
     this->obstacleParameters.load();
     this->enemiesToHitContext.load();
     this->playerBulletsToRemove.load();
+    this->enemyDimentions.load();
 
     this->sceneParameters.load();
     this->playerBulletsContext.load();
@@ -70,6 +71,10 @@ void Game::ExecutionBlock::PlayerBullets::update(float dt)
         obstaclesWidth,
         obstaclesHeight
     );
+    for (int32_t id{}; id < Dod::BufferUtils::getNumFilledElements(this->obstaclesToHitContext.objectsToHit); ++id)
+    {
+        std::cout << "Obstacle to remove id " << Dod::BufferUtils::get(this->obstaclesToHitContext.objectsToHit, id) << "\n";
+    }
 
     Game::Core::Collision::pointsPlaneIntersection(
         this->playerBulletsToRemove.objectsToHit,
@@ -80,31 +85,17 @@ void Game::ExecutionBlock::PlayerBullets::update(float dt)
 
     const auto enemiesX{ Dod::SharedContext::get(this->enemiesSContext).xCoords };
     const auto enemiesY{ Dod::SharedContext::get(this->enemiesSContext).yCoords };
-    const auto enemyWidths{ Dod::SharedContext::get(this->enemiesSContext).groupWidth };
-    const auto enemyHeights{ Dod::SharedContext::get(this->enemiesSContext).groupHeight };
-    const auto enemyGroupsLen{ Dod::SharedContext::get(this->enemiesSContext).elementsInGroup };
 
-
-    for (int32_t absId{}, groupId{}; groupId < Dod::BufferUtils::getNumFilledElements(enemyGroupsLen); ++groupId)
-    {
-        const auto width{ Dod::BufferUtils::get(enemyWidths, groupId) };
-        const auto height{ Dod::BufferUtils::get(enemyHeights, groupId) };
-        const auto elementsInGroup{ Dod::BufferUtils::get(enemyGroupsLen, groupId) };
-        int32_t elementsLeft{ elementsInGroup };
-        while (elementsLeft-- > 0)
-        {
-            Game::Gameplay::Bullets::collisionUpdate(
-                this->enemiesToHitContext.objectsToHit,
-                this->playerBulletsToRemove.objectsToHit,
-                Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
-                Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
-                Dod::BufferUtils::createImFromBuffer(enemiesX),
-                Dod::BufferUtils::createImFromBuffer(enemiesY),
-                width,
-                height
-            );
-        }
-    }
+    Game::Gameplay::Bullets::collisionUpdate(
+        this->enemiesToHitContext.objectsToHit,
+        this->playerBulletsToRemove.objectsToHit,
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.xCoords),
+        Dod::BufferUtils::createImFromBuffer(this->renderContext.yCoords),
+        Dod::BufferUtils::createImFromBuffer(enemiesX),
+        Dod::BufferUtils::createImFromBuffer(enemiesY),
+        this->enemyDimentions.width,
+        this->enemyDimentions.height
+    );
 
     Game::Core::Bullets::updateLifetime(
         this->playerBulletsToRemove.objectsToHit,

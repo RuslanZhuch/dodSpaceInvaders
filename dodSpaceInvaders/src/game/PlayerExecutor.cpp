@@ -27,8 +27,6 @@ void Game::ExecutionBlock::Player::initiate()
 
     Dod::BufferUtils::constructBack(this->unitContext.xCoords, this->playerContext.xCoord);
     Dod::BufferUtils::constructBack(this->unitContext.yCoords, this->playerContext.yCoord);
-    Dod::BufferUtils::populate(this->unitContext.groupWidth, this->playerContext.width, true);
-    Dod::BufferUtils::populate(this->unitContext.groupHeight, this->playerContext.height, true);
     Dod::BufferUtils::populate(this->unitContext.elementsInGroup, 1, true);
 
 }

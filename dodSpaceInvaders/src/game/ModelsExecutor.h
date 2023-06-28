@@ -1,14 +1,7 @@
 #pragma once
 
-#include "EnemiesContext.h"
-#include "PlayerContext.h"
-#include "BulletsContext.h"
-#include "ObstaclesContext.h"
-#include "CommonContext.h"
-#include "SceneContext.h"
-
 #include "GameRender.h"
-#include "ModelsSharedContext.h"
+#include "ModelsToRender.h"
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -28,8 +21,6 @@ namespace Game::ExecutionBlock
         void initiate();
         void update(float dt);
 
-        template<typename TContext>
-        [[nodiscard]] const TContext& getSharedLocalContext();
         void flushSharedLocalContexts();
     private:
         void createEnemyModel();
@@ -37,10 +28,8 @@ namespace Game::ExecutionBlock
         void createObstacleModel();
         void createPlayerModel();
 
-    private:
-        Dod::MemPool memory;
-
-        Context::Models::Shared modelsContext;
+    public:
+        Context::ModelsToRender::Data modelsContext;
 
     };
 

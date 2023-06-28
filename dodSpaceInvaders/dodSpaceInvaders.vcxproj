@@ -160,9 +160,9 @@
     <ClCompile Include="src\game\EnemiesCore.cpp" />
     <ClCompile Include="src\game\EnemiesExecution.cpp" />
     <ClCompile Include="src\game\EnemiesGameplay.cpp" />
+    <ClCompile Include="src\game\EnemyDimentions.cpp" />
     <ClCompile Include="src\game\GameRender.cpp" />
     <ClCompile Include="src\game\Inputs.cpp" />
-    <ClCompile Include="src\game\MainExecution.cpp" />
     <ClCompile Include="src\game\ModelsExecutor.cpp" />
     <ClCompile Include="src\game\ModelsToRender.cpp" />
     <ClCompile Include="src\game\ObjectsToHit.cpp" />
@@ -175,6 +175,7 @@
     <ClCompile Include="src\game\PlayerBullets.cpp" />
     <ClCompile Include="src\game\PlayerBulletsExecutor.cpp" />
     <ClCompile Include="src\game\PlayerContext.cpp" />
+    <ClCompile Include="src\game\PlayerDimentions.cpp" />
     <ClCompile Include="src\game\PlayerExecutor.cpp" />
     <ClCompile Include="src\game\PlayerGameplay.cpp" />
     <ClCompile Include="src\game\RenderCommands.cpp" />
@@ -186,7 +187,6 @@
     <ClCompile Include="src\game\SceneRenderer.cpp" />
     <ClCompile Include="src\game\Sounds.cpp" />
     <ClCompile Include="src\game\SoundsControl.cpp" />
-    <ClCompile Include="src\game\SoundsController.cpp" />
     <ClCompile Include="src\game\SoundsExecutor.cpp" />
     <ClCompile Include="src\game\UnitsSContext.cpp" />
     <ClCompile Include="src\utils\randomGenerator.cpp" />
@@ -211,9 +211,9 @@
     <ClInclude Include="src\game\EnemiesCore.h" />
     <ClInclude Include="src\game\EnemiesExecution.h" />
     <ClInclude Include="src\game\EnemiesGameplay.h" />
+    <ClInclude Include="src\game\EnemyDimentions.h" />
     <ClInclude Include="src\game\GameRender.h" />
     <ClInclude Include="src\game\Inputs.h" />
-    <ClInclude Include="src\game\MainExecution.h" />
     <ClInclude Include="src\game\ModelsExecutor.h" />
     <ClInclude Include="src\game\ModelsToRender.h" />
     <ClInclude Include="src\game\ObjectsToHit.h" />
@@ -226,6 +226,7 @@
     <ClInclude Include="src\game\PlayerBullets.h" />
     <ClInclude Include="src\game\PlayerBulletsExecutor.h" />
     <ClInclude Include="src\game\PlayerContext.h" />
+    <ClInclude Include="src\game\PlayerDimentions.h" />
     <ClInclude Include="src\game\PlayerExecutor.h" />
     <ClInclude Include="src\game\PlayerGameplay.h" />
     <ClInclude Include="src\game\Application.h" />

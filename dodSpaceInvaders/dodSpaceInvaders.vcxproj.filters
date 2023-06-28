@@ -21,9 +21,6 @@
     <ClCompile Include="src\utils\randomGenerator.cpp">
       <Filter>game\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\MainExecution.cpp">
-      <Filter>game\ExecutionBlocks</Filter>
-    </ClCompile>
     <ClCompile Include="src\game\BulletsCore.cpp">
       <Filter>game\Core</Filter>
     </ClCompile>
@@ -84,7 +81,6 @@
     <ClCompile Include="src\engine\contextUtils.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\SoundsController.cpp" />
     <ClCompile Include="src\game\Application.cpp">
       <Filter>game\Context</Filter>
     </ClCompile>
@@ -133,6 +129,12 @@
     <ClCompile Include="src\game\Sounds.cpp">
       <Filter>game\Context</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\PlayerDimentions.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game\EnemyDimentions.cpp">
+      <Filter>game\Context</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -174,9 +176,6 @@
     </ClInclude>
     <ClInclude Include="src\utils\randomGenerator.h">
       <Filter>game\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="src\game\MainExecution.h">
-      <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
     <ClInclude Include="src\game\BulletsCore.h">
       <Filter>game\Core</Filter>
@@ -284,6 +283,12 @@
       <Filter>game\Context</Filter>
     </ClInclude>
     <ClInclude Include="src\game\Sounds.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\PlayerDimentions.h">
+      <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\EnemyDimentions.h">
       <Filter>game\Context</Filter>
     </ClInclude>
   </ItemGroup>
