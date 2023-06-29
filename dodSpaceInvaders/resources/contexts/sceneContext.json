@@ -17,6 +17,12 @@
     {
       "type": "object",
       "dataType": "float",
+      "name": "padding",
+      "initial": 30
+    },
+    {
+      "type": "object",
+      "dataType": "float",
       "name": "bottomPlaneY",
       "initial": 875
     },

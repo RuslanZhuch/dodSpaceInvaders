@@ -7,13 +7,13 @@
       "type": "object",
       "dataType": "float",
       "name": "width",
-      "initial": 50
+      "initial": 25
     },
     {
       "type": "object",
       "dataType": "float",
       "name": "height",
-      "initial": 25
+      "initial": 14
     }
   ]
 }

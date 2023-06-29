@@ -3,6 +3,8 @@
 #include <dod/Buffers.h>
 #include <dod/MemPool.h>
 
+#include <engine/String.h>
+
 #include <array>
 
 namespace Game::Context::Common
@@ -19,7 +21,7 @@ namespace Game::Context::Common
 
         float width{};
         float height{};
-        std::array<char, 64> title{};
+        Engine::String title;
 
     };
 

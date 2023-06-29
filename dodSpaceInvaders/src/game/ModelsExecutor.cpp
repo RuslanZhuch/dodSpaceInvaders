@@ -3,6 +3,9 @@
 void Game::ExecutionBlock::Models::loadContext()
 {
     this->modelsContext.load();
+    this->commonParameters.load();
+    this->sceneParameters.load();
+    this->playerDimentions.load();
 }
 
 void Game::ExecutionBlock::Models::initiate()
@@ -12,6 +15,7 @@ void Game::ExecutionBlock::Models::initiate()
     this->createEnemyBulletModel();
     this->createObstacleModel();
     this->createPlayerModel();
+    this->createSceneModel();
 
 }
 
@@ -61,13 +65,6 @@ void Game::ExecutionBlock::Models::createEnemyModel()
 void Game::ExecutionBlock::Models::createEnemyBulletModel()
 {
 
-    /*
-        constexpr auto length{ 15.f };
-    renderer.drawRectangle({ x, y }, sf::Vector2f(6.f, length), sf::Color::Yellow, 1.f, sf::Color::Green);
-
-    
-    */
-
     constexpr auto sizeX{ 6.f };
     constexpr auto sizeY{ 15.f };
     constexpr auto sizeXHalf{ sizeX * 0.5f };
@@ -88,10 +85,8 @@ void Game::ExecutionBlock::Models::createEnemyBulletModel()
     enemyModel.append(sf::Vertex({ sizeXHalf, sizeYHalf }, sf::Color::Yellow));
 
     Dod::BufferUtils::constructBack(this->modelsContext.loadedModels, enemyModel);
-//    Dod::BufferUtils::get(this->modelsContext.loadedModels, 0) = enemyModel;
 
     Dod::BufferUtils::constructBack(this->modelsContext.modelIds, 2);
-//    Dod::BufferUtils::get(this->modelsContext.modelIds, 0) = 2;
 
     Dod::BufferUtils::constructBack(this->modelsContext.modelNames);
     std::memcpy(Dod::BufferUtils::get(this->modelsContext.modelNames, 
@@ -136,26 +131,10 @@ void Game::ExecutionBlock::Models::createObstacleModel()
 void Game::ExecutionBlock::Models::createPlayerModel()
 {
 
-    /*
-    
-        const auto widthHalf{ width * 0.5f * strobe };
-        const auto heightHalf{ height * 0.5f * strobe };
-        const auto leftPoint{ position - sf::Vector2f(-widthHalf, -heightHalf) };
-        const auto rightPoint{ position - sf::Vector2f(widthHalf, -heightHalf) };
-        const auto topPoint{ position - sf::Vector2f(0.f, heightHalf) };
-
-        const auto playerColor{ sf::Color(150, 200, 90) };
-        renderer.drawLine(leftPoint, rightPoint, playerColor);
-        renderer.drawLine(leftPoint, topPoint, playerColor);
-        renderer.drawLine(rightPoint, topPoint, playerColor);
-    
-    
-    */
-
-    constexpr auto width{ 50.f };
-    constexpr auto height{ 25.f };
-    const auto widthHalf{ width * 0.5f };
-    const auto heightHalf{ height * 0.5f };
+    const auto width{ this->playerDimentions.width };
+    const auto height{ this->playerDimentions.height };
+    const auto widthHalf{ width };
+    const auto heightHalf{ height };
 
     const auto leftPoint{ -sf::Vector2f(-widthHalf, -heightHalf) };
     const auto rightPoint{ -sf::Vector2f(widthHalf, -heightHalf) };
@@ -177,5 +156,35 @@ void Game::ExecutionBlock::Models::createPlayerModel()
     std::memcpy(Dod::BufferUtils::get(this->modelsContext.modelNames,
         Dod::BufferUtils::getNumFilledElements(this->modelsContext.modelNames) - 1).data(),
         "Player", sizeof("Player"));
+
+}
+
+void Game::ExecutionBlock::Models::createSceneModel()
+{
+
+    const auto padding{ this->sceneParameters.padding };
+
+    const auto left{ padding };
+    const auto right{ this->commonParameters.width - padding };
+    const auto top{ padding };
+    const auto bottom{ this->commonParameters.height - padding };
+
+    sf::VertexArray sceneModel;
+    sceneModel.setPrimitiveType(sf::LineStrip);
+    const auto color{ sf::Color(150, 200, 90) };
+    sceneModel.append(sf::Vertex({ left, top }, color));
+    sceneModel.append(sf::Vertex({ right, top }, color));
+    sceneModel.append(sf::Vertex({ right, bottom }, color));
+    sceneModel.append(sf::Vertex({ left, bottom }, color));
+    sceneModel.append(sf::Vertex({ left, top }, color));
+
+    Dod::BufferUtils::constructBack(this->modelsContext.loadedModels, sceneModel);
+
+    Dod::BufferUtils::constructBack(this->modelsContext.modelIds, 5);
+
+    Dod::BufferUtils::constructBack(this->modelsContext.modelNames);
+    std::memcpy(Dod::BufferUtils::get(this->modelsContext.modelNames,
+        Dod::BufferUtils::getNumFilledElements(this->modelsContext.modelNames) - 1).data(),
+        "Scene", sizeof("Scene"));
 
 }

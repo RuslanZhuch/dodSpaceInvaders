@@ -5,6 +5,8 @@
 #include <dod/Buffers.h>
 #include <dod/BufferUtils.h>
 
+#include <engine/StringUtils.h>
+
 #include <rapidjson/document.h>
 
 #include <string_view>
@@ -32,6 +34,8 @@ namespace Engine::ContextUtils
             dest = dataObject["initial"].GetUint();
         else if constexpr (std::is_same_v<type_t, float>)
             dest = dataObject["initial"].GetFloat();
+        else if constexpr (requires { dest.capacity; dest.data.data(); })
+            Engine::StringUtils::assign(dest, dataObject["initial"].GetString());
         
 	}
 

@@ -50,6 +50,9 @@
     <ClCompile Include="engineTests\Contexts.cpp">
       <Filter>engineTests</Filter>
     </ClCompile>
+    <ClCompile Include="engineTests\String.cpp">
+      <Filter>engineTests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

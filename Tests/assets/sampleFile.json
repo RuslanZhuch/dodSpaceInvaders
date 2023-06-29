@@ -20,6 +20,12 @@
       "dataType": "uint32_t",
       "name": "positionX",
       "initial": 134217728
+    },
+    {
+      "type": "object",
+      "dataType": "string",
+      "name": "title",
+      "initial": "Title text"
     }
   ]
 }

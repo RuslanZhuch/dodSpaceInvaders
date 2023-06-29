@@ -9,7 +9,7 @@ namespace Game::Context::Scene
 	{
 
         const auto doc{ Engine::ContextUtils::loadFileDataRoot("resources/contexts/sceneContext.json") };
-        const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 4) };
+        const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 5) };
 
         if (!inputDataOpt.has_value())
             return;
@@ -18,8 +18,9 @@ namespace Game::Context::Scene
 
         Engine::ContextUtils::loadVariable(this->topPlaneY, loadingDataArray, 0);
         Engine::ContextUtils::loadVariable(this->topPlaneDir, loadingDataArray, 1);
-        Engine::ContextUtils::loadVariable(this->bottomPlaneY, loadingDataArray, 2);
-        Engine::ContextUtils::loadVariable(this->bottomPlaneDir, loadingDataArray, 3);
+        Engine::ContextUtils::loadVariable(this->padding, loadingDataArray, 2);
+        Engine::ContextUtils::loadVariable(this->bottomPlaneY, loadingDataArray, 3);
+        Engine::ContextUtils::loadVariable(this->bottomPlaneDir, loadingDataArray, 4);
 
 	}
 

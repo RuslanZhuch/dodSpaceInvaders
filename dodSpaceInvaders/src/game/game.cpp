@@ -11,6 +11,7 @@
 #include <game/ObstaclesExecutor.h>
 #include <game/PlayerExecutor.h>
 #include <game/PlayerBulletsExecutor.h>
+#include <game/SceneExecutor.h>
 
 #include <dod/SharedContext.h>
 #include <game/SoundsControl.h>
@@ -80,6 +81,10 @@ void Game::run()
     sounds.sContext = &sContext;
     sounds.initiate();
 
+    Game::ExecutionBlock::Scene scene;
+    scene.loadContext();
+    scene.initiate();
+
     float deltaTime{ 0.f };
 
     while (true)
@@ -96,6 +101,7 @@ void Game::run()
         player.update(deltaTime);
         playerBullets.update(deltaTime);
         render.update(deltaTime);
+        scene.update(deltaTime);
 
         Dod::SharedContext::flush(&sContext);
         Dod::SharedContext::flush(&renderCommands);
@@ -114,6 +120,7 @@ void Game::run()
         Dod::SharedContext::merge(&renderCommands, playerBullets.renderContext);
         Dod::SharedContext::merge(&renderCommands, obstacles.renderContext);
         Dod::SharedContext::merge(&renderCommands, player.renderContext);
+        Dod::SharedContext::merge(&renderCommands, scene.renderContext);
         Dod::SharedContext::merge(&sContext, enemyBullets.soundsContext);
         Dod::SharedContext::merge(&sContext, playerBullets.soundsContext);
         Dod::SharedContext::merge(&sModels, models.modelsContext);

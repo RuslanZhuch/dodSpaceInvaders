@@ -25,7 +25,7 @@ void Game::ExecutionBlock::Render::initiate()
     this->renderBufferContext.gameRenderer = std::make_unique<GameRenderer>(
         this->commonContext.width, 
         this->commonContext.height, 
-        this->commonContext.title.data()
+        this->commonContext.title.data.data()
     );
 
 }

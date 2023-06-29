@@ -59,7 +59,7 @@ def load_data(context_raw_data):
 def generate_context_data(handler, context_raw_data):
     
     def struct_body(struct_handler):
-        generator.generate_struct_method(struct_handler, "load", "Data", ["Dod::MemPool& pool", "int32_t& header"], False, is_static=True)
+        generator.generate_struct_method(struct_handler, "load", "void", [], False)
         generator.generate_struct_method(struct_handler, "reset", "void", [], False)
         generator.generate_struct_method(struct_handler, "merge", "void", ["const Data& other"], False)
         
@@ -68,6 +68,7 @@ def generate_context_data(handler, context_raw_data):
         for object in context_data.objects_data:
             generator.generate_struct_variable(struct_handler, object.data_type, object.name, object.initial)
             
+        generator.generate_struct_variable(struct_handler, "Dod::MemPool", "memory", None)
         for buffer in context_data.buffers_data:
             type = "Dod::DBBuffer<{}>".format(buffer.data_type)
             generator.generate_struct_variable(struct_handler, type, buffer.name, None)
@@ -115,8 +116,6 @@ def generate_context_load(handler, context_raw_data, context_file_path):
         
         def load_body(self, handler):
             generator.generate_empty(handler)
-            generator.generate_variable(handler, "Data", "data")
-            generator.generate_empty(handler)
             
             context_data = load_data(context_raw_data)
             total_elements = len(context_data.objects_data) + len(context_data.buffers_data)
@@ -126,7 +125,7 @@ def generate_context_load(handler, context_raw_data, context_file_path):
             generator.generate_empty(handler)
             
             def if_statement_body(handler):
-                generator.generate_line(handler, "return data;")
+                generator.generate_line(handler, "return;")
             generator.generate_block(handler, "if (!inputDataOpt.has_value())", if_statement_body)
             generator.generate_empty(handler)
             
@@ -136,20 +135,38 @@ def generate_context_load(handler, context_raw_data, context_file_path):
             element_id = 0
             for object in context_data.objects_data:
                 variable_name = object.name
-                generator.generate_line(handler, "Engine::ContextUtils::loadVariable(data.{}, loadingDataArray, {});".format(variable_name, element_id))
-                element_id += 1
-            generator.generate_empty(handler)
-                
-            for buffer in context_data.buffers_data:
-                buffer_name = buffer.name
-                generator.generate_line(handler, "Engine::ContextUtils::loadBuffer(data.{}, loadingDataArray, {}, pool, header);".format(buffer_name, element_id))
+                generator.generate_line(handler, "Engine::ContextUtils::loadVariable(this->{}, loadingDataArray, {});".format(variable_name, element_id))
                 element_id += 1
             generator.generate_empty(handler)
             
-            generator.generate_line(handler, "return data;")
+            buffer_id = element_id
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                type = buffer.data_type
+                generator.generate_line(handler, "const auto {}CapacityBytes{{ Engine::ContextUtils::getBufferCapacityBytes<{}>(loadingDataArray, {}) }};".format(buffer_name, type, buffer_id))
+                buffer_id += 1
+            generator.generate_empty(handler)                
+                
+            buffer_id = element_id
+            generator.generate_line(handler, "int32_t needBytes{};")
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                generator.generate_line(handler, "needBytes += {}CapacityBytes;".format(buffer_name))
+                buffer_id += 1
+            generator.generate_empty(handler)
+            
+            generator.generate_line(handler, "this->memory.allocate(needBytes);")
+            generator.generate_line(handler, "int32_t header{};")
+            generator.generate_empty(handler)
+            
+            buffer_id = element_id
+            for buffer in context_data.buffers_data:
+                buffer_name = buffer.name
+                generator.generate_line(handler, "Engine::ContextUtils::loadBuffer(this->{0}, {0}CapacityBytes, pool, header);".format(buffer_name))
+                buffer_id += 1
             generator.generate_empty(handler)
         
-        generator.generate_struct_method(struct_handler, "load", "Data", ["Dod::MemPool& pool", "int32_t& header"], False, load_body, is_static=True)
+        generator.generate_struct_method(struct_handler, "load", "void", [], False, load_body)
 
     generator.generate_struct_impl(handler, "Data", struct_data)
     

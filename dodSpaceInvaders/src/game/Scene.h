@@ -15,6 +15,7 @@ namespace Game::Context::Scene
 		Dod::MemPool memory;
 		float topPlaneY{};
 		float topPlaneDir{};
+		float padding{};
 		float bottomPlaneY{};
 		float bottomPlaneDir{};
 

@@ -135,6 +135,9 @@
     <ClCompile Include="src\game\EnemyDimentions.cpp">
       <Filter>game\Context</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\SceneExecutor.cpp">
+      <Filter>game\ExecutionBlocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\game.h" />
@@ -290,6 +293,15 @@
     </ClInclude>
     <ClInclude Include="src\game\EnemyDimentions.h">
       <Filter>game\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\String.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\StringUtils.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\SceneExecutor.h">
+      <Filter>game\ExecutionBlocks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,13 +13,16 @@ struct Context1
 
 	Dod::DBBuffer<int32_t> buffer1;
 
-	void load(Dod::MemPool& pool, int32_t& header)
+	void load()
 	{
+
+		this->memory.allocate(1024);
+		int32_t header{};
+
 		this->data1 = 42.f;
 		this->data2 = 123.f;
 
-
-		Dod::BufferUtils::initFromMemory(this->buffer1, Dod::MemUtils::stackAquire(pool, 10 * sizeof(int32_t), header));
+		Dod::BufferUtils::initFromMemory(this->buffer1, Dod::MemUtils::stackAquire(this->memory, 10 * sizeof(int32_t), header));
 		Dod::BufferUtils::populate(this->buffer1, 2, true);
 		Dod::BufferUtils::populate(this->buffer1, 3, true);
 		Dod::BufferUtils::populate(this->buffer1, 4, true);
@@ -41,13 +44,7 @@ struct Context1
 		Dod::BufferUtils::append(this->buffer1, Dod::BufferUtils::createImFromBuffer(other.buffer1));
 	}
 
-//	[[nodiscard]] constexpr auto getNeedTotalBytes() noexcept
-//	{
-//		return
-//			sizeof(this->data1) +
-//			sizeof(this->data2) +
-//			sizeof(decltype(this->buffer1)::type_t) * 10;
-//	}
+	Dod::MemPool memory;
 
 };
 
@@ -85,29 +82,25 @@ TEST(SharedContext, flushData)
 TEST(SharedContext, mergeData)
 {
 
-	Dod::MemPool memory;
-	memory.allocate(1024);
-	int32_t header{};
-
 	Dod::SharedContext::Controller<Context1> controller;
 	Dod::SharedContext::flush(&controller);
 	for (int32_t elId{}; elId < 1; ++elId)
 		Dod::BufferUtils::populate(controller.context.buffer1, elId + 1, true);
 
 	Context1 localContext1;
-	localContext1.load(memory, header);
+	localContext1.load();
 	localContext1.reset();
 	for (int32_t elId{}; elId < 3; ++elId)
 		Dod::BufferUtils::populate(localContext1.buffer1, elId + 2, true);
 
 	Context1 localContext2;
-	localContext2.load(memory, header);
+	localContext2.load();
 	localContext2.reset();
 	for (int32_t elId{}; elId < 4; ++elId)
 		Dod::BufferUtils::populate(localContext2.buffer1, elId + 5, true);
 
 	Context1 localContext3;
-	localContext3.load(memory, header);
+	localContext3.load();
 	localContext3.reset();
 
 	Dod::SharedContext::merge(&controller, localContext1);
