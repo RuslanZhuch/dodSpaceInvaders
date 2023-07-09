@@ -15,6 +15,7 @@ sys.path.append("../src")
 import generator
 import contexts
 import loader
+import types_manager
 
 import utils
 
@@ -66,11 +67,17 @@ class TestContexts(unittest.TestCase):
         utils.assert_files(self, "dest/gen_lContext1_data.cpp", "assets/expected/gen_lContext1_data.cpp")
         
     def test_gen_context1_def(self):
-        contexts.generate_context_def("dest", "assets/contexts/local/lContext1.json")
+        types_file_data = loader.load_file_data("assets/workspace/types_contexts_data.json")
+        types_cache = types_manager.cache_types([types_file_data])
+        
+        contexts.generate_context_def("dest", "assets/contexts/local/lContext1.json", types_cache)
         utils.assert_files(self, "dest/lContext1Context.h", "assets/expected/lContext1Context.h")
         
     def test_gen_context2_def(self):
-        contexts.generate_context_def("dest", "assets/contexts/local/lContext2.json")
+        types_file_data = loader.load_file_data("assets/workspace/types_contexts_data.json")
+        types_cache = types_manager.cache_types([types_file_data])
+        
+        contexts.generate_context_def("dest", "assets/contexts/local/lContext2.json", types_cache)
         utils.assert_files(self, "dest/lContext2Context.h", "assets/expected/lContext2Context.h")
         
     def test_gen_context1_load(self):

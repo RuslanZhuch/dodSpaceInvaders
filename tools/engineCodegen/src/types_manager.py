@@ -1,4 +1,6 @@
 
+import generator
+
 class TypesCache:
     def __init__(self, type_names, paths):
         self.type_names = type_names
@@ -26,3 +28,12 @@ def cache_types(types_data):
         paths.append(cache[type_name])
     
     return TypesCache(type_names, paths)
+
+def gen_includes(handler, cached_types, types_to_include):
+    unique_types = list(set(types_to_include))
+    unique_types.sort()
+    for type_to_include in unique_types:
+        path = cached_types.get_path(type_to_include)
+        if path == "None":
+            continue
+        generator.generate_line(handler, "#include <{}>".format(path))

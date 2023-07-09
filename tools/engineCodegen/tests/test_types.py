@@ -13,6 +13,7 @@ import sys
 sys.path.append("../src")
 
 import utils
+import generator
 import loader
 import types_manager
 
@@ -21,7 +22,7 @@ class TestTyoes(unittest.TestCase):
         super().__init__(methodName)
         self.maxDiff = None
     
-    def test_load_context_data(self):
+    def test_load_types_data(self):
         types_default_file_data = loader.load_file_data("assets/workspace/types_default.json")
         types_additional_file_data = loader.load_file_data("assets/workspace/types_additional.json")
         
@@ -36,3 +37,15 @@ class TestTyoes(unittest.TestCase):
         self.assertEqual(types_cache.get_path("bool"), "None")
         self.assertEqual(types_cache.get_path("CryingCat"), "cats/Crying.h")
         
+    def test_gen_types_includes(self):
+        
+        types_default_file_data = loader.load_file_data("assets/workspace/types_default.json")
+        types_additional_file_data = loader.load_file_data("assets/workspace/types_additional.json")
+        types_cache = types_manager.cache_types([types_default_file_data, types_additional_file_data])
+        
+        handler = generator.generate_file("dest", "gen_types_includes1.cpp")
+        self.assertIsNotNone(handler)
+        types_manager.gen_includes(handler, types_cache, ["float", "float", "bool", "CryingCat", "Engine::String", "int32_t", "CryingCat"])
+        handler.close()
+        
+        utils.assert_files(self, "dest/gen_types_includes1.cpp", "assets/expected/gen_types_includes1.cpp")

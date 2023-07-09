@@ -1,6 +1,7 @@
 
 import loader
 import generator
+import types_manager
 
 class SharedMerge:
     def __init__(self, executor_name, executor_scontext):
@@ -75,13 +76,27 @@ def generate_context_data(handler, context_raw_data):
             
     generator.generate_struct(handler, "Data", struct_body)
 
-def generate_context_def(dest_path, context_file_path):
+def generate_context_def(dest_path, context_file_path, types_cache):
     context_raw_data = loader.load_file_data(context_file_path)
     context_name = loader.load_name(context_file_path)
     handler = generator.generate_file(dest_path, "{}Context.h".format(context_name))
     
     generator.generate_line(handler, "#pragma once")
     generator.generate_empty(handler)
+    
+    context_data = load_data(context_raw_data)
+    list_of_types = []
+    
+    for object in context_data.objects_data:
+        list_of_types.append(object.data_type)
+        
+    for buffer in context_data.buffers_data:
+        list_of_types.append(buffer.data_type)
+        
+    types_manager.gen_includes(handler, types_cache, list_of_types)
+        
+    #generator.generate_line(handler, "#include <{}>".format(buffer.data_type))
+            
     generator.generate_line(handler, "#include <dod/Buffers.h>")
     generator.generate_line(handler, "#include <dod/MemPool.h>")
     generator.generate_empty(handler)
