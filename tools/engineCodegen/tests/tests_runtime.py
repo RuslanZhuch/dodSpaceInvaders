@@ -16,6 +16,7 @@ import runtime
 
 import utils
 import loader
+import executors
 
 class TestRuntime(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
@@ -29,6 +30,12 @@ class TestRuntime(unittest.TestCase):
         
     def test_generate_runtime_function(self):
         workspace_data = loader.load_application_context_data("assets/workspace/ws_applicationContext.json")
-        runtime.generate("dest", "runtime.cpp", "assets/workspace/ws_applicationContext.json", workspace_data)
+        
+        executors_data = executors.load([
+            "assets/executors/executor1.json",
+            "assets/executors/executor2.json",
+            "assets/executors/executor3.json"
+        ])
+        runtime.generate(executors_data, "assets/workspace/ws_applicationContext.json", workspace_data)
         
         utils.assert_files(self, "dest/runtime.cpp", "assets/expected/runtime.cpp")

@@ -1,6 +1,14 @@
 #pragma once
 
+#include <Contexts/Type1Context.h>
+#include <Contexts/Type2Context.h>
+#include <Contexts/Type3Context.h>
+#include <Contexts/Type4Context.h>
+#include <Contexts/Type5Context.h>
+#include <Contexts/Type6Context.h>
+
 #include <dod/MemPool.h>
+#include <dod/SharedContext.h>
 
 namespace Game::ExecutionBlock
 {
@@ -18,15 +26,15 @@ namespace Game::ExecutionBlock
 
     public:
         Dod::MemPool memory;
-        Game::Context::Type1::Local local1Context;
-        Game::Context::Type2::Local local2Context;
-        Game::Context::Type3::Local local3Context;
-        Game::Context::Type3::Local local4Context;
-        Game::Context::Type4::Shared target1Context;
-        Game::Context::Type4::Shared target2Context;
-        Game::Context::Type4::Shared target3Context;
-        const Dod::SharedContext::Controller<Game::Context::Type5::Shared>* shared1Context{ nullptr };
-        const Dod::SharedContext::Controller<Game::Context::Type5::Shared>* shared2Context{ nullptr };
-        const Dod::SharedContext::Controller<Game::Context::Type6::Shared>* shared3Context{ nullptr };
+        Context::Type1::Data local1Context;
+        Context::Type2::Data local2Context;
+        Context::Type3::Data local3Context;
+        Context::Type3::Data local4Context;
+        Context::Type4::Data target1Context;
+        Context::Type4::Data target2Context;
+        Context::Type4::Data target3Context;
+        const Dod::SharedContext::Controller<Context::Type5::Data>* shared1Context{ nullptr };
+        const Dod::SharedContext::Controller<Context::Type5::Data>* shared2Context{ nullptr };
+        const Dod::SharedContext::Controller<Context::Type6::Data>* shared3Context{ nullptr };
     };
 }

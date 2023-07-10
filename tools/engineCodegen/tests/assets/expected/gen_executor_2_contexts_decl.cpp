@@ -5,14 +5,14 @@ public:
 private:
 
 public:
-    Game::Context::Type1::Local local1Context;
-    Game::Context::Type2::Local local2Context;
-    Game::Context::Type2::Local local3Context;
-    Game::Context::Type1::Shared target1Context;
-    Game::Context::Type3::Shared target2Context;
-    Game::Context::Type3::Shared target3Context;
-    const Dod::SharedContext::Controller<Game::Context::Scontext1::Shared>* shared1Context{ nullptr };
-    const Dod::SharedContext::Controller<Game::Context::Scontext1::Shared>* shared2Context{ nullptr };
-    const Dod::SharedContext::Controller<Game::Context::Scontext2::Shared>* shared3Context{ nullptr };
-    const Dod::SharedContext::Controller<Game::Context::Scontext2::Shared>* shared4Context{ nullptr };
+    Context::Type1::Data local1Context;
+    Context::Type2::Data local2Context;
+    Context::Type2::Data local3Context;
+    Context::Type1::Data target1Context;
+    Context::Type3::Data target2Context;
+    Context::Type3::Data target3Context;
+    const Dod::SharedContext::Controller<Context::Scontext1::Data>* shared1Context{ nullptr };
+    const Dod::SharedContext::Controller<Context::Scontext1::Data>* shared2Context{ nullptr };
+    const Dod::SharedContext::Controller<Context::Scontext2::Data>* shared3Context{ nullptr };
+    const Dod::SharedContext::Controller<Context::Scontext2::Data>* shared4Context{ nullptr };
 };

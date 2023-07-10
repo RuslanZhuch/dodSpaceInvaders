@@ -28,7 +28,7 @@ def _generate_commands(handler):
         
     generator.generate_block(handler, "for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplication.context.commands); ++cmdId)", cycle_body)
 
-def generate(folder, file_name, workspace_shared_contexts_file, workspace_data):
+def generate(executors_data, workspace_shared_contexts_file, workspace_data):
     handler = generate_runtime_file("dest")
     generator.generate_line(handler, "#include <chrono>")
     handler.newline(1)
@@ -37,7 +37,6 @@ def generate(folder, file_name, workspace_shared_contexts_file, workspace_data):
         _generate_share_contexts_init(handler, workspace_shared_contexts_file)
         handler.newline(1)
         
-        executors_data = executors.load("assets/executors")
         executors.gen_inits(handler, executors_data, workspace_data)
     
         def cycle_function(handler):

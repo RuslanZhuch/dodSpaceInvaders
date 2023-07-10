@@ -20,8 +20,8 @@ def _to_double_camel_case(text):
 def _to_class_name(name):
     return _to_double_camel_case(name)
 
-def load(folder):
-    return loader.load_descriptors(folder)
+def load(paths : list):
+    return loader.load_descriptors(paths)
 
 def get_name(data):
     return data.get("name")
@@ -84,21 +84,13 @@ def gen_body_flush(handler, executor_data):
         
 def gen_body_init(handler, executor_data):
     generator.generate_line(handler, "this->initImpl();")
-
-def gen_body_memory(handler, executor_data):
-    memory = executor_data.get("memory")
-    if memory is None:
-        return
-    
-    generator.generate_line(handler, "int32_t header{};")
-    generator.generate_line(handler, "this->memory.allocate({});".format(memory))
-        
+  
 def gen_body_contexts_load(handler, executor_data):
     contexts_local = executor_data.get("contextsLocal")
     if contexts_local is not None:
         for context in contexts_local:
             for element in context["list"]:
-                generator.generate_line(handler, "this->{}Context.load(this->memory, header);".format(element))
+                generator.generate_line(handler, "this->{}Context.load();".format(element))
         generator.generate_empty(handler)
     
     contexts_write_to = executor_data.get("contextsWriteTo")
@@ -114,7 +106,7 @@ def gen_contexts_decl(handler, executor_data):
     contexts_local = executor_data.get("contextsLocal")
     if contexts_local is not None:
         for context in contexts_local:
-            class_name = "Game::Context::{}::Local".format(_to_class_name(context["type"]))
+            class_name = "Context::{}::Data".format(_to_class_name(context["type"]))
             for element in context["list"]:
                 field_name = "{}Context".format(element)
                 generator.generate_class_variable(handler, class_name, field_name)
@@ -122,7 +114,7 @@ def gen_contexts_decl(handler, executor_data):
     contexts_write_to = executor_data.get("contextsWriteTo")
     if contexts_write_to is not None:
         for context in contexts_write_to:
-            class_name = "Game::Context::{}::Shared".format(_to_class_name(context["type"]))
+            class_name = "Context::{}::Data".format(_to_class_name(context["type"]))
             for element in context["list"]:
                 field_name = "{}Context".format(element)
                 generator.generate_class_variable(handler, class_name, field_name)
@@ -130,7 +122,7 @@ def gen_contexts_decl(handler, executor_data):
     contexts_shared = executor_data.get("contextsShared")
     if contexts_shared is not None:
         for context in contexts_shared:
-            class_name = "const Dod::SharedContext::Controller<Game::Context::{}::Shared>*".format(_to_class_name(context["type"]))
+            class_name = "const Dod::SharedContext::Controller<Context::{}::Data>*".format(_to_class_name(context["type"]))
             for element in context["list"]:
                 field_name = "{}Context".format(element)
                 generator.generate_class_variable(handler, class_name, field_name, "nullptr")
@@ -144,7 +136,32 @@ def gen_header(folder, executor_data):
     generator.generate_line(handler, "#pragma once")
     generator.generate_empty(handler)
     
+    contexts_list = []
+            
+    contexts_local = executor_data.get("contextsLocal")
+    if contexts_local is not None:
+        for context in contexts_local:
+            contexts_list.append(_to_class_name(context["type"]))
+            
+    contexts_write_to = executor_data.get("contextsWriteTo")
+    if contexts_write_to is not None:
+        for context in contexts_write_to:
+            contexts_list.append(_to_class_name(context["type"]))
+    
+    contexts_shared = executor_data.get("contextsShared")
+    if contexts_shared is not None:
+        for context in contexts_shared:
+            contexts_list.append(_to_class_name(context["type"]))
+    
+    contexts_list_unique = list(set(contexts_list))
+    contexts_list_unique.sort()
+    for context_name in contexts_list_unique:
+        generator.generate_line(handler, "#include <Contexts/{}Context.h>".format(context_name))
+            
+    generator.generate_empty(handler)
+    
     generator.generate_line(handler, "#include <dod/MemPool.h>")
+    generator.generate_line(handler, "#include <dod/SharedContext.h>")
     generator.generate_empty(handler)
     
     def namespace_block_data(handler):
@@ -177,8 +194,6 @@ def gen_source(folder, executor_data):
     def namespace_block_data(handler):
         def class_data(class_handler):
             def load_body(self, handler):
-                gen_body_memory(handler, executor_data)
-                generator.generate_empty(handler)
                 gen_body_contexts_load(handler, executor_data)
             generator.generate_class_public_method(class_handler, "loadContext", "void", [], False, load_body)
             

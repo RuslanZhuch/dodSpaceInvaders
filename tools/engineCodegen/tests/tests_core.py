@@ -20,7 +20,11 @@ class TestCore(unittest.TestCase):
         self.assertEqual(data.get("name"), "executor2")
         
     def test_load_data_from_folder(self):
-        data = loader.load_descriptors("assets/executors")
+        data = loader.load_descriptors([
+            "assets/executors/executor1.json",
+            "assets/executors/executor2.json",
+            "assets/executors/executor3.json"
+        ])
         self.assertEqual(len(data), 3)
         
         self.assertEqual(data[0].get("whoIAm"), "Executor")

@@ -17,13 +17,12 @@ def load_descriptor(file_path):
     data["name"] = path.splitext(_path_leaf(file_path))[0]
     return data
 
-def load_descriptors(folder_path):
+def load_descriptors(paths : list):
     data = []
-    for (dir_path, dir_names, file_names) in walk(folder_path):
-        for file_name in file_names:
-            if dir_path == folder_path:
-                data.append(load_descriptor(dir_path + "/" + file_name))
-            
+    
+    for path in paths:
+        data.append(load_descriptor(path))
+    
     return data
 
 def _load_shared_context(file_path):
