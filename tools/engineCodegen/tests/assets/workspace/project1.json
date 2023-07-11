@@ -7,7 +7,10 @@
     ],
     "contexts_paths": [
         "assets/contexts/local/lContext1.json",
-        "assets/contexts/local/lContext2.json"
+        "assets/contexts/local/lContext2.json",
+        "assets/contexts/local/lContext3.json",
+        "assets/contexts/shared/sContext1.json",
+        "assets/contexts/shared/sContext2.json"
     ],
     "executors_paths": [
         "assets/executors/executor1.json",

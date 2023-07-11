@@ -74,4 +74,5 @@ def generate(project_desc : ProjectDesc):
     for data in executors_data:
         executors.gen_header(executors_target_path, data)
         executors.gen_source(executors_target_path, data)
+        executors.gen_implementation(executors_target_path, data)
         

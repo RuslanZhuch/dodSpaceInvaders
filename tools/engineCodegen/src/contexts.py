@@ -78,7 +78,7 @@ def generate_context_data(handler, context_raw_data):
 
 def generate_context_def(dest_path, context_file_path, types_cache):
     context_raw_data = loader.load_file_data(context_file_path)
-    context_name = loader.load_name(context_file_path)
+    context_name = _to_class_name(loader.load_name(context_file_path))
     handler = generator.generate_file(dest_path, "{}Context.h".format(context_name))
     
     generator.generate_line(handler, "#pragma once")
@@ -103,12 +103,11 @@ def generate_context_def(dest_path, context_file_path, types_cache):
     
     def namespace_body(namespace_handler):
         generate_context_data(namespace_handler, context_raw_data)
-    class_name = _to_class_name(context_name)
-    generator.generate_block(handler, "namespace Game::Context::{}".format(class_name), namespace_body)
+    generator.generate_block(handler, "namespace Game::Context::{}".format(context_name), namespace_body)
     
 def generate_context_impl(dest_path, context_file_path):
     context_raw_data = loader.load_file_data(context_file_path)
-    context_name = loader.load_name(context_file_path)
+    context_name = _to_class_name(loader.load_name(context_file_path))
     handler = generator.generate_file(dest_path, "{}Context.cpp".format(context_name))
     
     generator.generate_line(handler, "#include \"{}Context.h\"".format(context_name))
@@ -123,7 +122,7 @@ def generate_context_impl(dest_path, context_file_path):
         generate_context_reset(namespace_handler, context_raw_data)
         generate_context_merge(namespace_handler, context_raw_data)
         generator.generate_empty(handler)
-    class_name = _to_class_name(context_name)
+    class_name = context_name
     generator.generate_block(handler, "namespace Game::Context::{}".format(class_name), namespace_body)
     
 def generate_context_load(handler, context_raw_data, context_file_path):

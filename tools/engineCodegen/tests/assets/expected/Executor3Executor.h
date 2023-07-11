@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Contexts/Scontext1Context.h>
-#include <Contexts/Scontext2Context.h>
+#include <Contexts/SContext1Context.h>
+#include <Contexts/SContext2Context.h>
 
 #include <dod/MemPool.h>
 #include <dod/SharedContext.h>
@@ -22,7 +22,7 @@ namespace Game::ExecutionBlock
 
     public:
         Dod::MemPool memory;
-        const Dod::SharedContext::Controller<Context::Scontext1::Data>* shared1Context{ nullptr };
-        const Dod::SharedContext::Controller<Context::Scontext2::Data>* shared3Context{ nullptr };
+        const Dod::SharedContext::Controller<Context::SContext1::Data>* shared1Context{ nullptr };
+        const Dod::SharedContext::Controller<Context::SContext2::Data>* shared3Context{ nullptr };
     };
 }

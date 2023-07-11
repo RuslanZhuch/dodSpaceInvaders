@@ -6,16 +6,15 @@ class SharedUsage:
         self.shared_instance = shared_instance
         self.executor_scontext = executor_scontext
 
-def _to_camel_case(text):
+def _to_double_camel_case(text):
     s = text.replace("-", " ").replace("_", " ")
     s = s.split()
-    if len(text) == 0:
+    if len(text) <= 1:
         return text
-    return s[0] + ''.join(i.capitalize() for i in s[1:])
-
-def _to_double_camel_case(text):
-    camel = _to_camel_case(text)
-    return camel.capitalize()
+    if len(s) <= 1:
+        return text[0].capitalize() + text[1:]
+    out = ''.join(i.capitalize() for i in s[:])
+    return out
 
 def _to_class_name(name):
     return _to_double_camel_case(name)
