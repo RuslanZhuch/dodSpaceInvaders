@@ -15,6 +15,7 @@ sys.path.append("../src")
 import runtime
 
 import utils
+import contexts
 import loader
 import executors
 
@@ -28,14 +29,19 @@ class TestRuntime(unittest.TestCase):
         self.assertIsNotNone(handler)
         descriptor_file = open("dest/runtime.cpp")
         
-    def test_generate_runtime_function(self):
-        workspace_data = loader.load_application_context_data("assets/workspace/ws_applicationContext.json")
-        
+    def test_generate_runtime_function(self):        
         executors_data = executors.load([
             "assets/executors/executor1.json",
             "assets/executors/executor2.json",
             "assets/executors/executor3.json"
         ])
-        runtime.generate(executors_data, "assets/workspace/ws_applicationContext.json", workspace_data)
+        contexts_file_list = [
+            "assets/contexts/shared/sContext1.json",
+            "assets/contexts/shared/sContext2.json"
+        ]
+        
+        contexts_data = contexts.load_contexts(contexts_file_list)
+        
+        runtime.generate("dest", executors_data, "assets/workspace/ws_applicationContext.json", contexts_data)
         
         utils.assert_files(self, "dest/runtime.cpp", "assets/expected/runtime.cpp")

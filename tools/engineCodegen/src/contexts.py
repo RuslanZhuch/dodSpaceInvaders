@@ -21,8 +21,8 @@ def _to_double_camel_case(text):
 def _to_class_name(name):
     return _to_double_camel_case(name)
 
-def load_shared(folder):
-    return loader.load_shared_contexts(folder)
+def load_contexts(context_file_names : list[str]):
+    return loader.load_shared_contexts(context_file_names)
 
 class ContextData:
     class ObjectDataElement:
@@ -214,8 +214,11 @@ class ContextUsage:
     def __init__(self, context_name, instance_name):
         self.context_name = context_name
         self.instance_name = instance_name
+        
+    def __lt__(self, other):
+        return self.context_name < other.context_name
 
-def load_shared_context_instances(file):
+def load_shared_context_instances(file) -> list[ContextUsage]:
     content = loader.load_shared_contexts_usage(file)
     
     usage_data = []
@@ -248,8 +251,8 @@ def load_shared_context_merge(workspace_data):
         
     return output
     
-def get_validated_shared_context_instances(shared_contexts_data, shared_contexts_instances):
-    loaded_names = [el.get("name") for el in shared_contexts_data]
+def get_validated_context_instances(contexts_data, shared_contexts_instances) -> list[ContextUsage]:
+    loaded_names = [el.get("name") for el in contexts_data]
     
     validated = []
     for instance in shared_contexts_instances:
@@ -262,7 +265,7 @@ def get_validated_shared_context_instances(shared_contexts_data, shared_contexts
 def generate_shared_init(handler, contexts_data):
     for instance in contexts_data:
         class_name = _to_class_name(instance.context_name)
-        generator.generate_line(handler, "Dod::SharedContext::Controller<Game::Context::{}::Shared> {}Context;".format(class_name, instance.instance_name))
+        generator.generate_line(handler, "Dod::SharedContext::Controller<Game::Context::{}::Data> {}Context;".format(class_name, instance.instance_name))
     
 def generate_shared_merge(handler, workspace_data):
     merge_data = load_shared_context_merge(workspace_data)

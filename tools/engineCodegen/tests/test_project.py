@@ -11,9 +11,6 @@ import sys
 sys.path.append("../src")
 
 import utils
-import generator
-import loader
-import types_manager
 import project
 
 class TestProject(unittest.TestCase):
@@ -73,4 +70,6 @@ class TestProject(unittest.TestCase):
         utils.assert_files(self, "dest/projects/project1/executors/Executor1ExecutorImpl.cpp", "assets/expected/Executor1ExecutorImpl.cpp")
         utils.assert_files(self, "dest/projects/project1/executors/Executor2ExecutorImpl.cpp", "assets/expected/Executor2ExecutorImpl.cpp")
         utils.assert_files(self, "dest/projects/project1/executors/Executor3ExecutorImpl.cpp", "assets/expected/Executor3ExecutorImpl.cpp")
+        
+        utils.assert_files(self, "dest/projects/project1/runtime.cpp", "assets/expected/runtime.cpp")
         

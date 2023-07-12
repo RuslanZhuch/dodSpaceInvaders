@@ -1,0 +1,10 @@
+{
+    "project_dest_folder": "../src",
+    "application_context_path": "../workspace/ws_applicationContext.json",
+    "types_paths": [
+    ],
+    "contexts_paths": [
+    ],
+    "executors_paths": [
+    ]
+}

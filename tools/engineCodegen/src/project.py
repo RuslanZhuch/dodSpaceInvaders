@@ -4,6 +4,7 @@ import types_manager
 import os
 import contexts
 import executors
+import runtime
 
 class ProjectDesc:
     def __init__(self):
@@ -76,3 +77,8 @@ def generate(project_desc : ProjectDesc):
         executors.gen_source(executors_target_path, data)
         executors.gen_implementation(executors_target_path, data)
         
+    application_context_path = project_desc.application_context_path
+    
+    contexts_data = contexts.load_contexts(project_desc.contexts_paths)
+    runtime.generate(target_path, executors_data, application_context_path, contexts_data)
+    

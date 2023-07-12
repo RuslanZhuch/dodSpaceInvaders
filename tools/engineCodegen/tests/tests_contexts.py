@@ -20,7 +20,10 @@ import types_manager
 import utils
 
 def load_shared_contexts():
-    return contexts.load_shared("assets/contexts/shared")
+    return contexts.load_contexts([
+        "assets/contexts/shared/sContext1.json",
+        "assets/contexts/shared/sContext2.json"
+    ])
 
 class TestContexts(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
@@ -159,7 +162,7 @@ class TestContexts(unittest.TestCase):
         contexts_data = load_shared_contexts()
         instances_data = contexts.load_shared_context_instances("assets/workspace/ws_applicationContext.json")
         
-        validated_instances = contexts.get_validated_shared_context_instances(contexts_data, instances_data)
+        validated_instances = contexts.get_validated_context_instances(contexts_data, instances_data)
         self.assertEqual(len(validated_instances), 4)
         self.assertEqual(validated_instances[0].context_name, "sContext1")
         self.assertEqual(validated_instances[0].instance_name, "sharedInst1")

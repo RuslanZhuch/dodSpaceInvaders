@@ -40,7 +40,10 @@ class TestCore(unittest.TestCase):
         self.assertEqual(data[2].get("name"), "executor3")
         
     def test_load_data_shared_contexts_from_folder(self):
-        data = loader.load_shared_contexts("assets/contexts/shared")
+        data = loader.load_shared_contexts([
+            "assets/contexts/shared/sContext1.json",
+            "assets/contexts/shared/sContext2.json"
+        ])
         self.assertEqual(len(data), 2)
         
         self.assertEqual(data[0].get("whoIAm"), "SContext")
