@@ -26,7 +26,7 @@ void Data::load() noexcept
     this->memory.allocate(needBytes);
     int32_t header{};
 
-    Engine::ContextUtils::loadBuffer(this->dbvar1, dbvar1CapacityBytes, pool, header);
-    Engine::ContextUtils::loadBuffer(this->dbvar2, dbvar2CapacityBytes, pool, header);
+    Engine::ContextUtils::loadBuffer(this->dbvar1, dbvar1CapacityBytes, this->memory, header);
+    Engine::ContextUtils::loadBuffer(this->dbvar2, dbvar2CapacityBytes, this->memory, header);
 
 }

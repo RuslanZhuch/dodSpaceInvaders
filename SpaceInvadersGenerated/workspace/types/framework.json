@@ -1,0 +1,7 @@
+{
+    "whoIAm": "TypesDesc",
+    "version": 1,
+    "data":{
+        "Game::GameRendererPtr": "internal/render/Renderer.h"
+    }
+}

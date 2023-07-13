@@ -34,7 +34,7 @@ namespace Game::Context::SContext2
     {
     }
 
-    void Data::merge(const Shared& other) noexcept
+    void Data::merge(const Data& other) noexcept
     {
     }
 

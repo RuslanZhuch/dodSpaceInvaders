@@ -176,7 +176,7 @@ def generate_context_load(handler, context_raw_data, context_file_path):
             buffer_id = element_id
             for buffer in context_data.buffers_data:
                 buffer_name = buffer.name
-                generator.generate_line(handler, "Engine::ContextUtils::loadBuffer(this->{0}, {0}CapacityBytes, pool, header);".format(buffer_name))
+                generator.generate_line(handler, "Engine::ContextUtils::loadBuffer(this->{0}, {0}CapacityBytes, this->memory, header);".format(buffer_name))
                 buffer_id += 1
             generator.generate_empty(handler)
         
@@ -206,7 +206,7 @@ def generate_context_merge(handler, context_raw_data):
                 buffer_name = buffer.name
                 generator.generate_line(handler, "Dod::BufferUtils::append(this->{0}, Dod::BufferUtils::createImFromBuffer(other.{0}));".format(buffer_name))
 
-        generator.generate_struct_method(struct_handler, "merge", "void", ["const Shared& other"], False, load_body)
+        generator.generate_struct_method(struct_handler, "merge", "void", ["const Data& other"], False, load_body)
 
     generator.generate_struct_impl(handler, "Data", struct_data)
     

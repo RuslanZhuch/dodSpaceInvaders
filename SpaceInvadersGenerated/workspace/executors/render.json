@@ -1,0 +1,24 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "renderInternal",
+            "list": [
+                "renderer"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "application"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "application",
+            "list": [
+                "application"
+            ]
+        }
+    ]
+}

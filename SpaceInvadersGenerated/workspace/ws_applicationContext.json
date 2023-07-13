@@ -1,8 +1,17 @@
 {
     "sharedContextsInstances": [
+        {
+            "contextName": "application",
+            "instanceName": "sApplication"
+        }
     ],
     "sharedContextsInstancesToFlush": [
     ],
     "sharedContextsUsage": [
+        {
+            "instanceName": "sApplication",
+            "executorName": "render",
+            "executorSharedName": "application"
+        }
     ]
 }

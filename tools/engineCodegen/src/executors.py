@@ -54,6 +54,11 @@ def gen_shared_context_init(handler, executor_data, workspace_data):
     for usage in usage_data:
         generator.generate_line(handler, "{}.{}Context = &{}Context;".format(executor_name, usage.executor_scontext, usage.shared_instance))
 
+def gen_headers(handler, executors_data):
+    for data in executors_data:
+        name = _to_class_name(get_name(data))
+        generator.generate_line(handler, "#include <executors/{}Executor.h>".format(name))
+
 def gen_inits(handler, executors_data, workspace_data):
     for data in executors_data:
         name = get_name(data)

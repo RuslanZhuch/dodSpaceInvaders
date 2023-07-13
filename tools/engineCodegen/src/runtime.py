@@ -27,19 +27,22 @@ def _get_validated_shared_context_instaces(workspace_shared_contexts_file, conte
 def _generate_commands(handler):
     def cycle_body(handler):
         def exit_body(handler):
-            generator.generate_line(handler, "return;")
-        generator.generate_block(handler, "if (Dod::BufferUtils::get(sApplication.context.commands, 0) == 1)", exit_body)
+            generator.generate_line(handler, "return 0;")
+        generator.generate_block(handler, "if (Dod::BufferUtils::get(sApplicationContext.context.commands, 0) == 1)", exit_body)
         
-    generator.generate_block(handler, "for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplication.context.commands); ++cmdId)", cycle_body)
+    generator.generate_block(handler, "for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplicationContext.context.commands); ++cmdId)", cycle_body)
 
-def _generate_include(handler, shared_context_instances : list[contexts.ContextUsage]):
+def _generate_contexts_includes(handler, shared_context_instances : list[contexts.ContextUsage]):
     context_names = [instance.context_name for instance in shared_context_instances]
     unique_instances = list(set(context_names))
     unique_instances.sort()
     
     for instance in unique_instances:
         generator.generate_line(handler, "#include <Contexts/{}Context.h>".format(_to_class_name(instance)))
-
+        
+    if len(unique_instances) > 0:
+        handler.newline(1)
+        
 def generate(target_path, executors_data, workspace_shared_contexts_file, loaded_contexts_data):
     
     workspace_context_data = loader.load_application_context_data(workspace_shared_contexts_file)
@@ -47,9 +50,11 @@ def generate(target_path, executors_data, workspace_shared_contexts_file, loaded
     
     validated_shared_context_instances = _get_validated_shared_context_instaces(workspace_shared_contexts_file, loaded_contexts_data)
     
-    _generate_include(handler, validated_shared_context_instances)
+    _generate_contexts_includes(handler, validated_shared_context_instances)
+    executors.gen_headers(handler, executors_data)
     handler.newline(1)
     
+    generator.generate_line(handler, "#include <dod/SharedContext.h>")
     generator.generate_line(handler, "#include <dod/BufferUtils.h>")
     generator.generate_line(handler, "#include <chrono>")
     handler.newline(1)
@@ -87,6 +92,6 @@ def generate(target_path, executors_data, workspace_shared_contexts_file, loaded
         generator.generate_variable(handler, "float", "deltaTime", 0)
         generator.generate_block(handler, "while(true)", cycle_function)
         
-    generator.generate_function(handler, "runtime", fill_function)
+    generator.generate_function(handler, "main", fill_function, "int")
     handler.close()
     

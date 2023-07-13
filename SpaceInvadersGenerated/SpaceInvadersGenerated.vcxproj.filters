@@ -4,10 +4,60 @@
     <Filter Include="src">
       <UniqueIdentifier>{643de10c-e207-4edc-881f-8930d0c22456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\contexts">
+      <UniqueIdentifier>{2865bad3-f53f-479e-b7ac-272fa352b6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\executors">
+      <UniqueIdentifier>{2730cfad-6892-4bd1-9e24-415f1481a563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\code">
+      <UniqueIdentifier>{c576d51b-dd78-422b-a123-6444a40c65d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal">
+      <UniqueIdentifier>{5dd63f3c-cae2-4e9a-9fa0-73d5f338ed40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\render">
+      <UniqueIdentifier>{b518161e-9600-42e1-8c4f-f08b264ec5a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\runtime.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\contexts\ApplicationContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\RenderExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\RenderExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\render\Renderer.cpp">
+      <Filter>src\internal\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\render\instantRenderer.cpp">
+      <Filter>src\internal\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\RenderInternalContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\contexts\ApplicationContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\RenderExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\render\Renderer.h">
+      <Filter>src\internal\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\render\instantRenderer.h">
+      <Filter>src\internal\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\RenderInternalContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

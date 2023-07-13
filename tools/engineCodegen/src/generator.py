@@ -28,9 +28,9 @@ def generate_line(handler, line):
 def generate_empty(handler, num_of_lines = 1):
     handler.newline(num_of_lines)
     
-def generate_function(hander, function_name, function_data):
+def generate_function(hander, function_name, function_data, return_type='void'):
     func = cpp_function.CppFunction(name=function_name,
-        ret_type='void',
+        ret_type=return_type,
         implementation_handle=function_data)
     func.render_to_string(hander)
     

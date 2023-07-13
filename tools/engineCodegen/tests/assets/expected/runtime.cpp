@@ -1,10 +1,15 @@
 #include <Contexts/SContext1Context.h>
 #include <Contexts/SContext2Context.h>
 
+#include <executors/Executor1Executor.h>
+#include <executors/Executor2Executor.h>
+#include <executors/Executor3Executor.h>
+
+#include <dod/SharedContext.h>
 #include <dod/BufferUtils.h>
 #include <chrono>
 
-void runtime()
+int main()
 {
     Dod::SharedContext::Controller<Game::Context::SContext1::Data> sharedInst1Context;
     Dod::SharedContext::Controller<Game::Context::SContext1::Data> sharedInst2Context;
@@ -51,11 +56,11 @@ void runtime()
         Dod::SharedContext::merge(&sharedInst3Context, executor3.shared2_2Context);
         Dod::SharedContext::merge(&sharedInst4Context, executor2.shared4Context);
 
-        for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplication.context.commands); ++cmdId)
+        for (int32_t cmdId{}; cmdId < Dod::BufferUtils::getNumFilledElements(sApplicationContext.context.commands); ++cmdId)
         {
-            if (Dod::BufferUtils::get(sApplication.context.commands, 0) == 1)
+            if (Dod::BufferUtils::get(sApplicationContext.context.commands, 0) == 1)
             {
-                return;
+                return 0;
             }
         }
 

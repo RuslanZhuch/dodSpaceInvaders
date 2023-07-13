@@ -33,8 +33,8 @@ namespace Game::Context::LContext1
         this->memory.allocate(needBytes);
         int32_t header{};
 
-        Engine::ContextUtils::loadBuffer(this->dbvar1, dbvar1CapacityBytes, pool, header);
-        Engine::ContextUtils::loadBuffer(this->dbvar2, dbvar2CapacityBytes, pool, header);
+        Engine::ContextUtils::loadBuffer(this->dbvar1, dbvar1CapacityBytes, this->memory, header);
+        Engine::ContextUtils::loadBuffer(this->dbvar2, dbvar2CapacityBytes, this->memory, header);
 
     }
 
@@ -44,7 +44,7 @@ namespace Game::Context::LContext1
         Dod::BufferUtils::flush(this->dbvar2);
     }
 
-    void Data::merge(const Shared& other) noexcept
+    void Data::merge(const Data& other) noexcept
     {
         Dod::BufferUtils::append(this->dbvar1, Dod::BufferUtils::createImFromBuffer(other.dbvar1));
         Dod::BufferUtils::append(this->dbvar2, Dod::BufferUtils::createImFromBuffer(other.dbvar2));

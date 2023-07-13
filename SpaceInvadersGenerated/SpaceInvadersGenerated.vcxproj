@@ -19,7 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\contexts\ApplicationContext.cpp" />
+    <ClCompile Include="src\contexts\RenderInternalContext.cpp" />
+    <ClCompile Include="src\executors\RenderExecutor.cpp" />
+    <ClCompile Include="src\executors\RenderExecutorImpl.cpp" />
+    <ClCompile Include="src\internal\render\instantRenderer.cpp" />
+    <ClCompile Include="src\internal\render\Renderer.cpp" />
     <ClCompile Include="src\runtime.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\contexts\ApplicationContext.h" />
+    <ClInclude Include="src\contexts\RenderInternalContext.h" />
+    <ClInclude Include="src\executors\RenderExecutor.h" />
+    <ClInclude Include="src\internal\render\instantRenderer.h" />
+    <ClInclude Include="src\internal\render\Renderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -105,14 +118,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)EngineCore\src;D:\Projects\sfml\SFML\include;D:\Projects\sfml\SFML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>EngineCore.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;soloud_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDid)thirdparty\Soloud\libs\$(Configuration);$(SolutionDir)$(Platform)\$(Configuration);D:\Projects\sfml\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,12 +141,15 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)EngineCore\src;D:\Projects\sfml\SFML\include;D:\Projects\sfml\SFML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>EngineCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

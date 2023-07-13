@@ -103,6 +103,19 @@ class TestExecutors(unittest.TestCase):
         
         utils.assert_files(self, "dest/gen_executor_2_shared_context_init.cpp", "assets/expected/gen_executor_2_shared_context_init.cpp")
                 
+    def test_gen_executor_headers(self):
+        executors_data = load_executors()
+        self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
+        
+        handler = generator.generate_file("dest", "executors_headers.cpp")
+        self.assertIsNotNone(handler)
+        
+        executors.gen_headers(handler, executors_data)
+        
+        handler.close()
+        
+        utils.assert_files(self, "dest/executors_headers.cpp", "assets/expected/executors_headers.cpp")
+                
     def test_gen_executor_init(self):
         executors_data = load_executors()
         self.assertEqual(len(executors_data), EXPECT_NUM_OF_EXECUTORS)
