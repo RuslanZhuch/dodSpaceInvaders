@@ -107,7 +107,7 @@
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir);D:\Projects\sfml\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);D:\Projects\sfml\SFML\include;$(SolutionDir)EngineCore\src;$(SolutionDir)SpaceInvadersGenerated/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>5045; 4711; 4710</DisableSpecificWarnings>
     </ClCompile>
     <Link>

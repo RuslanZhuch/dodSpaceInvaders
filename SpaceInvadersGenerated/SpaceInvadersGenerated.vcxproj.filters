@@ -19,6 +19,15 @@
     <Filter Include="src\internal\render">
       <UniqueIdentifier>{b518161e-9600-42e1-8c4f-f08b264ec5a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\internal\gameplay">
+      <UniqueIdentifier>{0c6f1bd7-f26a-4c6f-b4ac-d97825280726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\utils">
+      <UniqueIdentifier>{2db33c7a-da9c-4071-ae64-96d53fb7b216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\internal\sound">
+      <UniqueIdentifier>{a77be599-1140-4060-bfe0-a27ad8a9ec4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\runtime.cpp">
@@ -42,6 +51,138 @@
     <ClCompile Include="src\contexts\RenderInternalContext.cpp">
       <Filter>src\contexts</Filter>
     </ClCompile>
+    <ClCompile Include="src\contexts\CommonContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\render\GameRender.cpp">
+      <Filter>src\internal\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\render\SceneRenderer.cpp">
+      <Filter>src\internal\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\ModelsToRenderContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\SceneContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\PlayerDimentionsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\ModelsExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\ModelsExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\RenderCommandsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\SceneExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\SceneExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\PlayerExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\PlayerExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\PlayerContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\UnitsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\PlayerGameplay.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\Inputs.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\CollisionCore.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\PlayerBulletsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\PlayerBulletsExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\PlayerBulletsExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\ToSpawnContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\ToRemoveContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\BulletsGameplay.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\BulletsCore.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\ObstaclesContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\ObstacleDimentionsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\ObstaclesExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\ObstaclesExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\ObstaclesGameplay.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\ObstaclesCore.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\EnemiesContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\EnemiesExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\EnemiesExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\EnemiesCore.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\internal\gameplay\EnemiesGameplay.cpp">
+      <Filter>src\internal\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\EnemyDimentionsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\EnemyBulletsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\EnemyBulletsExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\EnemyBulletsExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\SoundCmdsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\contexts\SoundsContext.cpp">
+      <Filter>src\contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\SoundsExecutor.cpp">
+      <Filter>src\executors</Filter>
+    </ClCompile>
+    <ClCompile Include="src\executors\SoundsExecutorImpl.cpp">
+      <Filter>src\code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\contexts\ApplicationContext.h">
@@ -58,6 +199,126 @@
     </ClInclude>
     <ClInclude Include="src\contexts\RenderInternalContext.h">
       <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\CommonContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\render\GameRender.h">
+      <Filter>src\internal\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\render\SceneRenderer.h">
+      <Filter>src\internal\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\ModelsToRenderContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\SceneContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\PlayerDimentionsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\ModelsExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\modelTypes.h">
+      <Filter>src\internal\render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\RenderCommandsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\SceneExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\PlayerExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\PlayerContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\UnitsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\PlayerGameplay.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\Inputs.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\CollisionCore.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\PlayerBulletsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\PlayerBulletsExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\ToSpawnContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\ToRemoveContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\BulletsGameplay.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\BulletsCore.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\ObstaclesContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\ObstacleDimentionsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\ObstaclesExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\ObstaclesCore.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\ObstaclesGameplay.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\EnemiesContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\EnemiesExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dodSpaceInvaders\src\game\BulletsGameplay.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\EnemiesCore.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\utils\randomGenerator.h">
+      <Filter>src\internal\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\gameplay\EnemiesGameplay.h">
+      <Filter>src\internal\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\EnemyDimentionsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\EnemyBulletsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\EnemyBulletsExecutor.h">
+      <Filter>src\executors</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\SoundCmdsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\internal\sound\soundCore.h">
+      <Filter>src\internal\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\contexts\SoundsContext.h">
+      <Filter>src\contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\executors\SoundsExecutor.h">
+      <Filter>src\executors</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

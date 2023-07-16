@@ -6,6 +6,8 @@ namespace Game::ExecutionBlock
     void Render::loadContext() noexcept
     {
         this->rendererContext.load();
+        this->windowSpecsContext.load();
+        this->internalContext.load();
 
         this->applicationContext.load();
     }

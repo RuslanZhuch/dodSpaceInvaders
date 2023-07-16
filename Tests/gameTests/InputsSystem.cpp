@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <game/Inputs.cpp>
+#include <internal/gameplay/Inputs.cpp>
 
 TEST(InputsSystem, Fire)
 {

@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include <game/EnemiesCore.h>
-#include <game/EnemiesCore.cpp>
+#include <internal/gameplay/EnemiesCore.h>
+#include <internal/gameplay/EnemiesCore.cpp>
 #include <dod/BufferUtils.h>
 
 #include <array>

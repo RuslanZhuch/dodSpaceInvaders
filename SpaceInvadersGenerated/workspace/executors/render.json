@@ -8,6 +8,32 @@
             "list": [
                 "renderer"
             ]
+        },
+        {
+            "type": "common",
+            "list": [
+                "windowSpecs"
+            ]
+        },
+        {
+            "type": "renderInternal",
+            "list": [
+                "internal"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "modelsToRender",
+            "list": [
+                "modelsIds"
+            ]
+        },
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
         }
     ],
     "contextsToFlush": [

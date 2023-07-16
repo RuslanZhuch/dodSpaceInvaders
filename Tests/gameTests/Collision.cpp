@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <game/CollisionCore.cpp>
+#include <internal/gameplay/CollisionCore.cpp>
 
 #include <dod/BufferUtils.h>
 

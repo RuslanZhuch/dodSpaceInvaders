@@ -9,7 +9,7 @@ namespace Game::Context::Application
     void Data::load() noexcept
     {
 
-        const auto doc{ Engine::ContextUtils::loadFileDataRoot("../workspace/contexts/application.json") };
+        const auto doc{ Engine::ContextUtils::loadFileDataRoot("workspace/contexts/application.json") };
         const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 1) };
 
         if (!inputDataOpt.has_value())

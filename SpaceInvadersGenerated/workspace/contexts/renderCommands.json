@@ -1,0 +1,26 @@
+{
+    "whoIAm": "Context",
+    "version": 1,
+    "data": [
+      {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "name": "xCoords",
+        "capacity": 512
+      },
+      {
+        "type": "dbbuffer",
+        "dataType": "float",
+        "name": "yCoords",
+        "capacity": 512
+      },
+      {
+        "type": "dbbuffer",
+        "dataType": "Models::ModelMeta",
+        "name": "modelsMeta",
+        "capacity": 512
+      }
+    ]
+  
+  }
+  

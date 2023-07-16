@@ -3,15 +3,221 @@
         {
             "contextName": "application",
             "instanceName": "sApplication"
+        },
+        {
+            "contextName": "modelsToRender",
+            "instanceName": "modelsToRender"
+        },
+        {
+            "contextName": "renderCommands",
+            "instanceName": "renderCmds"
+        },
+        {
+            "contextName": "toSpawn",
+            "instanceName": "playerBulletsToSpawn"
+        },
+        {
+            "contextName": "units",
+            "instanceName": "playerCoord"
+        },
+        {
+            "contextName": "toRemove",
+            "instanceName": "playerToHit"
+        },
+        {
+            "contextName": "toRemove",
+            "instanceName": "obstaclesToHit"
+        },
+        {
+            "contextName": "units",
+            "instanceName": "obstaclesCoords"
+        },
+        {
+            "contextName": "toRemove",
+            "instanceName": "enemiesToHit"
+        },
+        {
+            "contextName": "units",
+            "instanceName": "enemiesCoords"
+        },
+        {
+            "contextName": "toSpawn",
+            "instanceName": "enemiesBulletsToSpawn"
+        },
+        {
+            "contextName": "soundCmds",
+            "instanceName": "soundCmds"
         }
     ],
     "sharedContextsInstancesToFlush": [
+        "renderCmds",
+        "playerBulletsToSpawn",
+        "obstaclesToHit",
+        "obstaclesCoords",
+        "enemiesToHit",
+        "enemiesCoords",
+        "enemiesBulletsToSpawn",
+        "playerToHit",
+        "playerCoord",
+        "soundCmds"
     ],
     "sharedContextsUsage": [
         {
+            "instanceName": "modelsToRender",
+            "executorName": "render",
+            "executorSharedName": "modelsIds"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "render",
+            "executorSharedName": "renderCmds"
+        },
+        {
+            "instanceName": "playerBulletsToSpawn",
+            "executorName": "playerBullets",
+            "executorSharedName": "toSpawn"
+        },
+        {
+            "instanceName": "obstaclesCoords",
+            "executorName": "playerBullets",
+            "executorSharedName": "obstaclesCoords"
+        },
+        {
+            "instanceName": "enemiesCoords",
+            "executorName": "playerBullets",
+            "executorSharedName": "enemiesCoords"
+        },
+        {
+            "instanceName": "playerToHit",
+            "executorName": "player",
+            "executorSharedName": "toHit"
+        },
+        {
+            "instanceName": "obstaclesToHit",
+            "executorName": "obstacles",
+            "executorSharedName": "toHit"
+        },
+        {
+            "instanceName": "enemiesToHit",
+            "executorName": "enemies",
+            "executorSharedName": "toHit"
+        },
+        {
+            "instanceName": "enemiesBulletsToSpawn",
+            "executorName": "enemyBullets",
+            "executorSharedName": "toSpawn"
+        },
+        {
+            "instanceName": "obstaclesCoords",
+            "executorName": "enemyBullets",
+            "executorSharedName": "obstaclesCoords"
+        },
+        {
+            "instanceName": "playerCoord",
+            "executorName": "enemyBullets",
+            "executorSharedName": "playerCoord"
+        },
+        {
+            "instanceName": "soundCmds",
+            "executorName": "sounds",
+            "executorSharedName": "cmds"
+        }
+    ],
+    "sharedContextsMerge": [
+        {
             "instanceName": "sApplication",
             "executorName": "render",
-            "executorSharedName": "application"
+            "executorContextName": "application"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "scene",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "player",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "obstacles",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "enemies",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "enemiesCoords",
+            "executorName": "enemies",
+            "executorContextName": "units"
+        },
+        {
+            "instanceName": "enemiesBulletsToSpawn",
+            "executorName": "enemies",
+            "executorContextName": "bulletsToSpawn"
+        },
+        {
+            "instanceName": "obstaclesCoords",
+            "executorName": "obstacles",
+            "executorContextName": "obstaclesCoords"
+        },
+        {
+            "instanceName": "playerBulletsToSpawn",
+            "executorName": "player",
+            "executorContextName": "bulletsToSpawn"
+        },
+        {
+            "instanceName": "playerCoord",
+            "executorName": "player",
+            "executorContextName": "unit"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "playerBullets",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "obstaclesToHit",
+            "executorName": "playerBullets",
+            "executorContextName": "obstaclesToHit"
+        },
+        {
+            "instanceName": "enemiesToHit",
+            "executorName": "playerBullets",
+            "executorContextName": "enemiesToHit"
+        },
+        {
+            "instanceName": "soundCmds",
+            "executorName": "playerBullets",
+            "executorContextName": "soundCmds"
+        },
+        {
+            "instanceName": "modelsToRender",
+            "executorName": "models",
+            "executorContextName": "models"
+        },
+        {
+            "instanceName": "renderCmds",
+            "executorName": "enemyBullets",
+            "executorContextName": "renderCmds"
+        },
+        {
+            "instanceName": "obstaclesToHit",
+            "executorName": "enemyBullets",
+            "executorContextName": "obstaclesToHit"
+        },
+        {
+            "instanceName": "soundCmds",
+            "executorName": "enemyBullets",
+            "executorContextName": "soundCmds"
+        },
+        {
+            "instanceName": "playerToHit",
+            "executorName": "enemyBullets",
+            "executorContextName": "playerToHit"
         }
     ]
 }

@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include <game/Renderer.h>
+#include <internal/render/Renderer.h>
 
-#include <game/SceneRenderer.cpp>
+#include <internal/render/SceneRenderer.cpp>
 
 #include "Mocks/MockInstantRenderer.h"
 #include "gameTests/GameTestsContext.h"

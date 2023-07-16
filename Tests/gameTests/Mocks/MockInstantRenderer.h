@@ -1,6 +1,6 @@
 #pragma once
 
-#include <game/Renderer.h>
+#include <internal/render/Renderer.h>
 
 //namespace Mock::Renderer
 //{

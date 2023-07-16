@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include <game/Renderer.h>
-#include <game/Renderer.cpp>
+#include <internal/render/Renderer.h>
+#include <internal/render/Renderer.cpp>
 
 #include "Mocks/MockInstantRenderer.h"
 #include "gameTests/GameTestsContext.h"

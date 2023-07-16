@@ -1,0 +1,84 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "numOfEnemiesPerRow",
+      "initial": 10
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "numOfEnemiesPerCol",
+      "initial": 4
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "enemiesXStride",
+      "initial": 50
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "enemiesYStride",
+      "initial": 50
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "weaponCooldownTime",
+      "initial": 0.5
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "weaponCooldownTimeLeft",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "startCoordX",
+      "initial": 100
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "startCoordY",
+      "initial": 200
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "direction",
+      "initial": 1
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "cooldownTimeLeft",
+      "initial": 2
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "cooldownTime",
+      "initial": 2
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "targetX",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "Game::Utils::RandomGenerator",
+      "name": "rand"
+    }
+  ]
+ 
+}

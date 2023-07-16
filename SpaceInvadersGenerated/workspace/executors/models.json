@@ -1,0 +1,36 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "playerDimentions",
+            "list": [
+                "playerParams"
+            ]
+        },
+        {
+            "type": "scene",
+            "list": [
+                "sceneParams"
+            ]
+        },
+        {
+            "type": "common",
+            "list": [
+                "windowParams"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "models"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "modelsToRender",
+            "list": [
+                "models"
+            ]
+        }
+    ]
+}

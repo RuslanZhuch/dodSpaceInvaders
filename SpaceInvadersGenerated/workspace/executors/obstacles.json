@@ -1,0 +1,51 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "units",
+            "list": [
+                "obstaclesCoords"
+            ]
+        },
+        {
+            "type": "obstacles",
+            "list": [
+                "parameters"
+            ]
+        },
+        {
+            "type": "obstacleDimentions",
+            "list": [
+                "dimentions"
+            ]
+        },
+        {
+            "type": "toRemove",
+            "list": [
+                "toRemove"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "toRemove",
+            "list": [
+                "toHit"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "renderCmds",
+        "toRemove"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
+        }
+    ]
+}

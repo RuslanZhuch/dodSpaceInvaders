@@ -1,0 +1,45 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "player",
+            "list": [
+                "parameters"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "toRemove",
+            "list": [
+                "toHit"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "renderCmds",
+        "bulletsToSpawn"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "units",
+            "list": [
+                "unit"
+            ]
+        },
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
+        },
+        {
+            "type": "toSpawn",
+            "list": [
+                "bulletsToSpawn"
+            ]
+        }
+    ]
+}

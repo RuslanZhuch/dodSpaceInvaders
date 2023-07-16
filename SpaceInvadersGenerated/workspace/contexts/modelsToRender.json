@@ -1,0 +1,19 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "dbbuffer",
+      "dataType": "sf::VertexArray",
+      "name": "loadedModels",
+      "capacity": 32
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "int32_t",
+      "name": "modelIds",
+      "capacity": 32
+    }
+  ]
+
+}

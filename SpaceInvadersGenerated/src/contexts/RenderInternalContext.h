@@ -12,7 +12,8 @@ namespace Game::Context::RenderInternal
         void reset() noexcept;
         void merge(const Data& other) noexcept;
 
-        Game::GameRendererPtr renderer{ nullptr };
+        Game::GameRendererPtr renderer{};
         Dod::MemPool memory;
+        Dod::DBBuffer<int32_t> idsToRender;
     };
 }

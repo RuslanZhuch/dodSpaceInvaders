@@ -1,0 +1,49 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "contextType": "Local",
+  "data": [
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "positionX",
+      "initial": 400
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "positionY",
+      "initial": 850
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "lifes",
+      "initial": 1
+    },
+    {
+      "type": "object",
+      "dataType": "uint32_t",
+      "name": "inputs",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "uint32_t",
+      "name": "prevInputs",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "move",
+      "initial": 0
+    },
+    {
+      "type": "object",
+      "dataType": "int32_t",
+      "name": "fire",
+      "initial": 0
+    }
+  ]
+}

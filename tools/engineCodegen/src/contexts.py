@@ -67,7 +67,8 @@ def generate_context_data(handler, context_raw_data):
         context_data = load_data(context_raw_data)
         
         for object in context_data.objects_data:
-            generator.generate_struct_variable(struct_handler, object.data_type, object.name, object.initial)
+            initial = 0 if object.initial != 0 and object.initial is not None else object.initial
+            generator.generate_struct_variable(struct_handler, object.data_type, object.name, initial)
             
         generator.generate_struct_variable(struct_handler, "Dod::MemPool", "memory", None)
         for buffer in context_data.buffers_data:
@@ -237,17 +238,17 @@ def generate_shared_flush(handler, workspace_data):
 def load_shared_context_merge(workspace_data):    
     output = dict()
     
-    merge_data_full = workspace_data["sharedContextsUsage"]
+    merge_data_full = workspace_data.get("sharedContextsMerge")
     if merge_data_full is None:
         return output
     
     for element in merge_data_full:
         executor_name = element["executorName"]
         shared_instance = element["instanceName"]
-        executor_scontext = element["executorSharedName"]
+        executor_context = element["executorContextName"]
         if output.get(shared_instance) is None:
             output[shared_instance] = []    
-        output[shared_instance].append(SharedMerge(executor_name, executor_scontext))
+        output[shared_instance].append(SharedMerge(executor_name, executor_context))
         
     return output
     

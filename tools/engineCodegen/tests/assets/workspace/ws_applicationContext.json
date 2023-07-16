@@ -57,5 +57,22 @@
             "executorName": "executor3",
             "executorSharedName": "shared2_2"
         }
+    ],
+    "sharedContextsMerge": [
+        {
+            "instanceName": "sharedInst1",
+            "executorName": "executor2",
+            "executorContextName": "target1"
+        },
+        {
+            "instanceName": "sharedInst1",
+            "executorName": "executor2",
+            "executorContextName": "target2"
+        },
+        {
+            "instanceName": "sharedInst3",
+            "executorName": "executor3",
+            "executorContextName": "shared3"
+        }
     ]
 }

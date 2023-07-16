@@ -75,10 +75,10 @@ def generate(target_path, executors_data, workspace_shared_contexts_file, loaded
             contexts.generate_shared_flush(handler, workspace_context_data)
             handler.newline(1)
             
-            executors.gen_flush(handler, executors_data)
+            contexts.generate_shared_merge(handler, workspace_context_data)
             handler.newline(1)
             
-            contexts.generate_shared_merge(handler, workspace_context_data)
+            executors.gen_flush(handler, executors_data)
             handler.newline(1)
         
             _generate_commands(handler)

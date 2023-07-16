@@ -11,7 +11,7 @@ namespace Game::Context::SContext2
         void reset() noexcept;
         void merge(const Data& other) noexcept;
 
-        float var{ 42 };
+        float var{};
         Dod::MemPool memory;
     };
 }

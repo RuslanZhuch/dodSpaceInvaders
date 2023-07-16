@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dodSpaceInvaders", "dodSpaceInvaders\dodSpaceInvaders.vcxproj", "{5188043C-465E-40B8-8DE4-27206FCFE51F}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tests", "Tests\Tests.vcxproj", "{4A3514E2-41F5-40DC-B28A-33FD262322B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31A4C299-3EA3-46B3-8EA1-AEA042402133} = {31A4C299-3EA3-46B3-8EA1-AEA042402133}
+		{C92B4E72-A6A9-4193-ADD2-744AD24391D3} = {C92B4E72-A6A9-4193-ADD2-744AD24391D3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceInvadersGenerated", "SpaceInvadersGenerated\SpaceInvadersGenerated.vcxproj", "{C92B4E72-A6A9-4193-ADD2-744AD24391D3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -22,14 +24,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Debug|x64.ActiveCfg = Debug|x64
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Debug|x64.Build.0 = Debug|x64
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Debug|x86.ActiveCfg = Debug|Win32
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Debug|x86.Build.0 = Debug|Win32
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Release|x64.ActiveCfg = Release|x64
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Release|x64.Build.0 = Release|x64
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Release|x86.ActiveCfg = Release|Win32
-		{5188043C-465E-40B8-8DE4-27206FCFE51F}.Release|x86.Build.0 = Release|Win32
 		{4A3514E2-41F5-40DC-B28A-33FD262322B8}.Debug|x64.ActiveCfg = Debug|x64
 		{4A3514E2-41F5-40DC-B28A-33FD262322B8}.Debug|x64.Build.0 = Debug|x64
 		{4A3514E2-41F5-40DC-B28A-33FD262322B8}.Debug|x86.ActiveCfg = Debug|Win32

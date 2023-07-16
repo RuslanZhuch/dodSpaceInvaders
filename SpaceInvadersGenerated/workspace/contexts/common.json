@@ -1,0 +1,26 @@
+{
+    "whoIAm": "Context",
+    "version": 1,
+    "contextType": "Local",
+    "data": [
+      {
+        "type": "object",
+        "dataType": "float",
+        "name": "width",
+        "initial": 800
+      },
+      {
+        "type": "object",
+        "dataType": "float",
+        "name": "height",
+        "initial": 900
+      },
+      {
+        "type": "object",
+        "dataType": "Engine::String",
+        "name": "title",
+        "initial": "Generated space invaders"
+      }
+    ] 
+  }
+  

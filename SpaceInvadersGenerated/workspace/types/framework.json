@@ -2,6 +2,12 @@
     "whoIAm": "TypesDesc",
     "version": 1,
     "data":{
-        "Game::GameRendererPtr": "internal/render/Renderer.h"
+        "Game::GameRendererPtr": "internal/render/Renderer.h",
+        "sf::VertexArray": "internal/render/Renderer.h",
+        "Engine::String": "engine/String.h",
+        "Models::ModelMeta": "internal/modelTypes.h",
+        "Game::Utils::RandomGenerator": "internal/utils/randomGenerator.h",
+        "Game::Sound::Core": "internal/sound/soundCore.h",
+        "Game::Sound::Wav": "internal/sound/soundCore.h"
     }
 }

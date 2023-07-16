@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <game/BulletsCore.cpp>
+#include <internal/gameplay/BulletsCore.cpp>
 
 #include <dod/BufferUtils.h>
 

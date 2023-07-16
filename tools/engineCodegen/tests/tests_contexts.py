@@ -208,32 +208,20 @@ class TestContexts(unittest.TestCase):
         workspace_data = loader.load_application_context_data("assets/workspace/ws_applicationContext.json")
         
         merge_data = contexts.load_shared_context_merge(workspace_data)
-        self.assertEqual(len(merge_data), 4)
+        self.assertEqual(len(merge_data), 2)
         
         self.assertIsNotNone(merge_data["sharedInst1"])
         self.assertEqual(len(merge_data["sharedInst1"]), 2)
         self.assertEqual(merge_data["sharedInst1"][0].executor_name, "executor2")
-        self.assertEqual(merge_data["sharedInst1"][0].executor_scontext, "shared1")
-        self.assertEqual(merge_data["sharedInst1"][1].executor_name, "executor3")
-        self.assertEqual(merge_data["sharedInst1"][1].executor_scontext, "shared1_2")
-        
-        self.assertIsNotNone(merge_data["sharedInst2"])
-        self.assertEqual(len(merge_data["sharedInst2"]), 1)
-        self.assertEqual(merge_data["sharedInst2"][0].executor_name, "executor2")
-        self.assertEqual(merge_data["sharedInst2"][0].executor_scontext, "shared2")
+        self.assertEqual(merge_data["sharedInst1"][0].executor_scontext, "target1")
+        self.assertEqual(merge_data["sharedInst1"][1].executor_name, "executor2")
+        self.assertEqual(merge_data["sharedInst1"][1].executor_scontext, "target2")
         
         self.assertIsNotNone(merge_data["sharedInst3"])
-        self.assertEqual(len(merge_data["sharedInst3"]), 2)
-        self.assertEqual(merge_data["sharedInst3"][0].executor_name, "executor2")
+        self.assertEqual(len(merge_data["sharedInst3"]), 1)
+        self.assertEqual(merge_data["sharedInst3"][0].executor_name, "executor3")
         self.assertEqual(merge_data["sharedInst3"][0].executor_scontext, "shared3")
-        self.assertEqual(merge_data["sharedInst3"][1].executor_name, "executor3")
-        self.assertEqual(merge_data["sharedInst3"][1].executor_scontext, "shared2_2")
-        
-        self.assertIsNotNone(merge_data["sharedInst4"])
-        self.assertEqual(len(merge_data["sharedInst4"]), 1)
-        self.assertEqual(merge_data["sharedInst4"][0].executor_name, "executor2")
-        self.assertEqual(merge_data["sharedInst4"][0].executor_scontext, "shared4")
-        
+                        
     def test_generate_shared_contexts_merge(self):
         handler = generator.generate_file("dest", "gen_shared_contexts_merge.cpp")
         self.assertIsNotNone(handler)

@@ -11,8 +11,8 @@ namespace Game::Context::LContext2
         void reset() noexcept;
         void merge(const Data& other) noexcept;
 
-        int32_t var1{ 1 };
-        float var2{ 1.1 };
+        int32_t var1{};
+        float var2{};
         Dod::MemPool memory;
         Dod::DBBuffer<float> dbvar0;
         Dod::DBBuffer<int64_t> dbvar1;

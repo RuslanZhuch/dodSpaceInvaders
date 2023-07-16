@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include <game/Renderer.h>
+#include <internal/render/Renderer.h>
 
 namespace GameTests
 {

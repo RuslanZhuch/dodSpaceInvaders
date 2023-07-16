@@ -20,19 +20,103 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\contexts\ApplicationContext.cpp" />
+    <ClCompile Include="src\contexts\CommonContext.cpp" />
+    <ClCompile Include="src\contexts\EnemiesContext.cpp" />
+    <ClCompile Include="src\contexts\EnemyBulletsContext.cpp" />
+    <ClCompile Include="src\contexts\EnemyDimentionsContext.cpp" />
+    <ClCompile Include="src\contexts\ModelsToRenderContext.cpp" />
+    <ClCompile Include="src\contexts\ObstacleDimentionsContext.cpp" />
+    <ClCompile Include="src\contexts\ObstaclesContext.cpp" />
+    <ClCompile Include="src\contexts\PlayerBulletsContext.cpp" />
+    <ClCompile Include="src\contexts\PlayerContext.cpp" />
+    <ClCompile Include="src\contexts\PlayerDimentionsContext.cpp" />
+    <ClCompile Include="src\contexts\RenderCommandsContext.cpp" />
     <ClCompile Include="src\contexts\RenderInternalContext.cpp" />
+    <ClCompile Include="src\contexts\SceneContext.cpp" />
+    <ClCompile Include="src\contexts\SoundCmdsContext.cpp" />
+    <ClCompile Include="src\contexts\SoundsContext.cpp" />
+    <ClCompile Include="src\contexts\ToRemoveContext.cpp" />
+    <ClCompile Include="src\contexts\ToSpawnContext.cpp" />
+    <ClCompile Include="src\contexts\UnitsContext.cpp" />
+    <ClCompile Include="src\executors\EnemiesExecutor.cpp" />
+    <ClCompile Include="src\executors\EnemiesExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\EnemyBulletsExecutor.cpp" />
+    <ClCompile Include="src\executors\EnemyBulletsExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\ModelsExecutor.cpp" />
+    <ClCompile Include="src\executors\ModelsExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\ObstaclesExecutor.cpp" />
+    <ClCompile Include="src\executors\ObstaclesExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\PlayerBulletsExecutor.cpp" />
+    <ClCompile Include="src\executors\PlayerBulletsExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\PlayerExecutor.cpp" />
+    <ClCompile Include="src\executors\PlayerExecutorImpl.cpp" />
     <ClCompile Include="src\executors\RenderExecutor.cpp" />
     <ClCompile Include="src\executors\RenderExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\SceneExecutor.cpp" />
+    <ClCompile Include="src\executors\SceneExecutorImpl.cpp" />
+    <ClCompile Include="src\executors\SoundsExecutor.cpp" />
+    <ClCompile Include="src\executors\SoundsExecutorImpl.cpp" />
+    <ClCompile Include="src\internal\gameplay\BulletsCore.cpp" />
+    <ClCompile Include="src\internal\gameplay\BulletsGameplay.cpp" />
+    <ClCompile Include="src\internal\gameplay\CollisionCore.cpp" />
+    <ClCompile Include="src\internal\gameplay\EnemiesCore.cpp" />
+    <ClCompile Include="src\internal\gameplay\EnemiesGameplay.cpp" />
+    <ClCompile Include="src\internal\gameplay\Inputs.cpp" />
+    <ClCompile Include="src\internal\gameplay\ObstaclesCore.cpp" />
+    <ClCompile Include="src\internal\gameplay\ObstaclesGameplay.cpp" />
+    <ClCompile Include="src\internal\gameplay\PlayerGameplay.cpp" />
+    <ClCompile Include="src\internal\render\GameRender.cpp" />
     <ClCompile Include="src\internal\render\instantRenderer.cpp" />
     <ClCompile Include="src\internal\render\Renderer.cpp" />
+    <ClCompile Include="src\internal\render\SceneRenderer.cpp" />
     <ClCompile Include="src\runtime.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\dodSpaceInvaders\src\game\BulletsGameplay.h" />
     <ClInclude Include="src\contexts\ApplicationContext.h" />
+    <ClInclude Include="src\contexts\CommonContext.h" />
+    <ClInclude Include="src\contexts\EnemiesContext.h" />
+    <ClInclude Include="src\contexts\EnemyBulletsContext.h" />
+    <ClInclude Include="src\contexts\EnemyDimentionsContext.h" />
+    <ClInclude Include="src\contexts\ModelsToRenderContext.h" />
+    <ClInclude Include="src\contexts\ObstacleDimentionsContext.h" />
+    <ClInclude Include="src\contexts\ObstaclesContext.h" />
+    <ClInclude Include="src\contexts\PlayerBulletsContext.h" />
+    <ClInclude Include="src\contexts\PlayerContext.h" />
+    <ClInclude Include="src\contexts\PlayerDimentionsContext.h" />
+    <ClInclude Include="src\contexts\RenderCommandsContext.h" />
     <ClInclude Include="src\contexts\RenderInternalContext.h" />
+    <ClInclude Include="src\contexts\SceneContext.h" />
+    <ClInclude Include="src\contexts\SoundCmdsContext.h" />
+    <ClInclude Include="src\contexts\SoundsContext.h" />
+    <ClInclude Include="src\contexts\ToRemoveContext.h" />
+    <ClInclude Include="src\contexts\ToSpawnContext.h" />
+    <ClInclude Include="src\contexts\UnitsContext.h" />
+    <ClInclude Include="src\executors\EnemiesExecutor.h" />
+    <ClInclude Include="src\executors\EnemyBulletsExecutor.h" />
+    <ClInclude Include="src\executors\ModelsExecutor.h" />
+    <ClInclude Include="src\executors\ObstaclesExecutor.h" />
+    <ClInclude Include="src\executors\PlayerBulletsExecutor.h" />
+    <ClInclude Include="src\executors\PlayerExecutor.h" />
     <ClInclude Include="src\executors\RenderExecutor.h" />
+    <ClInclude Include="src\executors\SceneExecutor.h" />
+    <ClInclude Include="src\executors\SoundsExecutor.h" />
+    <ClInclude Include="src\internal\gameplay\BulletsCore.h" />
+    <ClInclude Include="src\internal\gameplay\BulletsGameplay.h" />
+    <ClInclude Include="src\internal\gameplay\CollisionCore.h" />
+    <ClInclude Include="src\internal\gameplay\EnemiesCore.h" />
+    <ClInclude Include="src\internal\gameplay\EnemiesGameplay.h" />
+    <ClInclude Include="src\internal\gameplay\Inputs.h" />
+    <ClInclude Include="src\internal\gameplay\ObstaclesCore.h" />
+    <ClInclude Include="src\internal\gameplay\ObstaclesGameplay.h" />
+    <ClInclude Include="src\internal\gameplay\PlayerGameplay.h" />
+    <ClInclude Include="src\internal\modelTypes.h" />
+    <ClInclude Include="src\internal\render\GameRender.h" />
     <ClInclude Include="src\internal\render\instantRenderer.h" />
     <ClInclude Include="src\internal\render\Renderer.h" />
+    <ClInclude Include="src\internal\render\SceneRenderer.h" />
+    <ClInclude Include="src\internal\sound\soundCore.h" />
+    <ClInclude Include="src\internal\utils\randomGenerator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -122,7 +206,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)EngineCore\src;D:\Projects\sfml\SFML\include;D:\Projects\sfml\SFML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)EngineCore\src;D:\Projects\sfml\SFML\include;D:\Projects\sfml\SFML;$(ProjectDir)thirdparty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

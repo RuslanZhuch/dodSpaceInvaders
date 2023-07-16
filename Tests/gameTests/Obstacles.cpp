@@ -2,7 +2,7 @@
 
 #include <dod/BufferUtils.h>
 
-#include <game/ObstaclesCore.cpp>
+#include <internal/gameplay/ObstaclesCore.cpp>
 
 #include <array>
 
