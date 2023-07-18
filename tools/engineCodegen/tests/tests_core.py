@@ -41,8 +41,8 @@ class TestCore(unittest.TestCase):
         
     def test_load_data_shared_contexts_from_folder(self):
         data = loader.load_shared_contexts([
-            "assets/contexts/shared/sContext1.json",
-            "assets/contexts/shared/sContext2.json"
+            "assets/contexts/sContext1.json",
+            "assets/contexts/sContext2.json"
         ])
         self.assertEqual(len(data), 2)
         

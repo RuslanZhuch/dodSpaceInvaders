@@ -2,7 +2,7 @@
 void Data::load() noexcept
 {
 
-    const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/local/lContext2.json") };
+    const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/lContext2.json") };
     const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 4) };
 
     if (!inputDataOpt.has_value())

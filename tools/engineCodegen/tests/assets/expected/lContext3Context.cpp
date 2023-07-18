@@ -9,7 +9,7 @@ namespace Game::Context::LContext3
     void Data::load() noexcept
     {
 
-        const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/local/lContext3.json") };
+        const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/lContext3.json") };
         const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 1) };
 
         if (!inputDataOpt.has_value())

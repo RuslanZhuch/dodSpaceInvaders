@@ -36,8 +36,8 @@ class TestRuntime(unittest.TestCase):
             "assets/executors/executor3.json"
         ])
         contexts_file_list = [
-            "assets/contexts/shared/sContext1.json",
-            "assets/contexts/shared/sContext2.json"
+            "assets/contexts/sContext1.json",
+            "assets/contexts/sContext2.json"
         ]
         
         contexts_data = contexts.load_contexts(contexts_file_list)

@@ -366,3 +366,7 @@ tools/engineCodegen/tests/dest/Test1Executor.cpp
 tools/engineCodegen/tests/dest/gen_executor_1_body_contexts_load.cpp
 tools/engineCodegen/tests/dest/gen_executor_1_body_initImpl.cpp
 tools/engineCodegen/tests/dest
+tools/engineCodegen/tests/assets/contexts/prev
+tools/engineCodegen/tests/assets/executors/prev
+tools/engineCodegen/tests/assets/project2/contexts/prev
+tools/engineCodegen/tests/assets/project2/executors/prev

@@ -21,8 +21,8 @@ import utils
 
 def load_shared_contexts():
     return contexts.load_contexts([
-        "assets/contexts/shared/sContext1.json",
-        "assets/contexts/shared/sContext2.json"
+        "assets/contexts/sContext1.json",
+        "assets/contexts/sContext2.json"
     ])
 
 class TestContexts(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestContexts(unittest.TestCase):
         self.maxDiff = None
     
     def test_load_context_data(self):
-        context_raw_data = loader.load_file_data("assets/contexts/local/lContext1.json")
+        context_raw_data = loader.load_file_data("assets/contexts/lContext1.json")
         context_data = contexts.load_data(context_raw_data)
         
         self.assertEqual(len(context_data.objects_data), 3)
@@ -59,7 +59,7 @@ class TestContexts(unittest.TestCase):
         self.assertEqual(context_data.buffers_data[1].capacity, 1024)
         
     def test_gen_context1_data(self):
-        context_raw_data = loader.load_file_data("assets/contexts/local/lContext1.json")
+        context_raw_data = loader.load_file_data("assets/contexts/lContext1.json")
         
         handler = generator.generate_file("dest", "gen_lContext1_data.cpp")
         self.assertIsNotNone(handler)
@@ -73,18 +73,18 @@ class TestContexts(unittest.TestCase):
         types_file_data = loader.load_file_data("assets/workspace/types_contexts_data.json")
         types_cache = types_manager.cache_types([types_file_data])
         
-        contexts.generate_context_def("dest", "assets/contexts/local/lContext1.json", types_cache)
+        contexts.generate_context_def("dest", "assets/contexts/lContext1.json", types_cache)
         utils.assert_files(self, "dest/lContext1Context.h", "assets/expected/lContext1Context.h")
         
     def test_gen_context2_def(self):
         types_file_data = loader.load_file_data("assets/workspace/types_contexts_data.json")
         types_cache = types_manager.cache_types([types_file_data])
         
-        contexts.generate_context_def("dest", "assets/contexts/local/lContext2.json", types_cache)
+        contexts.generate_context_def("dest", "assets/contexts/lContext2.json", types_cache)
         utils.assert_files(self, "dest/lContext2Context.h", "assets/expected/lContext2Context.h")
         
     def test_gen_context1_load(self):
-        file_path = "assets/contexts/local/lContext1.json"
+        file_path = "assets/contexts/lContext1.json"
         context_raw_data = loader.load_file_data(file_path)
         
         handler = generator.generate_file("dest", "gen_lContext1_load.cpp")
@@ -96,7 +96,7 @@ class TestContexts(unittest.TestCase):
         utils.assert_files(self, "dest/gen_lContext1_load.cpp", "assets/expected/gen_lContext1_load.cpp")
           
     def test_gen_context2_load(self):
-        file_path = "assets/contexts/local/lContext2.json"
+        file_path = "assets/contexts/lContext2.json"
         context_raw_data = loader.load_file_data(file_path)
         
         handler = generator.generate_file("dest", "gen_lContext2_load.cpp")
@@ -108,7 +108,7 @@ class TestContexts(unittest.TestCase):
         utils.assert_files(self, "dest/gen_lContext2_load.cpp", "assets/expected/gen_lContext2_load.cpp")
       
     def test_gen_context1_reset(self):
-        file_path = "assets/contexts/local/lContext1.json"
+        file_path = "assets/contexts/lContext1.json"
         context_raw_data = loader.load_file_data(file_path)
         
         handler = generator.generate_file("dest", "gen_lContext1_reset.cpp")
@@ -120,7 +120,7 @@ class TestContexts(unittest.TestCase):
         utils.assert_files(self, "dest/gen_lContext1_reset.cpp", "assets/expected/gen_lContext1_reset.cpp")
           
     def test_gen_context2_reset(self):
-        file_path = "assets/contexts/local/lContext1.json"
+        file_path = "assets/contexts/lContext1.json"
         context_raw_data = loader.load_file_data(file_path)
         
         handler = generator.generate_file("dest", "gen_lContext1_merge.cpp")
@@ -132,11 +132,11 @@ class TestContexts(unittest.TestCase):
         utils.assert_files(self, "dest/gen_lContext1_merge.cpp", "assets/expected/gen_lContext1_merge.cpp")
           
     def test_gen_context1_impl(self):
-        contexts.generate_context_impl("dest", "assets/contexts/local/lContext1.json")
+        contexts.generate_context_impl("dest", "assets/contexts/lContext1.json")
         utils.assert_files(self, "dest/lContext1Context.cpp", "assets/expected/lContext1Context.cpp")
         
     def test_gen_context2_impl(self):
-        contexts.generate_context_impl("dest", "assets/contexts/local/lContext2.json")
+        contexts.generate_context_impl("dest", "assets/contexts/lContext2.json")
         utils.assert_files(self, "dest/lContext2Context.cpp", "assets/expected/lContext2Context.cpp")
         
     def test_load_shared_context_instancies(self):
