@@ -12,7 +12,7 @@
             "type": "object",
             "dataType": "float",
             "name": "var2",
-            "initial": 1.1
+            "initial": 2.1
         },
         {
             "type": "dbbuffer",
@@ -24,7 +24,7 @@
             "type": "dbbuffer",
             "dataType": "int64_t",
             "name": "dbvar1",
-            "capacity": 1024
+            "capacity": 2048
         }
     ]
 }

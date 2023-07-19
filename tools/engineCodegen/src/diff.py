@@ -4,9 +4,13 @@ import loader
 from os import path
 import shutil
 
-def _get_dict_keys(dict_data : dict):
+import filecmp
+
+def _get_dict_keys(dict_data : any):
     keys = []
-    
+    if not isinstance(dict_data, dict):
+        return keys
+        
     for key in dict_data.keys():
         keys.append(key)
         value = dict_data[key]
@@ -20,6 +24,10 @@ def _get_dict_keys(dict_data : dict):
 
 def _get_dict_values(dict_data : dict, filter : list[str]):
     values = []
+    if not isinstance(dict_data, dict):
+        values.append(dict_data)
+        return values
+    
     for key in dict_data.keys():
         value = dict_data[key]
         if isinstance(value, dict):
@@ -51,6 +59,11 @@ def _find_element(buffer : list[any], element : any):
     
     return -1
 
+def check_files_equals(file_path_left : str, file_path_right : str):
+    if not path.isfile(file_path_left) or not path.isfile(file_path_right):
+        return False
+    return filecmp.cmp(file_path_left, file_path_right)
+
 def check_structure_is_same(left_data : dict, right_data : dict, filter : list[str] = []):
     left_keys = _get_dict_keys(left_data)
     right_keys = _get_dict_keys(right_data)
@@ -64,7 +77,7 @@ def check_structure_is_same(left_data : dict, right_data : dict, filter : list[s
         
     return left_values == right_values
 
-def generate_list(curr_states_folder : list[str], prev_states_folder : list[str], files_list : list[str]):
+def generate_list(curr_states_folder : list[str], prev_states_folder : list[str], files_list : list[str], filter : list[str] = []):
     curr_file_paths = [curr_states_folder + "/" + file for file in files_list]
     prev_file_paths = [prev_states_folder + "/" + file for file in files_list]
     
@@ -77,7 +90,7 @@ def generate_list(curr_states_folder : list[str], prev_states_folder : list[str]
     diff_list = []
     for curr_file_index in range(0, len(current_state_datas)):
         prev_file_index = _find_element(prev_file_names, curr_file_names[curr_file_index])
-        if prev_file_index == -1 or not check_structure_is_same(current_state_datas[curr_file_index], prev_state_datas[prev_file_index]):
+        if prev_file_index == -1 or not check_structure_is_same(current_state_datas[curr_file_index], prev_state_datas[prev_file_index], filter):
             diff_list.append(files_list[curr_file_index])
         
     return diff_list

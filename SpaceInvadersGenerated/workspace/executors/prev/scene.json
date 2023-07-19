@@ -1,0 +1,17 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+    ],
+    "contextsToFlush": [
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
+        }
+    ]
+}

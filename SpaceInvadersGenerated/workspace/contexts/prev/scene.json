@@ -1,0 +1,36 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "topPlaneY",
+      "initial": 100
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "topPlaneDir",
+      "initial": 1
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "padding",
+      "initial": 30
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "bottomPlaneY",
+      "initial": 875
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "bottomPlaneDir",
+      "initial": -1
+    }
+  ]
+}

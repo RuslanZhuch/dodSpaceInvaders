@@ -1,0 +1,25 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "sounds",
+            "list": [
+                "core"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "soundCmds",
+            "list": [
+                "cmds"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+    ],
+    "contextsWriteTo": [
+    ]
+}

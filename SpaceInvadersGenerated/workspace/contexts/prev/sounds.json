@@ -1,0 +1,18 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "data": [
+    {
+      "type": "object",
+      "dataType": "Game::Sound::Core",
+      "name": "soundsCore"
+    },
+    {
+      "type": "dbbuffer",
+      "dataType": "Game::Sound::Wav",
+      "name": "sounds",
+      "capacity": 16
+    }
+  ]
+
+}

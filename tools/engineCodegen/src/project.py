@@ -38,7 +38,10 @@ def _generate_diff_for_contexts(contexts_folder : str, context_paths : list[str]
     contexts_folder_prev = contexts_folder + "/prev"
     
     context_names = [path.basename(context_path) for context_path in context_paths]
-    diff_list = diff.generate_list(contexts_folder, contexts_folder_prev, context_names)
+    diff_list = diff.generate_list(contexts_folder, contexts_folder_prev, context_names, [
+        "initial",
+        "capacity"
+    ])
 
     diff.replace(contexts_folder, contexts_folder_prev, diff_list)
     
@@ -53,6 +56,18 @@ def _generate_diff_for_executors(executors_folder : str, executors_paths : list[
     diff.replace(executors_folder, executors_folder_prev, diff_list)
     
     return diff_list
+
+def _generate_diff_for_project_structure(root_folder : str, file_path : str):
+    full_path = root_folder + "/" + file_path
+    full_path_prev = root_folder + "/prev/" + file_path
+    
+    if not diff.check_files_equals(full_path, full_path_prev):
+        diff.replace(root_folder, root_folder + "/prev", [
+            path.basename(file_path)
+        ])
+        return True
+
+    return False
 
 def load(project_desc_file):
     desc_file_data = loader.load_file_data(project_desc_file)
@@ -93,30 +108,47 @@ def generate(project_desc : ProjectDesc):
     if not os.path.exists(executors_target_path):
         os.makedirs(executors_target_path)
         
-    _generate_diff_for_contexts(project_desc.project_contexts_src_folder, project_desc.contexts_paths)
-    _generate_diff_for_executors(project_desc.project_executors_src_folder, project_desc.executors_paths)
+    contexts_diff_list = _generate_diff_for_contexts(project_desc.project_contexts_src_folder, project_desc.contexts_paths)
+    executors_diff_list = _generate_diff_for_executors(project_desc.project_executors_src_folder, project_desc.executors_paths)
+    project_structure_changed = _generate_diff_for_project_structure(project_desc.project_root_src_folder, project_desc.application_context_path)
     
     types_data = [loader.load_file_data(project_desc.project_root_src_types + "/" + types_path) for types_path in project_desc.types_paths]
     types_cache = types_manager.cache_types(types_data)
-        
+    
     for context_file in project_desc.contexts_paths:
+        if context_file not in contexts_diff_list:
+            continue
         full_path = project_desc.project_contexts_src_folder + "/" + context_file
         contexts.generate_context_def(contexts_target_path, full_path, types_cache)
     
     for context_file in project_desc.contexts_paths:
+        if context_file not in contexts_diff_list:
+            continue
         full_path = project_desc.project_contexts_src_folder + "/" + context_file
         contexts.generate_context_impl(contexts_target_path, full_path)
-                
-    executor_full_paths = [project_desc.project_executors_src_folder + "/" + executor_path for executor_path in project_desc.executors_paths]
-    executors_data = executors.load(executor_full_paths)
-    for data in executors_data:
+    
+    executor_full_paths = []
+    executor_full_paths_changed = []
+    for executor_path in project_desc.executors_paths:
+        full_path = project_desc.project_executors_src_folder + "/" + executor_path
+        executor_full_paths.append(full_path)
+        if executor_path not in executors_diff_list:
+            continue
+        executor_full_paths_changed.append(full_path)
+    
+    executors_data_changed = executors.load(executor_full_paths_changed)
+    for data in executors_data_changed:
         executors.gen_header(executors_target_path, data)
         executors.gen_source(executors_target_path, data)
         executors.gen_implementation(executors_target_path, data)
+    
+    if project_structure_changed is False:
+        return
         
     application_context_path = project_desc.project_root_src_folder + "/" + project_desc.application_context_path
     
     contexts_full_paths = [project_desc.project_contexts_src_folder + "/" + context_path for context_path in project_desc.contexts_paths]
     contexts_data = contexts.load_contexts(contexts_full_paths)
+    executors_data = executors.load(executor_full_paths)
     runtime.generate(target_path, executors_data, application_context_path, contexts_data)
     

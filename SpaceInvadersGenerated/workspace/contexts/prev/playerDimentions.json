@@ -1,0 +1,19 @@
+{
+  "whoIAm": "Context",
+  "version": 1,
+  "contextType": "Local",
+  "data": [
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "width",
+      "initial": 25
+    },
+    {
+      "type": "object",
+      "dataType": "float",
+      "name": "height",
+      "initial": 14
+    }
+  ]
+}

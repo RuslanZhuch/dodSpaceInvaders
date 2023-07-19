@@ -23,6 +23,11 @@ class TestDiff(unittest.TestCase):
         super().__init__(methodName)
         self.maxDiff = None
     
+    def test_check_file_changed(self):
+        self.assertFalse(diff.check_files_equals("assets/diff/config4.json", "assets/diff/config4NotExist.json"))
+        self.assertTrue(diff.check_files_equals("assets/diff/config4.json", "assets/diff/config4Same.json"))
+        self.assertFalse(diff.check_files_equals("assets/diff/config4.json", "assets/diff/config4Diff.json"))
+            
     def test_json_structure_diff_1(self):
         data = loader.load_file_data("assets/diff/config1.json")
         data_same = loader.load_file_data("assets/diff/config1Same.json")
@@ -89,6 +94,17 @@ class TestDiff(unittest.TestCase):
         data_structure_differs4 = loader.load_file_data("assets/diff/config3StructDiffers4.json")
         self.assertTrue(diff.check_structure_is_same(data, data_structure_differs4, ["capacity"]))
         
+    def test_json_structure_diff_5(self):
+        data = loader.load_file_data("assets/diff/config5.json")
+        dataSame = loader.load_file_data("assets/diff/config5Same.json")
+        self.assertTrue(diff.check_structure_is_same(data, dataSame))
+                
+        data_structure_differs = loader.load_file_data("assets/diff/config5StructDiffers.json")
+        self.assertFalse(diff.check_structure_is_same(data, data_structure_differs))
+                
+        data_structure_differs2 = loader.load_file_data("assets/diff/config5StructDiffers2.json")
+        self.assertFalse(diff.check_structure_is_same(data, data_structure_differs2))
+                
     def test_diff_list_generator(self):
         current_files_folder = "assets/diff/current"
         previous_files_folder = "assets/diff/prev"
@@ -103,6 +119,23 @@ class TestDiff(unittest.TestCase):
         self.assertEqual(diff_list, [
             "file2.json",
             "file4.json",
+        ])
+                
+    def test_diff_list_generator(self):
+        current_files_folder = "assets/diff/current"
+        previous_files_folder = "assets/diff/prev"
+        files_list = [
+            "file1.json",
+            "file2.json",
+            "file3.json",
+            "file4.json",
+        ]
+        diff_list = diff.generate_list(current_files_folder, previous_files_folder, files_list, [
+            "dataType",
+            "name"
+        ])
+        
+        self.assertEqual(diff_list, [
         ])
         
     def test_diff_list_empty_generator(self):

@@ -9,7 +9,7 @@ namespace Game::Context::SContext1
     void Data::load() noexcept
     {
 
-        const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/shared/sContext1.json") };
+        const auto doc{ Engine::ContextUtils::loadFileDataRoot("assets/contexts/sContext1.json") };
         const auto& inputDataOpt{ Engine::ContextUtils::gatherContextData(doc, 0) };
 
         if (!inputDataOpt.has_value())

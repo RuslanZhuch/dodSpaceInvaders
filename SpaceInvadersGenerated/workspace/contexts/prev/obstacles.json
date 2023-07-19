@@ -43,7 +43,7 @@
       "type": "object",
       "dataType": "int32_t",
       "name": "initialLifes",
-      "initial": 2
+      "initial": 1
     },
     {
       "type": "object",

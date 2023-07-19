@@ -1,0 +1,50 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "renderInternal",
+            "list": [
+                "renderer"
+            ]
+        },
+        {
+            "type": "common",
+            "list": [
+                "windowSpecs"
+            ]
+        },
+        {
+            "type": "renderInternal",
+            "list": [
+                "internal"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "modelsToRender",
+            "list": [
+                "modelsIds"
+            ]
+        },
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "application"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "application",
+            "list": [
+                "application"
+            ]
+        }
+    ]
+}

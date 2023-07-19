@@ -7,7 +7,7 @@
         "type": "object",
         "dataType": "float",
         "name": "velocity",
-        "initial": -200
+        "initial": 120
       }
     ]
   }

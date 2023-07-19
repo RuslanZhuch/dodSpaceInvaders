@@ -1,0 +1,84 @@
+{
+    "whoIAm": "Executor",
+    "version": 1,
+    "memory": 2048,
+    "contextsLocal": [
+        {
+            "type": "scene",
+            "list": [
+                "sceneParameters"
+            ]
+        },
+        {
+            "type": "enemyBullets",
+            "list": [
+                "parameters"
+            ]
+        },
+        {
+            "type": "toRemove",
+            "list": [
+                "toRemove"
+            ]
+        },
+        {
+            "type": "obstacleDimentions",
+            "list": [
+                "obstacleDimentions"
+            ]
+        },
+        {
+            "type": "playerDimentions",
+            "list": [
+                "playerDimentions"
+            ]
+        }
+    ],
+    "contextsShared": [
+        {
+            "type": "toSpawn",
+            "list": [
+                "toSpawn"
+            ]
+        },
+        {
+            "type": "units",
+            "list": [
+                "obstaclesCoords",
+                "playerCoord"
+            ]
+        }
+    ],
+    "contextsToFlush": [
+        "toRemove",
+        "obstaclesToHit",
+        "playerToHit",
+        "soundCmds"
+    ],
+    "contextsWriteTo": [
+        {
+            "type": "renderCommands",
+            "list": [
+                "renderCmds"
+            ]
+        },
+        {
+            "type": "toRemove",
+            "list": [
+                "obstaclesToHit"
+            ]
+        },
+        {
+            "type": "toRemove",
+            "list": [
+                "playerToHit"
+            ]
+        },
+        {
+            "type": "soundCmds",
+            "list": [
+                "soundCmds"
+            ]
+        }
+    ]
+}
